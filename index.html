@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lisbon Horizon 2026 - Guida Interattiva</title>
+    <title>Lisbon Horizon 2026 - Guida Interattiva Definitiva</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Lucide Icons -->
@@ -11,7 +11,7 @@
     <!-- Leaflet JS & CSS per Mappa Interattiva -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <!-- Fontsfuturisti -->
+    <!-- Font Futuristi -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <script>
@@ -219,14 +219,14 @@
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div>
                             <span id="day-badge" class="px-3 py-1 rounded-full text-xs font-orbitron bg-brand-cyan/20 text-brand-cyan border border-brand-cyan/30">GIORNO 1 • GIOVEDÌ 3 SETTEMBRE</span>
-                            <h2 id="day-title" class="text-2xl font-bold mt-2 text-white">Arrivo & Primo Impatto: Baixa, Chiado e Tramonto</h2>
-                            <p id="day-subtitle" class="text-sm text-slate-400 mt-1">Focus: Ambientamento rapido, grandi piazze e punto panoramico serale sul Tago.</p>
+                            <h2 id="day-title" class="text-2xl font-bold mt-2 text-white">Arrivo & Primo Impatto: Baixa e Chiado</h2>
+                            <p id="day-subtitle" class="text-sm text-slate-400 mt-1">Focus: Ambientamento rapido, grandi piazze settecentesche e vista panoramica al tramonto.</p>
                         </div>
                         <div class="flex items-center space-x-3 bg-slate-900/80 p-3 rounded-xl border border-slate-800 self-start md:self-auto">
                             <i data-lucide="footprints" class="w-5 h-5 text-brand-cyan"></i>
                             <div>
                                 <p class="text-xs text-slate-400">Passi stimati</p>
-                                <p id="day-steps" class="text-sm font-bold text-white">~ 12.000 passi</p>
+                                <p id="day-steps" class="text-sm font-bold text-white">~ 11.000 passi</p>
                             </div>
                         </div>
                     </div>
@@ -243,7 +243,7 @@
                 <div class="glass-panel p-4 rounded-2xl border border-slate-800 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div>
                         <h2 class="text-xl font-bold text-white font-orbitron">Mappa Geolocalizzata</h2>
-                        <p class="text-xs text-slate-400">Tutte le tappe dell'itinerario con percorsi e punti di interesse.</p>
+                        <p class="text-xs text-slate-400">Tutte le tappe dell'itinerario con percorsi, monumenti e ristoranti.</p>
                     </div>
                     <div class="flex flex-wrap gap-2 text-xs">
                         <button onclick="filterMapMarkers('all')" class="px-3 py-1.5 rounded-lg bg-slate-800 text-white hover:bg-slate-700">Tutti</button>
@@ -412,108 +412,106 @@
     </nav>
 
     <script>
-        // --- DATA STRUCTURES ---
+        // --- DATA STRUCTURES (AGGIORNATE SECONDO IL MASTERPLAN DEFINITIVO) ---
         const itineraryData = {
             1: {
                 badge: "GIORNO 1 • GIOVEDÌ 3 SETTEMBRE",
                 title: "Arrivo & Primo Impatto: Baixa, Chiado e Tramonto",
-                subtitle: "Focus: Settaggio iniziale, piazze iconiche e vista sul Tago al tramonto.",
+                subtitle: "Focus: Settaggio iniziale, piazze settecentesche, scorci panoramici e vista sul Tago.",
                 steps: "~ 11.000 passi",
                 timeline: [
-                    { time: "13:00", title: "Atterraggio all'Aeroporto LIS", desc: "Sbarco, controllo bagagli e trasferimento immediato.", transport: "Metro Linea Rossa (18 min)", icon: "plane-landing" },
-                    { time: "14:10", title: "Check-in Hotel ibis Saldanha", desc: "Sistemazione bagagli e rinfrescata.", transport: "A piedi da fermata Saldanha", icon: "hotel" },
-                    { time: "14:40", title: "Pranzo Tipico da 'O Pagador'", desc: "Primo assaggio di cucina casereccia portoghese vicino all'hotel.", transport: "5 min a piedi", icon: "utensils" },
-                    { time: "15:45", title: "Praça do Comércio & Rua Augusta", desc: "Camminata nella maestosa piazza affacciata sul fiume e salita verso l'Elevador de Santa Justa.", transport: "Metro Gialla per Baixa", icon: "map-pin" },
-                    { time: "18:00", title: "Miradouro de São Pedro de Alcântara", desc: "Aperitivo con vista spettacolare sul Castello di San Jorge e sulla città bassa.", transport: "Elevador da Glória / A piedi", icon: "camera" },
-                    { time: "19:30", title: "Tramonto al Miradouro de Santa Catarina", desc: "Musica dal vivo spontanea e vista sul Ponte 25 de Abril al calar del sole.", transport: "A piedi", icon: "sunset" },
-                    { time: "20:30", title: "Cena da 'Taberna da Rua das Flores'", desc: "Bistrot caratteristico per petiscos o panino Bifana tradizionale da O Trevo.", transport: "A piedi", icon: "utensils" }
+                    { time: "13:00 - 14:00", title: "Atterraggio & Trasferimento", desc: "Atterraggio a Lisbona, ritiro bagagli e corsa in metro verso la base operativa.", transport: "Metro Linea Rossa (18 min)", icon: "plane-landing" },
+                    { time: "14:10", title: "Check-in Hotel ibis Saldanha", desc: "Sistemazione delle valigie e rinfrescata iniziale.", transport: "A piedi da fermata Saldanha", icon: "hotel" },
+                    { time: "14:30 - 15:30", title: "Pranzo Veloce da 'O Pagador'", desc: "Primo piatto della tradizione casereccia portoghese a pochi passi dall'hotel.", transport: "A piedi (vicino hotel)", icon: "utensils" },
+                    { time: "15:45 - 18:00", title: "Cuore di Lisbona: Praça do Comércio & Baixa", desc: "Passeggiata nella grandiosa piazza settecentesca affacciata sul Tago, percorrere Rua Augusta, ammirare L'Elevador de Santa Justa e salire sull'Arco da Rua Augusta per la vista sul centro.", transport: "Metro Gialla per Baixa", icon: "map-pin" },
+                    { time: "18:00 - 19:30", title: "Tramonto dai Miradouros", desc: "Salita al Miradouro de São Pedro de Alcântara con lo storico Elevador da Glória. Proseguimento verso il Miradouro de Santa Catarina per musica dal vivo e vista sul Ponte 25 de Abril.", transport: "Elevador da Glória / A piedi", icon: "sunset" },
+                    { time: "20:00", title: "Cena nel Chiado", desc: "Ottima Bifana tradizionale da 'O Trevo' oppure piatti espressi del giorno alla rinomata 'Taberna da Rua das Flores' (solo contanti, senza prenotazione).", transport: "A piedi", icon: "utensils" }
                 ]
             },
             2: {
                 badge: "GIORNO 2 • VENERDÌ 4 SETTEMBRE",
                 title: "L'Anima Antica: Alfama, Castello & Serata Fado",
-                subtitle: "Focus: Saliscendi storici, miradouros e musica tradizionale.",
+                subtitle: "Focus: Saliscendi storici, fortezze medievali, terrazze panoramiche e fado dal vivo.",
                 steps: "~ 15.000 passi",
                 timeline: [
-                    { time: "08:45", title: "Tram Storico 28E", desc: "Giro iconico a bordo del tram giallo di legno tra i vicoli stretti (partenza presto per evitare code).", transport: "Metro fino a Martim Moniz", icon: "train-front" },
-                    { time: "09:30", title: "Castello di San Jorge", desc: "Esplorazione della fortezza araba, camminata sulle mura e vista a 360° su Lisbona.", transport: "A piedi", icon: "castle" },
-                    { time: "11:30", title: "Discesa nei vicoli di Alfama & Cattedrale Sé", desc: "Scorci pittoreschi, panni stesi e visita esterna alla Cattedrale romanica del XII secolo.", transport: "A piedi", icon: "map-pin" },
-                    { time: "13:30", title: "Pranzo da Petisqueira Confraria", desc: "Assaggio di frittelle di baccalà (pataniscas) e piatti di pesce freschi.", transport: "A piedi", icon: "utensils" },
-                    { time: "14:30", title: "Miradouros di Graça & Santa Luzia", desc: "Caffè panoramico nei balconi decorati con azulejos e bougainvillea.", transport: "A piedi", icon: "coffee" },
-                    { time: "16:30", title: "Panteão Nacional & Street Art a Graça", desc: "Passeggiata verso l'imponente Pantheon e murali contemporanei del quartiere.", transport: "A piedi", icon: "camera" },
-                    { time: "20:00", title: "Cena con Spettacolo di Fado", desc: "Cena tradizionale ad Alfama ascoltando la musica Fado dal vivo patrimonio UNESCO.", transport: "Uber / A piedi", icon: "music" }
+                    { time: "08:45 - 09:30", title: "Tram Storico 28E", desc: "Partenza di mattina presto da Martim Moniz per viaggiare sul leggendario tram giallo di legno evitando le lunghe code.", transport: "Metro fino a Martim Moniz", icon: "train-front" },
+                    { time: "09:30 - 11:30", title: "Castello di San Jorge", desc: "Esplorazione della fortezza araba, camminata lungo i bastioni fortificati e giardini panoramici con vista a 360°.", transport: "A piedi", icon: "castle" },
+                    { time: "11:30 - 13:30", title: "Vicoli dell'Alfama & Cattedrale (Sé)", desc: "Discesa tra vicoli labirintici, panni stesi e visita alla maestosa Cattedrale romanica a fortezza.", transport: "A piedi", icon: "map-pin" },
+                    { time: "13:30 - 14:30", title: "Pranzo Tipico", desc: "Petiscos alla 'Petisqueira Confraria' oppure pasto corroborante nella storica tasca 'O Velho Eurico'.", transport: "A piedi", icon: "utensils" },
+                    { time: "14:30 - 16:30", title: "Miradouros di Graça & Santa Luzia", desc: "Sosta alla terrazza fiorita con azulejos di Santa Luzia, scorcio da Portas do Sol e belvedere alberato da Graça.", transport: "A piedi", icon: "camera" },
+                    { time: "16:30 - 18:30", title: "Panteão Nacional & Street Art a Graça", desc: "Passeggiata verso il Pantheon Nazionale e itinerario tra i murali d'arte urbana del quartiere Graça.", transport: "A piedi", icon: "sparkles" },
+                    { time: "20:00", title: "Cena con Spettacolo di Fado", desc: "Musica Fado dal vivo da 'Parreirinha de Alfama', nell'ex-cappella di 'Mesa de Frades' o informale da 'A Tasca do Chico' nel Bairro Alto.", transport: "Uber / A piedi", icon: "music" }
                 ]
             },
             3: {
                 badge: "GIORNO 3 • SABATO 5 SETTEMBRE",
                 title: "Belém & LX Factory",
-                subtitle: "Focus: Grandi monumenti marittimi e distretto creativo contemporaneo.",
+                subtitle: "Focus: Monumenti manuelini dell'Età delle Scoperte e distretto di design industriale.",
                 steps: "~ 13.500 passi",
                 timeline: [
-                    { time: "09:00", title: "Trasferimento a Belém", desc: "Spostamento lungo la riva del Tago fino al quartiere storico delle grandi scoperte.", transport: "Tram 15E da Cais do Sodré", icon: "navigation" },
-                    { time: "09:45", title: "Colazione da Pastéis de Belém", desc: "Tappa nella pasticceria originale del 1837 per gustare i famosi cestini di crema caldi.", transport: "A piedi", icon: "cake" },
-                    { time: "10:30", title: "Monastero dei Jerónimos & Padrão dos Descobrimentos", desc: "Architettura esteriore manuelina e imponente monumento dedicato agli esploratori.", transport: "A piedi", icon: "landmark" },
-                    { time: "12:30", title: "Torre di Belém", desc: "La celebre torre fortificata del XVI secolo adagiata sull'acqua del fiume.", transport: "Passeggiata fiume (15 min)", icon: "shield" },
-                    { time: "13:30", title: "Pranzo di Pesce da 'O Frade'", desc: "Cucina portoghese moderna servita al banco d'altissima qualità.", transport: "A piedi", icon: "utensils" },
-                    { time: "15:00", title: "LX Factory & Libreria Ler Devagar", desc: "Visita al complesso industriale riqualificato con gallerie, murales e la celebre libreria su più livelli.", transport: "Bus 714 / Tram 15E", icon: "sparkles" },
-                    { time: "18:00", title: "Aperitivo sul Rooftop Rio Maravilha", desc: "Vista mozzafiato sul Ponte 25 de Abril e sulla statua del Cristo Rei.", transport: "A piedi", icon: "glass-water" }
+                    { time: "09:00 - 09:45", title: "Trasferimento a Belém", desc: "Tratta costiera verso il celebre quartiere marittimo delle grandi esplorazioni.", transport: "Tram 15E / Treno da Cais do Sodré", icon: "navigation" },
+                    { time: "09:45 - 10:30", title: "Colazione Storica da Pastéis de Belém", desc: "Sosta d'obbligo nella pasticceria originale del 1837 per gustare i famosi cestini di crema caldi spolverati di cannella.", transport: "A piedi", icon: "cake" },
+                    { time: "10:30 - 12:30", title: "I Monumenti del Tago", desc: "Ammira l'architettura stile manuelino del Mosteiro dos Jerónimos (Patrimonio UNESCO), prosegui verso il Padrão dos Descobrimentos e la Torre di Belém specchiata sull'acqua.", transport: "A piedi lungo il fiume", icon: "landmark" },
+                    { time: "13:00 - 14:30", title: "Pranzo di Pesce", desc: "Cucina di mare d'alta qualità al banco da 'O Frade' oppure pesce fresco da 'A Cevicheria'.", transport: "A piedi", icon: "utensils" },
+                    { time: "14:45 - 17:30", title: "LX Factory & Libreria Ler Devagar", desc: "Esplorazione del complesso ex-industriale di Alcântara: street art, botteghe artigiane e la spettacolare libreria a più livelli.", transport: "Bus 714 / Tram 15E", icon: "sparkles" },
+                    { time: "18:00 - 20:00", title: "Aperitivo Panoramico sul Rooftop", desc: "Aperitivo serale sul rooftop Rio Maravilha affacciato sul fiume Tago e sul Ponte 25 de Abril.", transport: "A piedi", icon: "glass-water" }
                 ]
             },
             4: {
                 badge: "GIORNO 4 • DOMENICA 6 SETTEMBRE",
                 title: "Lisbona Moderna & Oceanario",
-                subtitle: "Focus: Architettura futuristica, mondo marino e relax.",
+                subtitle: "Focus: Architettura avveniristica, grandi acquari e giardini prospettici.",
                 steps: "~ 10.500 passi",
                 timeline: [
-                    { time: "09:30", title: "Spostamento al Parque das Nações", desc: "Tratta diretta fino all'area costruita per l'Expo '98.", transport: "Metro Linea Rossa (Saldanha -> Oriente)", icon: "train-track" },
-                    { time: "10:15", title: "Oceanário de Lisboa", desc: "Visita a uno degli acquari più belli al mondo con l'immenso serbatoio centrale e le lontre.", transport: "A piedi (10 min)", icon: "fish" },
-                    { time: "13:00", title: "Pranzo da D'Bacalhau", desc: "Degustazione speciale di Baccalà preparato in 4 ricette tradizionali diverse.", transport: "A piedi", icon: "utensils" },
-                    { time: "14:30", title: "Telecabine Lisboa (Cabinovia del Tago)", desc: "Volo panoramico in funivia con vista sul lunghissimo Ponte Vasco da Gama.", transport: "Funivia", icon: "cable-car" },
-                    { time: "15:30", title: "Stazione Oriente (Santiago Calatrava)", desc: "Osservazione dell'architettura in acciaio e vetro futuristica.", transport: "A piedi", icon: "building-2" },
-                    { time: "18:00", title: "Parco Eduardo VII", desc: "Passeggiata nei giardini prospettici con vista aperta che scende fino al centro città.", transport: "Metro Rossa", icon: "trees" },
-                    { time: "20:00", title: "Cena da 'Laurentina - O Rei do Bacalhau'", desc: "Il tempio storico del baccalà grigliato vicino all'hotel.", transport: "A piedi (da Saldanha)", icon: "utensils" }
+                    { time: "09:30 - 10:15", title: "Spostamento al Parque das Nações", desc: "Tratta diretta fino al quartiere modernista edificato per l'Expo '98.", transport: "Metro Linea Rossa (Saldanha -> Oriente)", icon: "train-track" },
+                    { time: "10:15 - 12:45", title: "Oceanário de Lisboa", desc: "Visita al secondo acquario più grande d'Europa, tra lontre marine, squali e ricostruzioni di ecosistemi oceanici.", transport: "A piedi (10 min)", icon: "fish" },
+                    { time: "13:00 - 14:30", title: "Pranzo a tema Baccalà da 'D'Bacalhau'", desc: "Degustazione speciale con il baccalà cucinato e servito in 4 ricette tradizionali differenti.", transport: "A piedi", icon: "utensils" },
+                    { time: "14:30 - 15:30", title: "Telecabine Lisboa", desc: "Giro panoramico sulla cabinovia sospesa sopra il fiume Tago con vista sul gigantesco Ponte Vasco da Gama.", transport: "Funivia", icon: "cable-car" },
+                    { time: "15:30 - 17:30", title: "Architettura Futuristica & Jardins d'Água", desc: "Passeggiata tra la Stazione d'Oriente (progettata da Santiago Calatrava) e i giochi d'acqua nei giardini del parco.", transport: "A piedi", icon: "building-2" },
+                    { time: "18:00 - 19:30", title: "Parco Eduardo VII", desc: "Rientro in centro e passeggiata panoramica nel grande parco con vista prospettica sul Tago.", transport: "Metro Linea Rossa", icon: "trees" },
+                    { time: "20:00", title: "Cena da 'Laurentina - O Rei do Bacalhau'", desc: "Cena nel tempio storico del baccalà a breve distanza dall'hotel.", transport: "A piedi da Saldanha", icon: "utensils" }
                 ]
             },
             5: {
                 badge: "GIORNO 5 • LUNEDÌ 7 SETTEMBRE",
                 title: "Escursione ai Castelli di Sintra",
-                subtitle: "Focus: Palazzi fiabeschi, parchi esoterici e dolci tradizionali.",
+                subtitle: "Focus: Palazzi fiabeschi, giardini esoterici, pozzi sotterranei e street food d'autore.",
                 steps: "~ 14.000 passi",
                 timeline: [
-                    { time: "08:11", title: "Treno per Sintra", desc: "Partenza dalla stazione di Lisboa-Rossio per l'escursione collinare.", transport: "Treno CP (40 min)", icon: "train" },
-                    { time: "09:30", title: "Palácio Nacional da Pena", desc: "Visita al castello coloratissimo arroccato sui boschi di Sintra (Slot orario prenotato online).", transport: "Bus 434 dalla stazione", icon: "sparkles" },
-                    { time: "12:30", title: "Borgo di Sintra & Pasticceria Piriquita", desc: "Assaggio dei famosi Travesseiros (sfoglia con crema di mandorle).", transport: "A piedi / Bus 434", icon: "cookie" },
-                    { time: "14:00", title: "Quinta da Regaleira & Pozzo Iniziatico", desc: "Esplorazione della tenuta esoterica, grotte e la torre sotterranea rovesciata.", transport: "A piedi (10 min dal centro)", icon: "eye" },
-                    { time: "17:00", title: "Rientro a Lisbona", desc: "Ritorno in treno rilassante fino alla stazione Rossio.", transport: "Treno CP", icon: "rotate-ccw" },
-                    { time: "18:30", title: "Cena al Time Out Market (Mercado da Ribeira)", desc: "Cena informale nell'elegante food hall coperta con banchi di grandi chef.", transport: "Metro per Cais do Sodré", icon: "utensils" }
+                    { time: "08:11 - 08:50", title: "Treno per Sintra", desc: "Partenza dalla stazione di Lisboa-Rossio per l'escursione collinare nel parco naturale.", transport: "Treno CP (40 min)", icon: "train" },
+                    { time: "09:30 - 12:00", title: "Palácio Nacional da Pena", desc: "Salita in bus 434 e visita al castello fiabesco dai colori sgargianti (slot orario prenotato online).", transport: "Bus 434 dalla stazione", icon: "sparkles" },
+                    { time: "12:30 - 13:30", title: "Borgo di Sintra & Pasticceria Piriquita", desc: "Passeggiata nel centro storico e assaggio d'obbligo dei tradizionali 'Travesseiros' (sfoglia con crema di mandorle).", transport: "A piedi / Bus 434", icon: "cookie" },
+                    { time: "14:00 - 16:30", title: "Quinta da Regaleira & Pozzo Iniziatico", desc: "Esplorazione della tenuta esoterica, passaggi segreti, grotte e la famosa scalinata a chiocciola nel Pozzo Iniziatico.", transport: "A piedi (10 min dal centro)", icon: "eye" },
+                    { time: "17:00 - 18:00", title: "Rientro a Lisbona", desc: "Treno di ritorno rilassante da Sintra fino alla stazione Rossio.", transport: "Treno CP", icon: "rotate-ccw" },
+                    { time: "18:30 - 20:30", title: "Cena al Time Out Market (Mercado da Ribeira)", desc: "Cena nella celebre food hall coperta a Cais do Sodré, assaggiando piatti d'autore curati da chef stellati.", transport: "Metro per Cais do Sodré", icon: "utensils" }
                 ]
             },
             6: {
                 badge: "GIORNO 6 • MARTEDÌ 8 SETTEMBRE",
                 title: "Riviera di Cascais & Cabo da Roca",
-                subtitle: "Focus: Costa oceanica, scogliere a picco e borghi di pescatori.",
+                subtitle: "Focus: Scogliere oceaniche a picco, promontorio atlantico e borghi marinari.",
                 steps: "~ 12.000 passi",
                 timeline: [
-                    { time: "09:00", title: "Treno Panoramico per Cascais", desc: "Viaggio lungo la costa (sedersi sul lato sinistro per la vista mare).", transport: "Treno CP da Cais do Sodré", icon: "waves" },
-                    { time: "09:45", title: "Cascais & Scogliera Boca do Inferno", desc: "Passeggiata nel centro storico e camminata fino alla cavità rocciosa dove frangono le onde.", transport: "A piedi", icon: "compass" },
-                    { time: "12:15", title: "Cabo da Roca (Punto più a Ovest d'Europa)", desc: "Promontorio mozzafiato con faro a picco sull'Oceano Atlantico (alto 140m).", transport: "Bus 1603 da Cascais (25 min)", icon: "map" },
-                    { time: "14:15", title: "Pranzo di Pesce da 'Baía do Peixe'", desc: "Pranzo di mare con vista baia e gelato artigianale da Gelateria Santini.", transport: "A piedi a Cascais", icon: "utensils" },
-                    { time: "16:00", title: "Relax a Praia da Rainha & Centro", desc: "Passeggiata sulle calette sabbiose e shopping di souvenir a Cascais.", transport: "A piedi", icon: "sun" },
-                    { time: "20:00", title: "Cena d'Addio da 'Frade dos Mares'", desc: "Cena speciale a Lisbona famosa per il baccalà in crosta di pane.", transport: "Treno CP + Uber", icon: "heart" }
+                    { time: "09:00 - 09:40", title: "Treno Panoramico per Cascais", desc: "Viaggio lungo la costa atlantica (sedersi sul lato sinistro per la vista mare).", transport: "Treno CP da Cais do Sodré (40 min)", icon: "waves" },
+                    { time: "09:45 - 11:30", title: "Cascais & Scogliera Boca do Inferno", desc: "Passeggiata tra le eleganti viuzze dell'ottocentesco borgo di pescatori e camminata fino alla cavità rocciosa di Boca do Inferno.", transport: "A piedi", icon: "compass" },
+                    { time: "12:15 - 13:45", title: "Cabo da Roca (Punto più a Ovest d'Europa)", desc: "Escursione sul promontorio a picco sull'Oceano Atlantico (alto 140 m) nel punto più occidentale dell'Europa continentale.", transport: "Bus 1603 da Cascais (25 min)", icon: "map" },
+                    { time: "14:15 - 16:00", title: "Pranzo di Mare & Gelato", desc: "Rientro a Cascais per un pranzo a base di pesce fresco da 'Baía do Peixe' e gelato artigianale da 'Gelateria Santini'.", transport: "Bus 1603 + A piedi", icon: "utensils" },
+                    { time: "16:00 - 18:00", title: "Relax a Praia da Rainha", desc: "Relax sulle calette sabbiose o shopping di souvenir nel centro storico di Cascais prima del treno di ritorno.", transport: "A piedi", icon: "sun" },
+                    { time: "20:00", title: "Cena d'Addio da 'Frade dos Mares'", desc: "Cena speciale a Lisbona famosa per il baccalà in crosta di pane o piatti di pesce raffinati.", transport: "Treno CP + Uber", icon: "heart" }
                 ]
             },
             7: {
                 badge: "GIORNO 7 • MERCOLEDÌ 9 SETTEMBRE",
                 title: "Ultimi Scorci Panoramici & Partenza",
-                subtitle: "Focus: Belvedere più alto, souvenir e volo di rientro.",
+                subtitle: "Focus: Belvedere più alto della città, librerie storiche, souvenirs e volo di rientro.",
                 steps: "~ 8.000 passi",
                 timeline: [
-                    { time: "09:30", title: "Miradouro de Nossa Senhora do Monte", desc: "Il punto panoramico più alto di Lisbona per un ultimo sguardo a 360° sulla città.", transport: "Uber / A piedi", icon: "mountain" },
-                    { time: "11:30", title: "Shopping al Chiado & Livraria Bertrand", desc: "Acquisti di souvenir autentici e visita alla libreria più antica al mondo.", transport: "A piedi", icon: "shopping-bag" },
-                    { time: "13:30", title: "Pranzo Tipico da 'A Merendeira'", desc: "Menu veloce ed economico con la classica zuppa Caldo Verde e pane caldo al chouriço.", transport: "A piedi", icon: "utensils" },
-                    { time: "15:00", title: "Sosta Caffè da 'A Brasileira'", desc: "Ultima pausa nello storico caffè frequentato dal poeta Fernando Pessoa.", transport: "A piedi", icon: "coffee" },
-                    { time: "16:45", title: "Trasferimento in Aeroporto LIS", desc: "Recupero bagagli in hotel ibis Saldanha e metro diretta senza rischio traffico.", transport: "Metro Linea Rossa (20 min)", icon: "plane-takeoff" },
-                    { time: "20:00", title: "Volo di Ritorno", desc: "Partenza dal Portogallo.", transport: "Volo aereo", icon: "check-circle" }
+                    { time: "09:30 - 11:30", title: "Miradouro da Senhora do Monte", desc: "Check-out e deposito bagagli in hotel. Salita al punto panoramico più alto di Lisbona, all'ombra dei pini con vista sul castello.", transport: "Uber / A piedi", icon: "mountain" },
+                    { time: "11:30 - 13:30", title: "Shopping al Chiado, Bertrand & A Vida Portuguesa", desc: "Visita alla 'Livraria Bertrand' (la più antica al mondo in attività dal 1732) e acquisto di prodotti storici retro da 'A Vida Portuguesa'.", transport: "A piedi", icon: "shopping-bag" },
+                    { time: "13:30 - 14:30", title: "Pranzo Tipico da 'A Merendeira'", desc: "Pranzo veloce ed economico con il classico Caldo Verde e pane caldo cotto a legna ripieno di chouriço.", transport: "A piedi", icon: "utensils" },
+                    { time: "15:00 - 16:30", title: "Sosta Caffè da 'A Brasileira'", desc: "Ultimo caffè nello storico locale frequentato dal poeta Fernando Pessoa.", transport: "A piedi", icon: "coffee" },
+                    { time: "16:45 - 17:15", title: "Trasferimento in Aeroporto LIS", desc: "Recupero bagagli all'hotel ibis Saldanha e corsa diretta in metro per l'aeroporto.", transport: "Metro Linea Rossa (20 min)", icon: "plane-takeoff" },
+                    { time: "17:30 - 20:00", title: "Imbarco & Volo di Rientro", desc: "Procedure d'imbarco e partenza del volo di ritorno.", transport: "Volo aereo", icon: "check-circle" }
                 ]
             }
         };
@@ -533,33 +531,36 @@
 
         const mapMarkers = [
             { lat: 38.7323, lng: -9.1448, title: "Hotel ibis Lisboa Saldanha", type: "must", desc: "Base Operativa" },
-            { lat: 38.7077, lng: -9.1365, title: "Praça do Comércio", type: "must", desc: "Piazza Principale" },
+            { lat: 38.7077, lng: -9.1365, title: "Praça do Comércio & Arco", type: "must", desc: "Piazza Monumentale & Arco" },
             { lat: 38.7122, lng: -9.1394, title: "Elevador de Santa Justa", type: "must", desc: "Ascensore Storico" },
             { lat: 38.7139, lng: -9.1335, title: "Castello di San Jorge", type: "must", desc: "Fortezza Medievale" },
+            { lat: 38.7191, lng: -9.1326, title: "Miradouro da Senhora do Monte", type: "must", desc: "Belvedere più alto di Lisbona" },
             { lat: 38.6972, lng: -9.2064, title: "Pastéis de Belém", type: "food", desc: "Pasticceria Storica (1837)" },
-            { lat: 38.6916, lng: -9.2159, title: "Torre di Belém", type: "must", desc: "Torre sull'acqua" },
-            { lat: 38.7071, lng: -9.1782, title: "LX Factory", type: "must", desc: "Distretto Creativo" },
+            { lat: 38.6916, lng: -9.2159, title: "Torre di Belém", type: "must", desc: "Torre fortificata sul fiume" },
+            { lat: 38.7071, lng: -9.1782, title: "LX Factory", type: "must", desc: "Distretto Creativo & Design" },
             { lat: 38.7634, lng: -9.0937, title: "Oceanário de Lisboa", type: "must", desc: "Acquario Internazionale" },
             { lat: 38.7878, lng: -9.3906, title: "Palácio da Pena (Sintra)", type: "must", desc: "Castello Fiabesco" },
             { lat: 38.7963, lng: -9.3960, title: "Quinta da Regaleira (Sintra)", type: "must", desc: "Pozzo Iniziatico" },
-            { lat: 38.6969, lng: -9.4215, title: "Cascais Centro", type: "must", desc: "Borgo di Mare" },
+            { lat: 38.6969, lng: -9.4215, title: "Cascais Centro", type: "must", desc: "Borgo Marinaro" },
+            { lat: 38.6914, lng: -9.4312, title: "Scogliera Boca do Inferno", type: "must", desc: "Cavità Rocciosa Oceanica" },
             { lat: 38.7804, lng: -9.5005, title: "Cabo da Roca", type: "must", desc: "Punto più a Ovest d'Europa" },
-            { lat: 38.7072, lng: -9.1458, title: "Time Out Market", type: "food", desc: "Food Hall Gastronomica" }
+            { lat: 38.7072, lng: -9.1458, title: "Time Out Market", type: "food", desc: "Food Hall Gastronomica" },
+            { lat: 38.7107, lng: -9.1419, title: "Livraria Bertrand", type: "must", desc: "Libreria più antica al mondo (1732)" }
         ];
 
         const checklistDocs = [
             "Carta d'Identità / Passaporto valido",
-            "Carte di credito / Debito (con NFC)",
+            "Carte di credito / Debito (con NFC per pagamenti veloci)",
             "Biglietti Aerei e Check-in online effettuato",
             "Prenotazione Hotel ibis Saldanha",
-            "Biglietti Online Palácio da Pena (Sintra)",
+            "Biglietti Online Palácio da Pena (Sintra - orario 09:30/10:00)",
             "Tessera Sanitaria Europea (TEAM)"
         ];
 
         const checklistGear = [
-            "Scarpe da ginnastica comode (fondo antiscivolo per pavè)",
+            "Scarpe da ginnastica comode con buon grip (per la calçada portuguesa)",
             "Powerbank per smartphone (almeno 10.000 mAh)",
-            "Giacca a vento leggera / K-Way (per brezza atlantica)",
+            "Giacca a vento leggera / K-Way (per la brezza atlantica)",
             "Occhiali da sole e crema solare",
             "Borraccia termica per l'acqua",
             "Zaino leggero per le escursioni giornaliere"
@@ -777,7 +778,7 @@
                 return;
             }
 
-            expensesList.forEach((exp, index) => {
+            expensesList.forEach((exp) => {
                 const item = document.createElement('div');
                 item.className = "flex items-center justify-between p-3 rounded-xl bg-slate-900/60 border border-slate-800 text-xs";
                 item.innerHTML = `
@@ -799,7 +800,7 @@
             docsContainer.innerHTML = '';
             gearContainer.innerHTML = '';
 
-            checklistDocs.forEach((item, i) => {
+            checklistDocs.forEach((item) => {
                 docsContainer.innerHTML += `
                     <label class="flex items-center space-x-3 cursor-pointer p-2 rounded-lg hover:bg-slate-900/50">
                         <input type="checkbox" class="rounded border-slate-700 text-brand-cyan focus:ring-0">
@@ -808,7 +809,7 @@
                 `;
             });
 
-            checklistGear.forEach((item, i) => {
+            checklistGear.forEach((item) => {
                 gearContainer.innerHTML += `
                     <label class="flex items-center space-x-3 cursor-pointer p-2 rounded-lg hover:bg-slate-900/50">
                         <input type="checkbox" class="rounded border-slate-700 text-brand-purple focus:ring-0">
@@ -861,7 +862,7 @@
             // Scroll Bottom
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
-            // Simulated AI Response Loading State
+            // AI Response Loading State
             const loadingDiv = document.createElement('div');
             loadingDiv.className = "flex space-x-3 loading-ai";
             loadingDiv.innerHTML = `
@@ -878,7 +879,7 @@
 
             // Real API Call to Gemini Endpoint
             const apiKey = "";
-            const systemPrompt = "Sei Horizon AI, la guida turistica virtuale ed esperta di Lisbona per due viaggiatori (1 adulto e 1 ragazzo di 17 anni) alloggiati all'hotel ibis Lisboa Saldanha dal 3 al 9 settembre 2026. Rispondi in modo conciso, pratico e amichevole in italiano.";
+            const systemPrompt = "Sei Horizon AI, la guida turistica virtuale ed esperta di Lisbona per due viaggiatori (1 adulto e 1 ragazzo di 17 anni) alloggiati all'hotel ibis Lisboa Centro Saldanha dal 3 al 9 settembre 2026. Rispondi in modo conciso, pratico e amichevole in italiano.";
 
             try {
                 const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
@@ -931,4 +932,3 @@
     </script>
 </body>
 </html>
-
