@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="it" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lisbon Horizon 2026 - Guida Interattiva</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Leaflet JS & CSS per Mappa Interattiva -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Fontsfuturisti -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            cyan: '#00f2fe',
+                            blue: '#4facfe',
+                            purple: '#7f00ff',
+                            dark: '#0b0f19',
+                            card: 'rgba(17, 24, 39, 0.75)',
+                            neon: '#39ff14'
+                        }
+                    },
+                    fontFamily: {
+                        orbitron: ['Orbitron', 'sans-serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #060913;
+            color: #f3f4f6;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(0, 242, 254, 0.12) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(127, 0, 255, 0.12) 0px, transparent 50%);
+            background-attachment: fixed;
+        }
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .neon-glow-cyan {
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.3);
+        }
+        .neon-glow-purple {
+            box-shadow: 0 0 15px rgba(127, 0, 255, 0.3);
+        }
+        .neon-text-cyan {
+            text-shadow: 0 0 8px rgba(0, 242, 254, 0.6);
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #060913;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00f2fe;
+        }
+        .leaflet-popup-content-wrapper {
+            background: #0f172a !important;
+            color: #fff !important;
+            border: 1px solid #00f2fe;
+            border-radius: 12px;
+        }
+        .leaflet-popup-tip {
+            background: #0f172a !important;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between pb-20 md:pb-0">
+
+    <!-- Top Navigation Header -->
+    <header class="sticky top-0 z-50 glass-panel border-b border-slate-800 px-4 py-3">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="p-2 rounded-xl bg-gradient-to-tr from-brand-cyan to-brand-purple text-black font-bold">
+                    <i data-lucide="compass" class="w-6 h-6 text-slate-950"></i>
+                </div>
+                <div>
+                    <h1 class="font-orbitron font-bold text-lg tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-brand-cyan to-white">LISBON HORIZON</h1>
+                    <p class="text-xs text-slate-400">3-9 SETTEMBRE 2026 • 2 VIAGGIATORI</p>
+                </div>
+            </div>
+            
+            <!-- Quick Weather & Countdown Widget -->
+            <div class="hidden md:flex items-center space-x-6 text-sm">
+                <div class="flex items-center space-x-2 bg-slate-900/80 px-3 py-1.5 rounded-full border border-slate-800">
+                    <i data-lucide="sun" class="w-4 h-4 text-amber-400"></i>
+                    <span class="text-slate-200">26°C Lisbona</span>
+                </div>
+                <div class="flex items-center space-x-2 bg-slate-900/80 px-3 py-1.5 rounded-full border border-slate-800">
+                    <i data-lucide="clock" class="w-4 h-4 text-brand-cyan"></i>
+                    <span id="countdown-timer" class="font-orbitron text-brand-cyan text-xs">--d --h --m</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-7xl mx-auto w-full p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1">
+        
+        <!-- Sidebar Navigation (Desktop) -->
+        <aside class="hidden lg:block lg:col-span-3 space-y-4">
+            <div class="glass-panel rounded-2xl p-4 space-y-2 sticky top-20">
+                <p class="text-xs font-orbitron text-slate-400 px-3 py-1 tracking-widest uppercase">Modulo Navigazione</p>
+                
+                <button onclick="switchTab('itinerary')" id="nav-itinerary" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition text-brand-cyan bg-slate-800/80 border border-brand-cyan/30">
+                    <i data-lucide="calendar" class="w-5 h-5"></i>
+                    <span class="font-medium">Itinerario 7 Giorni</span>
+                </button>
+
+                <button onclick="switchTab('map')" id="nav-map" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-800/50">
+                    <i data-lucide="map" class="w-5 h-5"></i>
+                    <span class="font-medium">Mappa Interattiva</span>
+                </button>
+
+                <button onclick="switchTab('phrases')" id="nav-phrases" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-800/50">
+                    <i data-lucide="languages" class="w-5 h-5"></i>
+                    <span class="font-medium">Frasi & Audio Portoghese</span>
+                </button>
+
+                <button onclick="switchTab('budget')" id="nav-budget" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-800/50">
+                    <i data-lucide="wallet" class="w-5 h-5"></i>
+                    <span class="font-medium">Budget & Spese</span>
+                </button>
+
+                <button onclick="switchTab('checklist')" id="nav-checklist" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-800/50">
+                    <i data-lucide="check-square" class="w-5 h-5"></i>
+                    <span class="font-medium">Checklist & Valigia</span>
+                </button>
+
+                <button onclick="switchTab('assistant')" id="nav-assistant" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition text-slate-400 hover:text-white hover:bg-slate-800/50">
+                    <i data-lucide="bot" class="w-5 h-5 text-brand-purple"></i>
+                    <span class="font-medium text-brand-purple font-semibold">Assistente AI Horizon</span>
+                </button>
+            </div>
+
+            <!-- Hotel Quick Card -->
+            <div class="glass-panel rounded-2xl p-4 border border-brand-cyan/20">
+                <div class="flex items-center space-x-3 mb-2">
+                    <i data-lucide="hotel" class="w-5 h-5 text-brand-cyan"></i>
+                    <h3 class="font-semibold text-sm">Base Operativa Hotel</h3>
+                </div>
+                <p class="text-xs font-bold text-white">ibis Lisboa Centro Saldanha</p>
+                <p class="text-xs text-slate-400 mt-1">Zona Saldanha / Estefânia</p>
+                <div class="mt-3 flex items-center justify-between text-xs text-slate-300 bg-slate-900/60 p-2 rounded-lg">
+                    <span>Metro vicina:</span>
+                    <span class="text-amber-400 font-semibold">Saldanha / Picoas</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Dynamic View Area -->
+        <section class="lg:col-span-9 space-y-6">
+
+            <!-- TAB 1: ITINERARIO 7 GIORNI -->
+            <div id="tab-itinerary" class="tab-content space-y-6">
+                
+                <!-- Day Selector Horizontal Scroll -->
+                <div class="flex space-x-2 overflow-x-auto pb-2 scrollbar-none">
+                    <button onclick="selectDay(1)" id="day-btn-1" class="day-btn flex-shrink-0 px-5 py-3 rounded-xl glass-card border-brand-cyan text-brand-cyan font-bold flex flex-col items-center min-w-[100px]">
+                        <span class="text-xs uppercase font-orbitron">GIO 3</span>
+                        <span class="text-sm">Giorno 1</span>
+                    </button>
+                    <button onclick="selectDay(2)" id="day-btn-2" class="day-btn flex-shrink-0 px-5 py-3 rounded-xl glass-card text-slate-400 hover:text-white flex flex-col items-center min-w-[100px]">
+                        <span class="text-xs uppercase font-orbitron">VEN 4</span>
+                        <span class="text-sm">Giorno 2</span>
+                    </button>
+                    <button onclick="selectDay(3)" id="day-btn-3" class="day-btn flex-shrink-0 px-5 py-3 rounded-xl glass-card text-slate-400 hover:text-white flex flex-col items-center min-w-[100px]">
+                        <span class="text-xs uppercase font-orbitron">SAB 5</span>
+                        <span class="text-sm">Giorno 3</span>
+                    </button>
+                    <button onclick="selectDay(4)" id="day-btn-4" class="day-btn flex-shrink-0 px-5 py-3 rounded-xl glass-card text-slate-400 hover:text-white flex flex-col items-center min-w-[100px]">
+                        <span class="text-xs uppercase font-orbitron">DOM 6</span>
+                        <span class="text-sm">Giorno 4</span>
+                    </button>
+                    <button onclick="selectDay(5)" id="day-btn-5" class="day-btn flex-shrink-0 px-5 py-3 rounded-xl glass-card text-slate-400 hover:text-white flex flex-col items-center min-w-[100px]">
+                        <span class="text-xs uppercase font-orbitron">LUN 7</span>
+                        <span class="text-sm">Giorno 5</span>
+                    </button>
+                    <button onclick="selectDay(6)" id="day-btn-6" class="day-btn flex-shrink-0 px-5 py-3 rounded-xl glass-card text-slate-400 hover:text-white flex flex-col items-center min-w-[100px]">
+                        <span class="text-xs uppercase font-orbitron">MAR 8</span>
+                        <span class="text-sm">Giorno 6</span>
+                    </button>
+                    <button onclick="selectDay(7)" id="day-btn-7" class="day-btn flex-shrink-0 px-5 py-3 rounded-xl glass-card text-slate-400 hover:text-white flex flex-col items-center min-w-[100px]">
+                        <span class="text-xs uppercase font-orbitron">MER 9</span>
+                        <span class="text-sm">Giorno 7</span>
+                    </button>
+                </div>
+
+                <!-- Active Day Card Header -->
+                <div class="glass-panel p-6 rounded-2xl border border-slate-800 relative overflow-hidden">
+                    <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-brand-cyan/10 rounded-full blur-3xl pointer-events-none"></div>
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div>
+                            <span id="day-badge" class="px-3 py-1 rounded-full text-xs font-orbitron bg-brand-cyan/20 text-brand-cyan border border-brand-cyan/30">GIORNO 1 • GIOVEDÌ 3 SETTEMBRE</span>
+                            <h2 id="day-title" class="text-2xl font-bold mt-2 text-white">Arrivo & Primo Impatto: Baixa, Chiado e Tramonto</h2>
+                            <p id="day-subtitle" class="text-sm text-slate-400 mt-1">Focus: Ambientamento rapido, grandi piazze e punto panoramico serale sul Tago.</p>
+                        </div>
+                        <div class="flex items-center space-x-3 bg-slate-900/80 p-3 rounded-xl border border-slate-800 self-start md:self-auto">
+                            <i data-lucide="footprints" class="w-5 h-5 text-brand-cyan"></i>
+                            <div>
+                                <p class="text-xs text-slate-400">Passi stimati</p>
+                                <p id="day-steps" class="text-sm font-bold text-white">~ 12.000 passi</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timeline Schedule -->
+                <div id="day-timeline" class="space-y-4">
+                    <!-- Dinamicamente popolato via JS -->
+                </div>
+            </div>
+
+            <!-- TAB 2: MAPPA INTERATTIVA -->
+            <div id="tab-map" class="tab-content hidden space-y-4">
+                <div class="glass-panel p-4 rounded-2xl border border-slate-800 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <h2 class="text-xl font-bold text-white font-orbitron">Mappa Geolocalizzata</h2>
+                        <p class="text-xs text-slate-400">Tutte le tappe dell'itinerario con percorsi e punti di interesse.</p>
+                    </div>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <button onclick="filterMapMarkers('all')" class="px-3 py-1.5 rounded-lg bg-slate-800 text-white hover:bg-slate-700">Tutti</button>
+                        <button onclick="filterMapMarkers('must')" class="px-3 py-1.5 rounded-lg bg-brand-cyan/20 text-brand-cyan border border-brand-cyan/40">Imperdibili</button>
+                        <button onclick="filterMapMarkers('food')" class="px-3 py-1.5 rounded-lg bg-amber-500/20 text-amber-300 border border-amber-500/40">Cibo & Dolci</button>
+                    </div>
+                </div>
+                <div id="map-container" class="w-full h-[500px] rounded-2xl glass-panel overflow-hidden border border-slate-800 z-10"></div>
+            </div>
+
+            <!-- TAB 3: FRASI & AUDIO PORTOGHESE -->
+            <div id="tab-phrases" class="tab-content hidden space-y-6">
+                <div class="glass-panel p-6 rounded-2xl border border-slate-800">
+                    <h2 class="text-xl font-bold font-orbitron text-white">Frasi Utili in Portoghese</h2>
+                    <p class="text-sm text-slate-400 mt-1">Tocca l'icona dell'altoparlante per ascoltare la pronuncia vocale istantanea.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="phrases-grid">
+                    <!-- Popolato da JS -->
+                </div>
+            </div>
+
+            <!-- TAB 4: BUDGET & SPESE -->
+            <div id="tab-budget" class="tab-content hidden space-y-6">
+                <div class="glass-panel p-6 rounded-2xl border border-slate-800">
+                    <h2 class="text-xl font-bold font-orbitron text-white">Tracker Budget & Spese</h2>
+                    <p class="text-sm text-slate-400 mt-1">Monitora le spese per trasporti, cibo e ingressi durante i 7 giorni.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                        <div class="glass-card p-4 rounded-xl border border-brand-cyan/30">
+                            <p class="text-xs text-slate-400">Budget Totale Stimato</p>
+                            <p class="text-2xl font-bold text-brand-cyan mt-1 font-orbitron">€ 900.00</p>
+                            <p class="text-xs text-slate-500 mt-1">Per 2 persone (7 giorni)</p>
+                        </div>
+                        <div class="glass-card p-4 rounded-xl border border-brand-purple/30">
+                            <p class="text-xs text-slate-400">Spese Registrate</p>
+                            <p id="total-spent-display" class="text-2xl font-bold text-brand-purple mt-1 font-orbitron">€ 0.00</p>
+                            <p class="text-xs text-slate-500 mt-1">Aggiornato in tempo reale</p>
+                        </div>
+                        <div class="glass-card p-4 rounded-xl border border-emerald-500/30">
+                            <p class="text-xs text-slate-400">Rimanente</p>
+                            <p id="total-remaining-display" class="text-2xl font-bold text-emerald-400 mt-1 font-orbitron">€ 900.00</p>
+                            <p class="text-xs text-slate-500 mt-1">Disponibile</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add Expense Form -->
+                <div class="glass-panel p-6 rounded-2xl border border-slate-800">
+                    <h3 class="font-bold text-md text-white mb-4">Aggiungi Nuova Spesa</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <input type="text" id="expense-title" placeholder="Es. Pastéis de Belém" class="bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-brand-cyan">
+                        <input type="number" id="expense-amount" placeholder="Importo (€)" class="bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-brand-cyan">
+                        <select id="expense-category" class="bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-brand-cyan text-slate-300">
+                            <option value="Cibo">Cibo & Ristoranti</option>
+                            <option value="Trasporti">Trasporti & Metro</option>
+                            <option value="Ingressi">Ingressi & Biglietti</option>
+                            <option value="Shopping">Shopping & Souvenir</option>
+                        </select>
+                        <button onclick="addExpense()" class="bg-gradient-to-r from-brand-cyan to-brand-blue text-slate-950 font-bold rounded-xl px-4 py-2 text-sm hover:opacity-90 transition">Aggiungi Spesa</button>
+                    </div>
+                </div>
+
+                <!-- Expense List -->
+                <div class="glass-panel p-6 rounded-2xl border border-slate-800">
+                    <h3 class="font-bold text-md text-white mb-4">Storico Spese</h3>
+                    <div id="expense-list" class="space-y-3">
+                        <p class="text-xs text-slate-500 text-center py-4">Nessuna spesa inserita finora.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 5: CHECKLIST & VALIGIA -->
+            <div id="tab-checklist" class="tab-content hidden space-y-6">
+                <div class="glass-panel p-6 rounded-2xl border border-slate-800">
+                    <h2 class="text-xl font-bold font-orbitron text-white">Checklist di Viaggio & Valigia</h2>
+                    <p class="text-sm text-slate-400 mt-1">Spunta gli elementi prima di partire e durante le uscite.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="glass-panel p-6 rounded-2xl border border-slate-800 space-y-4">
+                        <h3 class="font-bold text-brand-cyan flex items-center space-x-2">
+                            <i data-lucide="shield-check" class="w-5 h-5"></i>
+                            <span>Documenti & Essenziali</span>
+                        </h3>
+                        <div class="space-y-2 text-sm" id="checklist-docs">
+                            <!-- Popolato da JS -->
+                        </div>
+                    </div>
+
+                    <div class="glass-panel p-6 rounded-2xl border border-slate-800 space-y-4">
+                        <h3 class="font-bold text-brand-purple flex items-center space-x-2">
+                            <i data-lucide="luggage" class="w-5 h-5"></i>
+                            <span>Abbigliamento & Attrezzatura</span>
+                        </h3>
+                        <div class="space-y-2 text-sm" id="checklist-gear">
+                            <!-- Popolato da JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 6: ASSISTENTE AI HORIZON -->
+            <div id="tab-assistant" class="tab-content hidden space-y-6">
+                <div class="glass-panel p-6 rounded-2xl border border-brand-purple/40">
+                    <div class="flex items-center space-x-3">
+                        <div class="p-2 rounded-xl bg-brand-purple/20 text-brand-purple border border-brand-purple/40">
+                            <i data-lucide="bot" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold font-orbitron text-white">Assistente Virtuale Horizon AI</h2>
+                            <p class="text-xs text-slate-400">Assistenza attiva tramite modello Gemini per consigli in tempo reale.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat Box Container -->
+                <div class="glass-panel rounded-2xl border border-slate-800 h-[450px] flex flex-col justify-between p-4">
+                    <div id="chat-messages" class="overflow-y-auto space-y-4 p-2 flex-1">
+                        <div class="flex space-x-3">
+                            <div class="w-8 h-8 rounded-full bg-brand-purple/20 border border-brand-purple/50 flex items-center justify-center flex-shrink-0">
+                                <i data-lucide="bot" class="w-4 h-4 text-brand-purple"></i>
+                            </div>
+                            <div class="glass-card p-3 rounded-2xl text-xs text-slate-200 max-w-[80%]">
+                                Ciao! Sono l'assistente virtuale di <strong>Lisbon Horizon 2026</strong>. Puoi chiedermi consigli su ristoranti, orari del tramonto, curiosità sui monumenti o alternative per la pioggia!
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center space-x-2 pt-3 border-t border-slate-800">
+                        <input type="text" id="chat-input" placeholder="Chiedi qualcosa a Horizon AI..." class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-brand-purple" onkeypress="if(event.key==='Enter') sendMessage()">
+                        <button onclick="sendMessage()" class="p-2.5 bg-brand-purple rounded-xl text-white hover:opacity-90 transition">
+                            <i data-lucide="send" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- Mobile Navigation Bottom Bar -->
+    <nav class="lg:hidden fixed bottom-0 left-0 right-0 glass-panel border-t border-slate-800 px-2 py-2 z-50">
+        <div class="flex justify-around items-center">
+            <button onclick="switchTab('itinerary')" id="mob-nav-itinerary" class="mob-btn flex flex-col items-center p-2 text-brand-cyan">
+                <i data-lucide="calendar" class="w-5 h-5"></i>
+                <span class="text-[10px] mt-1 font-medium">Itinerario</span>
+            </button>
+            <button onclick="switchTab('map')" id="mob-nav-map" class="mob-btn flex flex-col items-center p-2 text-slate-400">
+                <i data-lucide="map" class="w-5 h-5"></i>
+                <span class="text-[10px] mt-1 font-medium">Mappa</span>
+            </button>
+            <button onclick="switchTab('phrases')" id="mob-nav-phrases" class="mob-btn flex flex-col items-center p-2 text-slate-400">
+                <i data-lucide="languages" class="w-5 h-5"></i>
+                <span class="text-[10px] mt-1 font-medium">Audio</span>
+            </button>
+            <button onclick="switchTab('budget')" id="mob-nav-budget" class="mob-btn flex flex-col items-center p-2 text-slate-400">
+                <i data-lucide="wallet" class="w-5 h-5"></i>
+                <span class="text-[10px] mt-1 font-medium">Budget</span>
+            </button>
+            <button onclick="switchTab('assistant')" id="mob-nav-assistant" class="mob-btn flex flex-col items-center p-2 text-brand-purple">
+                <i data-lucide="bot" class="w-5 h-5"></i>
+                <span class="text-[10px] mt-1 font-medium">AI Agent</span>
+            </button>
+        </div>
+    </nav>
+
+    <script>
+        // --- DATA STRUCTURES ---
+        const itineraryData = {
+            1: {
+                badge: "GIORNO 1 • GIOVEDÌ 3 SETTEMBRE",
+                title: "Arrivo & Primo Impatto: Baixa, Chiado e Tramonto",
+                subtitle: "Focus: Settaggio iniziale, piazze iconiche e vista sul Tago al tramonto.",
+                steps: "~ 11.000 passi",
+                timeline: [
+                    { time: "13:00", title: "Atterraggio all'Aeroporto LIS", desc: "Sbarco, controllo bagagli e trasferimento immediato.", transport: "Metro Linea Rossa (18 min)", icon: "plane-landing" },
+                    { time: "14:10", title: "Check-in Hotel ibis Saldanha", desc: "Sistemazione bagagli e rinfrescata.", transport: "A piedi da fermata Saldanha", icon: "hotel" },
+                    { time: "14:40", title: "Pranzo Tipico da 'O Pagador'", desc: "Primo assaggio di cucina casereccia portoghese vicino all'hotel.", transport: "5 min a piedi", icon: "utensils" },
+                    { time: "15:45", title: "Praça do Comércio & Rua Augusta", desc: "Camminata nella maestosa piazza affacciata sul fiume e salita verso l'Elevador de Santa Justa.", transport: "Metro Gialla per Baixa", icon: "map-pin" },
+                    { time: "18:00", title: "Miradouro de São Pedro de Alcântara", desc: "Aperitivo con vista spettacolare sul Castello di San Jorge e sulla città bassa.", transport: "Elevador da Glória / A piedi", icon: "camera" },
+                    { time: "19:30", title: "Tramonto al Miradouro de Santa Catarina", desc: "Musica dal vivo spontanea e vista sul Ponte 25 de Abril al calar del sole.", transport: "A piedi", icon: "sunset" },
+                    { time: "20:30", title: "Cena da 'Taberna da Rua das Flores'", desc: "Bistrot caratteristico per petiscos o panino Bifana tradizionale da O Trevo.", transport: "A piedi", icon: "utensils" }
+                ]
+            },
+            2: {
+                badge: "GIORNO 2 • VENERDÌ 4 SETTEMBRE",
+                title: "L'Anima Antica: Alfama, Castello & Serata Fado",
+                subtitle: "Focus: Saliscendi storici, miradouros e musica tradizionale.",
+                steps: "~ 15.000 passi",
+                timeline: [
+                    { time: "08:45", title: "Tram Storico 28E", desc: "Giro iconico a bordo del tram giallo di legno tra i vicoli stretti (partenza presto per evitare code).", transport: "Metro fino a Martim Moniz", icon: "train-front" },
+                    { time: "09:30", title: "Castello di San Jorge", desc: "Esplorazione della fortezza araba, camminata sulle mura e vista a 360° su Lisbona.", transport: "A piedi", icon: "castle" },
+                    { time: "11:30", title: "Discesa nei vicoli di Alfama & Cattedrale Sé", desc: "Scorci pittoreschi, panni stesi e visita esterna alla Cattedrale romanica del XII secolo.", transport: "A piedi", icon: "map-pin" },
+                    { time: "13:30", title: "Pranzo da Petisqueira Confraria", desc: "Assaggio di frittelle di baccalà (pataniscas) e piatti di pesce freschi.", transport: "A piedi", icon: "utensils" },
+                    { time: "14:30", title: "Miradouros di Graça & Santa Luzia", desc: "Caffè panoramico nei balconi decorati con azulejos e bougainvillea.", transport: "A piedi", icon: "coffee" },
+                    { time: "16:30", title: "Panteão Nacional & Street Art a Graça", desc: "Passeggiata verso l'imponente Pantheon e murali contemporanei del quartiere.", transport: "A piedi", icon: "camera" },
+                    { time: "20:00", title: "Cena con Spettacolo di Fado", desc: "Cena tradizionale ad Alfama ascoltando la musica Fado dal vivo patrimonio UNESCO.", transport: "Uber / A piedi", icon: "music" }
+                ]
+            },
+            3: {
+                badge: "GIORNO 3 • SABATO 5 SETTEMBRE",
+                title: "Belém & LX Factory",
+                subtitle: "Focus: Grandi monumenti marittimi e distretto creativo contemporaneo.",
+                steps: "~ 13.500 passi",
+                timeline: [
+                    { time: "09:00", title: "Trasferimento a Belém", desc: "Spostamento lungo la riva del Tago fino al quartiere storico delle grandi scoperte.", transport: "Tram 15E da Cais do Sodré", icon: "navigation" },
+                    { time: "09:45", title: "Colazione da Pastéis de Belém", desc: "Tappa nella pasticceria originale del 1837 per gustare i famosi cestini di crema caldi.", transport: "A piedi", icon: "cake" },
+                    { time: "10:30", title: "Monastero dei Jerónimos & Padrão dos Descobrimentos", desc: "Architettura esteriore manuelina e imponente monumento dedicato agli esploratori.", transport: "A piedi", icon: "landmark" },
+                    { time: "12:30", title: "Torre di Belém", desc: "La celebre torre fortificata del XVI secolo adagiata sull'acqua del fiume.", transport: "Passeggiata fiume (15 min)", icon: "shield" },
+                    { time: "13:30", title: "Pranzo di Pesce da 'O Frade'", desc: "Cucina portoghese moderna servita al banco d'altissima qualità.", transport: "A piedi", icon: "utensils" },
+                    { time: "15:00", title: "LX Factory & Libreria Ler Devagar", desc: "Visita al complesso industriale riqualificato con gallerie, murales e la celebre libreria su più livelli.", transport: "Bus 714 / Tram 15E", icon: "sparkles" },
+                    { time: "18:00", title: "Aperitivo sul Rooftop Rio Maravilha", desc: "Vista mozzafiato sul Ponte 25 de Abril e sulla statua del Cristo Rei.", transport: "A piedi", icon: "glass-water" }
+                ]
+            },
+            4: {
+                badge: "GIORNO 4 • DOMENICA 6 SETTEMBRE",
+                title: "Lisbona Moderna & Oceanario",
+                subtitle: "Focus: Architettura futuristica, mondo marino e relax.",
+                steps: "~ 10.500 passi",
+                timeline: [
+                    { time: "09:30", title: "Spostamento al Parque das Nações", desc: "Tratta diretta fino all'area costruita per l'Expo '98.", transport: "Metro Linea Rossa (Saldanha -> Oriente)", icon: "train-track" },
+                    { time: "10:15", title: "Oceanário de Lisboa", desc: "Visita a uno degli acquari più belli al mondo con l'immenso serbatoio centrale e le lontre.", transport: "A piedi (10 min)", icon: "fish" },
+                    { time: "13:00", title: "Pranzo da D'Bacalhau", desc: "Degustazione speciale di Baccalà preparato in 4 ricette tradizionali diverse.", transport: "A piedi", icon: "utensils" },
+                    { time: "14:30", title: "Telecabine Lisboa (Cabinovia del Tago)", desc: "Volo panoramico in funivia con vista sul lunghissimo Ponte Vasco da Gama.", transport: "Funivia", icon: "cable-car" },
+                    { time: "15:30", title: "Stazione Oriente (Santiago Calatrava)", desc: "Osservazione dell'architettura in acciaio e vetro futuristica.", transport: "A piedi", icon: "building-2" },
+                    { time: "18:00", title: "Parco Eduardo VII", desc: "Passeggiata nei giardini prospettici con vista aperta che scende fino al centro città.", transport: "Metro Rossa", icon: "trees" },
+                    { time: "20:00", title: "Cena da 'Laurentina - O Rei do Bacalhau'", desc: "Il tempio storico del baccalà grigliato vicino all'hotel.", transport: "A piedi (da Saldanha)", icon: "utensils" }
+                ]
+            },
+            5: {
+                badge: "GIORNO 5 • LUNEDÌ 7 SETTEMBRE",
+                title: "Escursione ai Castelli di Sintra",
+                subtitle: "Focus: Palazzi fiabeschi, parchi esoterici e dolci tradizionali.",
+                steps: "~ 14.000 passi",
+                timeline: [
+                    { time: "08:11", title: "Treno per Sintra", desc: "Partenza dalla stazione di Lisboa-Rossio per l'escursione collinare.", transport: "Treno CP (40 min)", icon: "train" },
+                    { time: "09:30", title: "Palácio Nacional da Pena", desc: "Visita al castello coloratissimo arroccato sui boschi di Sintra (Slot orario prenotato online).", transport: "Bus 434 dalla stazione", icon: "sparkles" },
+                    { time: "12:30", title: "Borgo di Sintra & Pasticceria Piriquita", desc: "Assaggio dei famosi Travesseiros (sfoglia con crema di mandorle).", transport: "A piedi / Bus 434", icon: "cookie" },
+                    { time: "14:00", title: "Quinta da Regaleira & Pozzo Iniziatico", desc: "Esplorazione della tenuta esoterica, grotte e la torre sotterranea rovesciata.", transport: "A piedi (10 min dal centro)", icon: "eye" },
+                    { time: "17:00", title: "Rientro a Lisbona", desc: "Ritorno in treno rilassante fino alla stazione Rossio.", transport: "Treno CP", icon: "rotate-ccw" },
+                    { time: "18:30", title: "Cena al Time Out Market (Mercado da Ribeira)", desc: "Cena informale nell'elegante food hall coperta con banchi di grandi chef.", transport: "Metro per Cais do Sodré", icon: "utensils" }
+                ]
+            },
+            6: {
+                badge: "GIORNO 6 • MARTEDÌ 8 SETTEMBRE",
+                title: "Riviera di Cascais & Cabo da Roca",
+                subtitle: "Focus: Costa oceanica, scogliere a picco e borghi di pescatori.",
+                steps: "~ 12.000 passi",
+                timeline: [
+                    { time: "09:00", title: "Treno Panoramico per Cascais", desc: "Viaggio lungo la costa (sedersi sul lato sinistro per la vista mare).", transport: "Treno CP da Cais do Sodré", icon: "waves" },
+                    { time: "09:45", title: "Cascais & Scogliera Boca do Inferno", desc: "Passeggiata nel centro storico e camminata fino alla cavità rocciosa dove frangono le onde.", transport: "A piedi", icon: "compass" },
+                    { time: "12:15", title: "Cabo da Roca (Punto più a Ovest d'Europa)", desc: "Promontorio mozzafiato con faro a picco sull'Oceano Atlantico (alto 140m).", transport: "Bus 1603 da Cascais (25 min)", icon: "map" },
+                    { time: "14:15", title: "Pranzo di Pesce da 'Baía do Peixe'", desc: "Pranzo di mare con vista baia e gelato artigianale da Gelateria Santini.", transport: "A piedi a Cascais", icon: "utensils" },
+                    { time: "16:00", title: "Relax a Praia da Rainha & Centro", desc: "Passeggiata sulle calette sabbiose e shopping di souvenir a Cascais.", transport: "A piedi", icon: "sun" },
+                    { time: "20:00", title: "Cena d'Addio da 'Frade dos Mares'", desc: "Cena speciale a Lisbona famosa per il baccalà in crosta di pane.", transport: "Treno CP + Uber", icon: "heart" }
+                ]
+            },
+            7: {
+                badge: "GIORNO 7 • MERCOLEDÌ 9 SETTEMBRE",
+                title: "Ultimi Scorci Panoramici & Partenza",
+                subtitle: "Focus: Belvedere più alto, souvenir e volo di rientro.",
+                steps: "~ 8.000 passi",
+                timeline: [
+                    { time: "09:30", title: "Miradouro de Nossa Senhora do Monte", desc: "Il punto panoramico più alto di Lisbona per un ultimo sguardo a 360° sulla città.", transport: "Uber / A piedi", icon: "mountain" },
+                    { time: "11:30", title: "Shopping al Chiado & Livraria Bertrand", desc: "Acquisti di souvenir autentici e visita alla libreria più antica al mondo.", transport: "A piedi", icon: "shopping-bag" },
+                    { time: "13:30", title: "Pranzo Tipico da 'A Merendeira'", desc: "Menu veloce ed economico con la classica zuppa Caldo Verde e pane caldo al chouriço.", transport: "A piedi", icon: "utensils" },
+                    { time: "15:00", title: "Sosta Caffè da 'A Brasileira'", desc: "Ultima pausa nello storico caffè frequentato dal poeta Fernando Pessoa.", transport: "A piedi", icon: "coffee" },
+                    { time: "16:45", title: "Trasferimento in Aeroporto LIS", desc: "Recupero bagagli in hotel ibis Saldanha e metro diretta senza rischio traffico.", transport: "Metro Linea Rossa (20 min)", icon: "plane-takeoff" },
+                    { time: "20:00", title: "Volo di Ritorno", desc: "Partenza dal Portogallo.", transport: "Volo aereo", icon: "check-circle" }
+                ]
+            }
+        };
+
+        const phrasesData = [
+            { pt: "Olá, bom dia!", it: "Ciao, buongiorno!", audioText: "Olá, bom dia" },
+            { pt: "Obrigado / Obrigada", it: "Grazie (uomo / donna)", audioText: "Obrigado" },
+            { pt: "Por favor", it: "Per favore", audioText: "Por favor" },
+            { pt: "A conta, por favor", it: "Il conto, per favore", audioText: "A conta, por favor" },
+            { pt: "Um café, por favor", it: "Un caffè espresso (Bica)", audioText: "Um café, por favor" },
+            { pt: "Dois Pastéis de Nata", it: "Due Pastéis de Nata", audioText: "Dois Pastéis de Nata" },
+            { pt: "Onde fica a estação de metro?", it: "Dove si trova la stazione metro?", audioText: "Onde fica a estação de metro?" },
+            { pt: "Com licença", it: "Permesso / Scusi", audioText: "Com licença" },
+            { pt: "Fala inglês / espanhol?", it: "Parla inglese / spagnolo?", audioText: "Fala inglês?" },
+            { pt: "Está muito delicioso!", it: "È davvero delizioso!", audioText: "Está muito delicioso" }
+        ];
+
+        const mapMarkers = [
+            { lat: 38.7323, lng: -9.1448, title: "Hotel ibis Lisboa Saldanha", type: "must", desc: "Base Operativa" },
+            { lat: 38.7077, lng: -9.1365, title: "Praça do Comércio", type: "must", desc: "Piazza Principale" },
+            { lat: 38.7122, lng: -9.1394, title: "Elevador de Santa Justa", type: "must", desc: "Ascensore Storico" },
+            { lat: 38.7139, lng: -9.1335, title: "Castello di San Jorge", type: "must", desc: "Fortezza Medievale" },
+            { lat: 38.6972, lng: -9.2064, title: "Pastéis de Belém", type: "food", desc: "Pasticceria Storica (1837)" },
+            { lat: 38.6916, lng: -9.2159, title: "Torre di Belém", type: "must", desc: "Torre sull'acqua" },
+            { lat: 38.7071, lng: -9.1782, title: "LX Factory", type: "must", desc: "Distretto Creativo" },
+            { lat: 38.7634, lng: -9.0937, title: "Oceanário de Lisboa", type: "must", desc: "Acquario Internazionale" },
+            { lat: 38.7878, lng: -9.3906, title: "Palácio da Pena (Sintra)", type: "must", desc: "Castello Fiabesco" },
+            { lat: 38.7963, lng: -9.3960, title: "Quinta da Regaleira (Sintra)", type: "must", desc: "Pozzo Iniziatico" },
+            { lat: 38.6969, lng: -9.4215, title: "Cascais Centro", type: "must", desc: "Borgo di Mare" },
+            { lat: 38.7804, lng: -9.5005, title: "Cabo da Roca", type: "must", desc: "Punto più a Ovest d'Europa" },
+            { lat: 38.7072, lng: -9.1458, title: "Time Out Market", type: "food", desc: "Food Hall Gastronomica" }
+        ];
+
+        const checklistDocs = [
+            "Carta d'Identità / Passaporto valido",
+            "Carte di credito / Debito (con NFC)",
+            "Biglietti Aerei e Check-in online effettuato",
+            "Prenotazione Hotel ibis Saldanha",
+            "Biglietti Online Palácio da Pena (Sintra)",
+            "Tessera Sanitaria Europea (TEAM)"
+        ];
+
+        const checklistGear = [
+            "Scarpe da ginnastica comode (fondo antiscivolo per pavè)",
+            "Powerbank per smartphone (almeno 10.000 mAh)",
+            "Giacca a vento leggera / K-Way (per brezza atlantica)",
+            "Occhiali da sole e crema solare",
+            "Borraccia termica per l'acqua",
+            "Zaino leggero per le escursioni giornaliere"
+        ];
+
+        // --- APP STATE & INITIALIZATION ---
+        let leafletMap = null;
+        let markersGroup = null;
+        let currentDay = 1;
+        let expensesList = [];
+
+        window.onload = function() {
+            // Initialize Lucide Icons
+            lucide.createIcons();
+            
+            // Render Initial Day Timeline
+            renderTimeline(1);
+            
+            // Render Phrases Grid
+            renderPhrases();
+
+            // Render Checklist
+            renderChecklists();
+
+            // Start Countdown Timer
+            startCountdown();
+        };
+
+        // --- TAB SWITCHING LOGIC ---
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+
+            // Update Navigation UI States
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-brand-cyan', 'bg-slate-800/80', 'border', 'border-brand-cyan/30');
+                btn.classList.add('text-slate-400');
+            });
+
+            const activeBtn = document.getElementById(`nav-${tabId}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('text-slate-400');
+                activeBtn.classList.add('text-brand-cyan', 'bg-slate-800/80', 'border', 'border-brand-cyan/30');
+            }
+
+            // Mobile Nav UI update
+            document.querySelectorAll('.mob-btn').forEach(btn => btn.classList.remove('text-brand-cyan'));
+            const activeMobBtn = document.getElementById(`mob-nav-${tabId}`);
+            if (activeMobBtn) activeMobBtn.classList.add('text-brand-cyan');
+
+            // Initialize Map if opened for the first time
+            if (tabId === 'map' && !leafletMap) {
+                setTimeout(initMap, 200);
+            }
+        }
+
+        // --- DAY SELECTION LOGIC ---
+        function selectDay(dayNum) {
+            currentDay = dayNum;
+            document.querySelectorAll('.day-btn').forEach(btn => {
+                btn.classList.remove('border-brand-cyan', 'text-brand-cyan');
+                btn.classList.add('text-slate-400');
+            });
+
+            const activeDayBtn = document.getElementById(`day-btn-${dayNum}`);
+            activeDayBtn.classList.remove('text-slate-400');
+            activeDayBtn.classList.add('border-brand-cyan', 'text-brand-cyan');
+
+            renderTimeline(dayNum);
+        }
+
+        function renderTimeline(dayNum) {
+            const day = itineraryData[dayNum];
+            document.getElementById('day-badge').innerText = day.badge;
+            document.getElementById('day-title').innerText = day.title;
+            document.getElementById('day-subtitle').innerText = day.subtitle;
+            document.getElementById('day-steps').innerText = day.steps;
+
+            const container = document.getElementById('day-timeline');
+            container.innerHTML = '';
+
+            day.timeline.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "glass-card p-4 rounded-xl border border-slate-800 flex items-start space-x-4 hover:border-brand-cyan/40 transition";
+                card.innerHTML = `
+                    <div class="p-3 rounded-xl bg-slate-900/90 text-brand-cyan border border-slate-800 flex-shrink-0">
+                        <i data-lucide="${item.icon}" class="w-5 h-5"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-orbitron font-bold text-brand-cyan">${item.time}</span>
+                            <span class="text-[10px] bg-slate-900 px-2 py-0.5 rounded-full text-slate-400 border border-slate-800">${item.transport}</span>
+                        </div>
+                        <h4 class="font-bold text-sm text-white mt-1">${item.title}</h4>
+                        <p class="text-xs text-slate-400 mt-1">${item.desc}</p>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            lucide.createIcons();
+        }
+
+        // --- MAP LOGIC (LEAFLET) ---
+        function initMap() {
+            leafletMap = L.map('map-container').setView([38.7223, -9.1393], 12);
+            
+            // Dark Mode Tile Layer (CartoDB Dark Matter)
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; OpenStreetMap &copy; CARTO',
+                maxZoom: 19
+            }).addTo(leafletMap);
+
+            markersGroup = L.layerGroup().addTo(leafletMap);
+            renderMapMarkers('all');
+        }
+
+        function renderMapMarkers(filter) {
+            markersGroup.clearLayers();
+
+            mapMarkers.forEach(m => {
+                if (filter === 'all' || m.type === filter) {
+                    const marker = L.circleMarker([m.lat, m.lng], {
+                        radius: 8,
+                        fillColor: m.type === 'food' ? '#f59e0b' : '#00f2fe',
+                        color: '#ffffff',
+                        weight: 2,
+                        opacity: 1,
+                        fillOpacity: 0.8
+                    });
+
+                    marker.bindPopup(`
+                        <div style="font-family: 'Plus Jakarta Sans', sans-serif;">
+                            <strong style="color: #00f2fe; font-size: 13px;">${m.title}</strong>
+                            <p style="margin-top: 4px; font-size: 11px; color: #cbd5e1;">${m.desc}</p>
+                        </div>
+                    `);
+
+                    markersGroup.addLayer(marker);
+                }
+            });
+        }
+
+        function filterMapMarkers(type) {
+            renderMapMarkers(type);
+        }
+
+        // --- AUDIO & PHRASES LOGIC ---
+        function renderPhrases() {
+            const grid = document.getElementById('phrases-grid');
+            grid.innerHTML = '';
+
+            phrasesData.forEach(p => {
+                const card = document.createElement('div');
+                card.className = "glass-card p-4 rounded-xl border border-slate-800 flex items-center justify-between";
+                card.innerHTML = `
+                    <div>
+                        <p class="font-bold text-sm text-brand-cyan">${p.pt}</p>
+                        <p class="text-xs text-slate-400 mt-0.5">${p.it}</p>
+                    </div>
+                    <button onclick="speakPortuguese('${p.audioText}')" class="p-2.5 rounded-xl bg-slate-900 text-brand-cyan border border-slate-700 hover:bg-brand-cyan hover:text-slate-950 transition">
+                        <i data-lucide="volume-2" class="w-4 h-4"></i>
+                    </button>
+                `;
+                grid.appendChild(card);
+            });
+
+            lucide.createIcons();
+        }
+
+        function speakPortuguese(text) {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'pt-PT';
+                utterance.rate = 0.9;
+                window.speechSynthesis.speak(utterance);
+            } else {
+                alert("Sintesi vocale non supportata dal tuo browser.");
+            }
+        }
+
+        // --- BUDGET LOGIC ---
+        function addExpense() {
+            const title = document.getElementById('expense-title').value.trim();
+            const amount = parseFloat(document.getElementById('expense-amount').value);
+            const category = document.getElementById('expense-category').value;
+
+            if (!title || isNaN(amount) || amount <= 0) {
+                alert("Inserisci un titolo e un importo valido.");
+                return;
+            }
+
+            expensesList.push({ title, amount, category, date: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) });
+            
+            // Clear inputs
+            document.getElementById('expense-title').value = '';
+            document.getElementById('expense-amount').value = '';
+
+            updateBudgetUI();
+        }
+
+        function updateBudgetUI() {
+            const totalSpent = expensesList.reduce((acc, curr) => acc + curr.amount, 0);
+            const totalBudget = 900.00;
+            const remaining = totalBudget - totalSpent;
+
+            document.getElementById('total-spent-display').innerText = `€ ${totalSpent.toFixed(2)}`;
+            document.getElementById('total-remaining-display').innerText = `€ ${remaining.toFixed(2)}`;
+
+            const listContainer = document.getElementById('expense-list');
+            listContainer.innerHTML = '';
+
+            if (expensesList.length === 0) {
+                listContainer.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">Nessuna spesa inserita finora.</p>`;
+                return;
+            }
+
+            expensesList.forEach((exp, index) => {
+                const item = document.createElement('div');
+                item.className = "flex items-center justify-between p-3 rounded-xl bg-slate-900/60 border border-slate-800 text-xs";
+                item.innerHTML = `
+                    <div>
+                        <p class="font-bold text-white">${exp.title}</p>
+                        <p class="text-[10px] text-slate-400">${exp.category} • ${exp.date}</p>
+                    </div>
+                    <span class="font-bold text-brand-purple">€ ${exp.amount.toFixed(2)}</span>
+                `;
+                listContainer.appendChild(item);
+            });
+        }
+
+        // --- CHECKLIST LOGIC ---
+        function renderChecklists() {
+            const docsContainer = document.getElementById('checklist-docs');
+            const gearContainer = document.getElementById('checklist-gear');
+
+            docsContainer.innerHTML = '';
+            gearContainer.innerHTML = '';
+
+            checklistDocs.forEach((item, i) => {
+                docsContainer.innerHTML += `
+                    <label class="flex items-center space-x-3 cursor-pointer p-2 rounded-lg hover:bg-slate-900/50">
+                        <input type="checkbox" class="rounded border-slate-700 text-brand-cyan focus:ring-0">
+                        <span class="text-slate-300 text-xs">${item}</span>
+                    </label>
+                `;
+            });
+
+            checklistGear.forEach((item, i) => {
+                gearContainer.innerHTML += `
+                    <label class="flex items-center space-x-3 cursor-pointer p-2 rounded-lg hover:bg-slate-900/50">
+                        <input type="checkbox" class="rounded border-slate-700 text-brand-purple focus:ring-0">
+                        <span class="text-slate-300 text-xs">${item}</span>
+                    </label>
+                `;
+            });
+        }
+
+        // --- COUNTDOWN TIMER LOGIC ---
+        function startCountdown() {
+            const targetDate = new Date("September 3, 2026 13:00:00").getTime();
+
+            setInterval(() => {
+                const now = new Date().getTime();
+                const distance = targetDate - now;
+
+                if (distance < 0) {
+                    document.getElementById("countdown-timer").innerText = "IN VIAGGIO!";
+                    return;
+                }
+
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+
+                document.getElementById("countdown-timer").innerText = `${days}d ${hours}h ${minutes}m`;
+            }, 1000);
+        }
+
+        // --- AI CHATBOT AGENT VIA GEMINI SIMULATION ---
+        async function sendMessage() {
+            const inputEl = document.getElementById('chat-input');
+            const query = inputEl.value.trim();
+            if (!query) return;
+
+            const messagesContainer = document.getElementById('chat-messages');
+
+            // Append User Message
+            const userMsgDiv = document.createElement('div');
+            userMsgDiv.className = "flex justify-end space-x-2";
+            userMsgDiv.innerHTML = `
+                <div class="bg-brand-purple/20 border border-brand-purple/40 p-3 rounded-2xl text-xs text-white max-w-[80%]">
+                    ${query}
+                </div>
+            `;
+            messagesContainer.appendChild(userMsgDiv);
+            inputEl.value = '';
+
+            // Scroll Bottom
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            // Simulated AI Response Loading State
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = "flex space-x-3 loading-ai";
+            loadingDiv.innerHTML = `
+                <div class="w-8 h-8 rounded-full bg-brand-purple/20 border border-brand-purple/50 flex items-center justify-center flex-shrink-0">
+                    <i data-lucide="bot" class="w-4 h-4 text-brand-purple"></i>
+                </div>
+                <div class="glass-card p-3 rounded-2xl text-xs text-slate-400">
+                    Horizon AI sta elaborando la risposta per te...
+                </div>
+            `;
+            messagesContainer.appendChild(loadingDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            lucide.createIcons();
+
+            // Real API Call to Gemini Endpoint
+            const apiKey = "";
+            const systemPrompt = "Sei Horizon AI, la guida turistica virtuale ed esperta di Lisbona per due viaggiatori (1 adulto e 1 ragazzo di 17 anni) alloggiati all'hotel ibis Lisboa Saldanha dal 3 al 9 settembre 2026. Rispondi in modo conciso, pratico e amichevole in italiano.";
+
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: query }] }],
+                        systemInstruction: { parts: [{ text: systemPrompt }] }
+                    })
+                });
+
+                const data = await response.json();
+                const replyText = data.candidates?.[0]?.content?.parts?.[0]?.text || "Scusami, ho incontrato un piccolo errore di rete. Posso comunque aiutarti a navigare le schede dell'itinerario!";
+
+                // Remove loading
+                loadingDiv.remove();
+
+                // Append AI Response
+                const aiMsgDiv = document.createElement('div');
+                aiMsgDiv.className = "flex space-x-3";
+                aiMsgDiv.innerHTML = `
+                    <div class="w-8 h-8 rounded-full bg-brand-purple/20 border border-brand-purple/50 flex items-center justify-center flex-shrink-0">
+                        <i data-lucide="bot" class="w-4 h-4 text-brand-purple"></i>
+                    </div>
+                    <div class="glass-card p-3 rounded-2xl text-xs text-slate-200 max-w-[80%] leading-relaxed">
+                        ${replyText}
+                    </div>
+                `;
+                messagesContainer.appendChild(aiMsgDiv);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                lucide.createIcons();
+
+            } catch (err) {
+                loadingDiv.remove();
+                const errorDiv = document.createElement('div');
+                errorDiv.className = "flex space-x-3";
+                errorDiv.innerHTML = `
+                    <div class="w-8 h-8 rounded-full bg-brand-purple/20 border border-brand-purple/50 flex items-center justify-center flex-shrink-0">
+                        <i data-lucide="bot" class="w-4 h-4 text-brand-purple"></i>
+                    </div>
+                    <div class="glass-card p-3 rounded-2xl text-xs text-slate-200 max-w-[80%]">
+                        Per domande veloci su ristoranti o attrazioni, puoi sempre fare riferimento alle schede dell'itinerario!
+                    </div>
+                `;
+                messagesContainer.appendChild(errorDiv);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                lucide.createIcons();
+            }
+        }
+    </script>
+</body>
+</html>
+
