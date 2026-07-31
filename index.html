@@ -1,585 +1,353 @@
-import React, { useState } from 'react';
-import { Map, MapPin, Headphones, Wallet, Bot, CalendarDays, Sun, Hourglass, Users, Footprints } from 'lucide-react';
-
-const ITINERARY_DATA = [
-  {
-    dayNumber: 1,
-    date: "30 Ago",
-    weekday: "DOM",
-    title: "Arrivo in Algarve & Falesie Rocciose",
-    focus: "Ritiro auto, prime spettacolari scogliere sull'oceano e aria di mare.",
-    steps: "~ 9.000",
-    events: [
-      {
-        time: "08:00 - 09:30",
-        title: "Atterraggio & Trasferimento 🛬",
-        desc: "Arrivo all'aeroporto di Faro (FAO). Ritiro auto a noleggio (Cambio automatico, compagnia locale) e gestione Via Verde.",
-        transport: "Auto (10 min)",
-        icon: "🚗"
-      },
-      {
-        time: "10:30 - 13:00",
-        title: "Praia da Marinha & Sentiero 🌊",
-        desc: "Escursione parziale del sentiero 'Sete Vales Suspensos'. Viste mozzafiato dall'alto sulle falesie calcaree.",
-        transport: "A piedi",
-        icon: "🧗"
-      },
-      {
-        time: "13:30 - 14:30",
-        title: "Pranzo vista Oceano 🍤",
-        desc: "Pausa pranzo in un bar/chiosco locale. Ottimo per un primo assaggio di pesce fresco o una bifana veloce.",
-        transport: "In loco",
-        icon: "🍽️"
-      },
-      {
-        time: "15:00 - 18:00",
-        title: "Ponta da Piedade a Lagos 🌅",
-        desc: "Esplorazione delle formazioni rocciose a picco sull'oceano. Discesa delle scalinate scolpite nella roccia.",
-        transport: "Auto (40 min)",
-        icon: "📸"
-      },
-      {
-        time: "19:30",
-        title: "Cena & Check-in a Lagos 🐙",
-        desc: "Sistemazione in guesthouse e cena in una tasca tipica a base di Polvo à Lagareiro (polpo alla griglia).",
-        transport: "A piedi",
-        icon: "🏨"
-      }
-    ]
-  },
-  {
-    dayNumber: 2,
-    date: "31 Ago",
-    weekday: "LUN",
-    title: "L'Estremo Ovest e Costa Vicentina",
-    focus: "Il punto più a sud-ovest d'Europa, vento costante e spiagge selvagge dei surfisti.",
-    steps: "~ 11.500",
-    events: [
-      {
-        time: "09:30 - 11:30",
-        title: "Capo San Vincenzo 🌬️",
-        desc: "Visita al faro sull'estremità d'Europa. Scogliere spaventose e vento costante. Attenzione al freddo mattutino!",
-        transport: "Auto (45 min)",
-        icon: "🔭"
-      },
-      {
-        time: "12:30 - 14:00",
-        title: "Praia do Amado 🏄",
-        desc: "Sosta nella spiaggia iconica dei surfisti. Pranzo veloce con Bifana (panino caldo al maiale marinato) in un bar.",
-        transport: "Auto (30 min)",
-        icon: "🥪"
-      },
-      {
-        time: "15:30 - 18:00",
-        title: "Zambujeira do Mar & Falesie Nere 🦅",
-        desc: "Sosta fotografica a Zambujeira e proseguimento verso Cabo Sardão per ammirare le cicogne che nidificano sugli scogli.",
-        transport: "Auto (1h 15m)",
-        icon: "🦅"
-      },
-      {
-        time: "19:00",
-        title: "Arrivo a Vila Nova de Milfontes 🏘️",
-        desc: "Check-in e serata rilassante in questo pittoresco borgo sull'estuario del fiume Mira.",
-        transport: "Auto",
-        icon: "🌙"
-      }
-    ]
-  },
-  {
-    dayNumber: 3,
-    date: "01 Set",
-    weekday: "MAR",
-    title: "Borghi di Pescatori & Verso Nord",
-    focus: "Porto Covo, spiagge nere, isole fortezza e arrivo nella penisola di Setúbal.",
-    steps: "~ 10.000",
-    events: [
-      {
-        time: "10:00 - 12:30",
-        title: "Porto Covo & Ilha do Pessegueiro ⚓",
-        desc: "Passeggiata nel borgo dalle case bianche e blu. Sosta alla spiaggia del Pessegueiro per foto all'isola.",
-        transport: "Auto (30 min)",
-        icon: "🏖️"
-      },
-      {
-        time: "13:00 - 14:30",
-        title: "Pranzo a Sines 🦑",
-        desc: "Pausa pranzo nella città natale di Vasco da Gama. Assaggio di frutti di mare o petiscos.",
-        transport: "Auto (20 min)",
-        icon: "🥘"
-      },
-      {
-        time: "16:00 - 18:00",
-        title: "Verso Setúbal 🚗",
-        desc: "Guida panoramica verso nord. Attraversamento della costa dell'Alentejo fino a Setúbal.",
-        transport: "Auto (1h 30m)",
-        icon: "🛣️"
-      },
-      {
-        time: "19:30",
-        title: "Cena tipica: Choco Frito 🦑",
-        desc: "Sistemazione in zona Setúbal e cena a base della specialità locale: la seppia gigante fritta.",
-        transport: "A piedi",
-        icon: "🍟"
-      }
-    ]
-  },
-  {
-    dayNumber: 4,
-    date: "02 Set",
-    weekday: "MER",
-    title: "Arrábida, Cabo Espichel & Dinosauri",
-    focus: "Montagne verdi sul mare azzurro, fari isolati e orme di dinosauri impresse nella pietra.",
-    steps: "~ 12.000",
-    events: [
-      {
-        time: "09:30 - 12:00",
-        title: "Parco Naturale di Arrábida 🌲",
-        desc: "Guida mozzafiato sulla N379-1. La montagna calcarea ricoperta di verde che si tuffa nell'oceano cristallino.",
-        transport: "Auto (panoramica)",
-        icon: "⛰️"
-      },
-      {
-        time: "12:30 - 14:30",
-        title: "Cabo Espichel 🦕",
-        desc: "Sosta alla scogliera drammatica del faro. Passeggiata per vedere le impronte fossili dei dinosauri.",
-        transport: "Auto (40 min)",
-        icon: "🦖"
-      },
-      {
-        time: "15:00 - 17:00",
-        title: "Sesimbra 🏰",
-        desc: "Esplorazione del borgo di pescatori e spuntino dolce in una pasticceria locale.",
-        transport: "Auto (30 min)",
-        icon: "🏘️"
-      },
-      {
-        time: "18:00",
-        title: "Pernottamento a Sesimbra o dintorni 🛌",
-        desc: "Ultima serata fuori dalla capitale prima di riconsegnare l'auto l'indomani.",
-        transport: "Auto",
-        icon: "🌙"
-      }
-    ]
-  },
-  {
-    dayNumber: 5,
-    date: "03 Set",
-    weekday: "GIO",
-    title: "Ingresso a Lisbona & Riconsegna Auto",
-    focus: "Arrivo in capitale, liberarsi dell'auto e primo impatto con la città a piedi.",
-    steps: "~ 14.000",
-    events: [
-      {
-        time: "10:00 - 11:30",
-        title: "Arrivo a Lisbona 🌉",
-        desc: "Ingresso in città superando il grande estuario del Tago. Riconsegna dell'auto (strategia per evitare il traffico e il costo dei parcheggi).",
-        transport: "Auto (45 min)",
-        icon: "🔑"
-      },
-      {
-        time: "12:00 - 13:00",
-        title: "Check-in Hotel Ibis Saldanha 🏨",
-        desc: "Deposito bagagli e rinfrescata. L'hotel è strategicamente collegato a tutte le linee metro principali.",
-        transport: "Metro Linea Rossa",
-        icon: "🧳"
-      },
-      {
-        time: "13:30 - 15:00",
-        title: "Pranzo a Baixa 🍲",
-        desc: "Primo pranzo lisbonese. Suggerimento: Bacalhau à Brás o un panino in una taverna (tasca) del centro.",
-        transport: "Metro Gialla",
-        icon: "🍴"
-      },
-      {
-        time: "15:30 - 18:00",
-        title: "Praça do Comércio & Arco 🏛️",
-        desc: "Passeggiata nell'immensa piazza sul Tago. Attraversamento di Rua Augusta per ammirare l'Elevador de Santa Justa.",
-        transport: "A piedi",
-        icon: "🏛️"
-      },
-      {
-        time: "18:30 - 20:00",
-        title: "Tramonto dai Miradouros 🌇",
-        desc: "Salita al Miradouro de São Pedro de Alcântara e poi a quello di Santa Catarina per la vista dorata sul fiume.",
-        transport: "Elevador da Glória",
-        icon: "📷"
-      }
-    ]
-  },
-  {
-    dayNumber: 6,
-    date: "04 Set",
-    weekday: "VEN",
-    title: "Quartieri Alti, Chiado e Street Art",
-    focus: "Esplorazione dinamica dei quartieri vivaci, pasticcerie iconiche e scorci fotografici.",
-    steps: "~ 15.000",
-    events: [
-      {
-        time: "10:00 - 12:30",
-        title: "Esplorazione del Chiado 🚶",
-        desc: "Giro per le boutique moderne, librerie antiche e le iconiche strade in discesa. Niente musei, solo atmosfera.",
-        transport: "A piedi",
-        icon: "🛍️"
-      },
-      {
-        time: "12:30 - 13:30",
-        title: "Pausa Pastéis de Nata 🥧",
-        desc: "Sosta obbligatoria alla Manteigaria (Rua do Loreto) per mangiare i migliori pastéis de nata caldi della città.",
-        transport: "A piedi",
-        icon: "☕"
-      },
-      {
-        time: "14:00 - 16:00",
-        title: "Pranzo & Bairro Alto 🏘️",
-        desc: "Pranzo veloce e passeggiata per le strade labirintiche del Bairro Alto, ammirando street art e facciate colorate.",
-        transport: "A piedi",
-        icon: "🎨"
-      }
-    ]
-  },
-  {
-    dayNumber: 7,
-    date: "05 Set",
-    weekday: "SAB",
-    title: "Sintra Magica & Cabo da Roca",
-    focus: "Gita fuori porta (in treno). Parchi esoterici e il punto più a ovest del continente.",
-    steps: "~ 18.000",
-    events: [
-      {
-        time: "09:00 - 10:00",
-        title: "Treno per Sintra 🚂",
-        desc: "Partenza dalla stazione di Rossio. Mezzo comodo per evitare il terribile traffico e la mancanza di parcheggio a Sintra.",
-        transport: "Treno (40 min)",
-        icon: "🚆"
-      },
-      {
-        time: "10:30 - 14:00",
-        title: "Quinta da Regaleira & Parco Pena 🌲",
-        desc: "Visita focalizzata sugli esterni: tunnel sotterranei, pozzo iniziatico e parchi lussureggianti (niente interni storici).",
-        transport: "A piedi / Bus locale",
-        icon: "🏰"
-      },
-      {
-        time: "15:30 - 18:30",
-        title: "Cabo da Roca 🌊",
-        desc: "Bus 403 da Sintra. Arrivo alle maestose scogliere, il punto più occidentale dell'Europa continentale.",
-        transport: "Bus 403",
-        icon: "🧭"
-      }
-    ]
-  },
-  {
-    dayNumber: 8,
-    date: "06 Set",
-    weekday: "DOM",
-    title: "LX Factory & Belém",
-    focus: "Archeologia industriale riqualificata, camminate sul fiume e pasticcini originali.",
-    steps: "~ 14.000",
-    events: [
-      {
-        time: "10:30 - 13:30",
-        title: "LX Factory 🏭",
-        desc: "Passeggiata in questo polo creativo sotto il Ponte 25 de Abril. Librerie pazzesche, street art, negozi indie e bar cool.",
-        transport: "Tram 15E",
-        icon: "🎭"
-      },
-      {
-        time: "14:00 - 16:30",
-        title: "Passeggiata a Belém ⛵",
-        desc: "Noleggio monopattino o camminata lungofiume. Foto esterne al Padrão dos Descobrimentos e alla Torre de Belém.",
-        transport: "A piedi / Monopattino",
-        icon: "🛴"
-      },
-      {
-        time: "17:00",
-        title: "Antiga Confeitaria de Belém 🧁",
-        desc: "Assaggio dei veri pastéis artigianali secondo l'antica ricetta segreta dei monaci.",
-        transport: "A piedi",
-        icon: "🤤"
-      }
-    ]
-  },
-  {
-    dayNumber: 9,
-    date: "07 Set",
-    weekday: "LUN",
-    title: "Oceano in Treno: Cascais",
-    focus: "Viaggio panoramico in treno lungo la foce del Tago fino alle scogliere oceaniche.",
-    steps: "~ 13.000",
-    events: [
-      {
-        time: "10:00 - 11:00",
-        title: "Treno panoramico per Cascais 🚈",
-        desc: "Dalla stazione di Cais do Sodré, un bellissimo viaggio con il finestrino sempre rivolto sull'oceano.",
-        transport: "Treno (40 min)",
-        icon: "🚉"
-      },
-      {
-        time: "11:30 - 13:30",
-        title: "Boca do Inferno 🌊",
-        desc: "Passeggiata per ammirare questa spettacolare caverna a cielo aperto dove le onde si infrangono violentemente.",
-        transport: "A piedi (20 min)",
-        icon: "💥"
-      },
-      {
-        time: "14:00 - 17:00",
-        title: "Cascais & Ciclabile 🚲",
-        desc: "Pranzo a Cascais. Possibilità di noleggiare bici gratuite per percorrere la ciclabile verso Praia do Guincho.",
-        transport: "Bici / A piedi",
-        icon: "🚴"
-      }
-    ]
-  },
-  {
-    dayNumber: 10,
-    date: "08 Set",
-    weekday: "MAR",
-    title: "Lisbona del Futuro: Expo '98",
-    focus: "Architettura avveniristica, teleferica e cena finale in stile gourmet.",
-    steps: "~ 11.000",
-    events: [
-      {
-        time: "10:30 - 13:00",
-        title: "Parque das Nações 🏢",
-        desc: "Quartiere moderno. Architetture di Calatrava, giardini d'acqua e passeggiata rilassante sul fiume.",
-        transport: "Metro Linea Rossa (Oriente)",
-        icon: "🏙️"
-      },
-      {
-        time: "13:30 - 14:30",
-        title: "Teleférico 🚠",
-        desc: "Volo panoramico sulla teleferica che corre sopra le acque del Tago per scattare foto mozzafiato dall'alto.",
-        transport: "Teleferica",
-        icon: "🚠"
-      },
-      {
-        time: "19:00 - 21:30",
-        title: "Cena al Mercado da Ribeira 🍽️",
-        desc: "Time Out Market. Un'area ristorazione enorme e vivace con chioschi dei migliori chef locali. Perfetto per l'ultima cena vera e propria.",
-        transport: "Metro (Cais do Sodré)",
-        icon: "🍷"
-      }
-    ]
-  },
-  {
-    dayNumber: 11,
-    date: "09 Set",
-    weekday: "MER",
-    title: "Ultimi Scorci e Partenza",
-    focus: "Divertimento sferragliante sul tram, souvenir e viaggio verso l'aeroporto.",
-    steps: "~ 8.000",
-    events: [
-      {
-        time: "09:30 - 11:30",
-        title: "Giro sul Tram 28E 🚋",
-        desc: "Giro mozzafiato sul celebre tram giallo tra i vicoli stretti di Alfama e Graça. Consigliato prenderlo presto ai capolinea.",
-        transport: "Tram",
-        icon: "🚋"
-      },
-      {
-        time: "12:00 - 15:30",
-        title: "Pranzo e Ultimi Acquisti 🛍️",
-        desc: "Passeggiata in relax per il centro. Magari un'ultima bifana e acquisto di souvenir (es. ceramiche o scatolette di sardine vintage).",
-        transport: "A piedi",
-        icon: "🎁"
-      },
-      {
-        time: "17:30 - 18:30",
-        title: "Ritiro Bagagli & Aeroporto 🚇",
-        desc: "Ritorno all'Ibis Saldanha per le valigie e viaggio comodissimo sulla Linea Rossa diretta in aeroporto.",
-        transport: "Metro (30 min)",
-        icon: "🧳"
-      },
-      {
-        time: "20:30",
-        title: "Volo di rientro Ryanair 🛫",
-        desc: "Decollo dall'aeroporto di Lisbona verso l'Italia.",
-        transport: "Aereo",
-        icon: "✈️"
-      }
-    ]
-  }
-];
-
-export default function PortugalApp() {
-  const [activeDayIndex, setActiveDayIndex] = useState(4); // Default al giorno dell'arrivo a Lisbona (Day 5)
-
-  const activeDay = ITINERARY_DATA[activeDayIndex];
-
-  return (
-    <div className="min-h-screen bg-slate-50 font-sans text-slate-800 pb-20 select-none">
-      {/* HEADER TOP BAR */}
-      <div className="bg-white px-5 pt-10 pb-4 rounded-b-3xl shadow-sm sticky top-0 z-20">
-        <div className="flex justify-between items-start mb-4">
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <span className="text-2xl">🇵🇹</span>
-              <h1 className="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-teal-600 to-cyan-500 bg-clip-text text-transparent">
-                PORTUGAL HORIZON
-              </h1>
-            </div>
-            <div className="flex items-center text-xs text-slate-500 font-medium gap-3">
-              <span className="flex items-center gap-1"><CalendarDays size={14} /> 30 Ago - 9 Set 2026</span>
-              <span className="flex items-center gap-1"><Users size={14} /> 2 Viaggiatori</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="flex justify-between items-center bg-slate-100/80 p-3 rounded-2xl">
-          <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-            <Sun size={18} className="text-amber-500" fill="currentColor" />
-            26°C Stima
-          </div>
-          <div className="flex items-center gap-2 text-sm font-bold text-teal-700 bg-teal-50 px-3 py-1 rounded-full">
-            <Hourglass size={16} /> 30g 12h 00m
-          </div>
-        </div>
-      </div>
-
-      {/* HORIZONTAL DAY SELECTOR */}
-      <div className="mt-4 px-2">
-        <div className="flex overflow-x-auto gap-3 px-3 pb-4 snap-x hide-scrollbars">
-          {ITINERARY_DATA.map((day, index) => {
-            const isActive = index === activeDayIndex;
-            return (
-              <button
-                key={day.dayNumber}
-                onClick={() => setActiveDayIndex(index)}
-                className={`snap-start shrink-0 flex flex-col items-center justify-center py-3 px-5 rounded-2xl transition-all duration-300 ${
-                  isActive 
-                    ? 'bg-teal-600 text-white shadow-lg shadow-teal-600/30 scale-105' 
-                    : 'bg-white text-slate-500 border border-slate-200 hover:bg-slate-50'
-                }`}
-              >
-                <span className={`text-xs font-bold ${isActive ? 'text-teal-100' : 'text-slate-400'}`}>
-                  {day.weekday} {day.date.split(' ')[0]}
-                </span>
-                <span className={`text-sm font-bold mt-0.5 ${isActive ? 'text-white' : 'text-slate-700'}`}>
-                  Giorno {day.dayNumber}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* DAY OVERVIEW HERO CARD */}
-      <div className="px-5 mt-2">
-        <div className="bg-white rounded-3xl p-5 shadow-sm border border-slate-100 relative overflow-hidden">
-          {/* Decor background element */}
-          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-teal-50 to-transparent rounded-bl-full opacity-50 pointer-events-none" />
-          
-          <div className="relative z-10">
-            <div className="inline-block px-3 py-1 bg-teal-50 text-teal-700 text-xs font-bold rounded-full mb-3 uppercase tracking-wider">
-              Giorno {activeDay.dayNumber} • {activeDay.weekday} {activeDay.date}
-            </div>
-            
-            <h2 className="text-xl font-bold leading-tight mb-2 text-slate-800 pr-20">
-              {activeDay.title}
-            </h2>
-            
-            <p className="text-sm text-slate-500 mb-4 pr-10 leading-relaxed">
-              Focus: {activeDay.focus}
-            </p>
-
-            {/* Floating Steps Widget */}
-            <div className="absolute right-0 top-10 transform translate-x-2 bg-gradient-to-r from-slate-800 to-slate-900 text-white p-3 rounded-l-2xl shadow-xl border-y border-l border-slate-700 flex flex-col items-start gap-1 w-32">
-              <span className="text-[10px] text-slate-300 font-medium uppercase tracking-wider">Passi stimati</span>
-              <div className="flex items-center gap-1.5 font-bold text-sm">
-                <Footprints size={14} className="text-teal-400" />
-                {activeDay.steps}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* TIMELINE EVENTS */}
-      <div className="px-5 mt-8 relative">
-        {/* Vertical line connecting events */}
-        <div className="absolute left-[39px] top-4 bottom-10 w-0.5 bg-teal-100/80 rounded-full z-0" />
-
-        <div className="flex flex-col gap-6 relative z-10">
-          {activeDay.events.map((event, idx) => (
-            <div key={idx} className="flex gap-4">
-              
-              {/* Timeline Node Icon */}
-              <div className="flex-shrink-0 relative">
-                <div className="w-10 h-10 rounded-full bg-white border-2 border-teal-100 shadow-sm flex items-center justify-center text-lg z-10 relative">
-                  {event.icon}
-                </div>
-              </div>
-
-              {/* Event Card */}
-              <div className="flex-grow bg-white rounded-2xl p-4 shadow-sm border border-slate-100">
-                <div className="flex justify-between items-start mb-2">
-                  <span className="text-xs font-bold text-teal-600 bg-teal-50 px-2 py-0.5 rounded-md">
-                    {event.time}
-                  </span>
-                  
-                  {/* Transport Badge */}
-                  <span className="flex items-center gap-1 text-[10px] font-semibold text-slate-500 bg-slate-100 px-2 py-1 rounded-full">
-                    {event.transport.includes('Auto') || event.transport.includes('Metro') || event.transport.includes('Bus') || event.transport.includes('Tram') || event.transport.includes('Treno') || event.transport.includes('Teleferica') || event.transport.includes('Aereo') ? (
-                       <span className="opacity-70">📍</span>
-                    ) : (
-                      <Footprints size={10} className="opacity-70" />
-                    )}
-                    {event.transport}
-                  </span>
-                </div>
-                
-                <h3 className="text-base font-bold text-slate-800 mb-1 leading-snug">
-                  {event.title}
-                </h3>
-                
-                <p className="text-sm text-slate-500 leading-relaxed">
-                  {event.desc}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* BOTTOM NAVIGATION BAR */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-6 py-3 flex justify-between items-center z-50 pb-safe">
-        <button className="flex flex-col items-center gap-1 text-teal-600 w-16">
-          <MapPin size={22} className="fill-teal-100" />
-          <span className="text-[10px] font-bold">Itinerario</span>
-        </button>
-        <button className="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600 transition-colors w-16">
-          <Map size={22} />
-          <span className="text-[10px] font-medium">Mappa</span>
-        </button>
-        <button className="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600 transition-colors w-16 relative">
-           <div className="absolute -top-1.5 right-2 w-2 h-2 bg-red-400 rounded-full border border-white"></div>
-          <Headphones size={22} />
-          <span className="text-[10px] font-medium">Audio</span>
-        </button>
-        <button className="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600 transition-colors w-16">
-          <Wallet size={22} />
-          <span className="text-[10px] font-medium">Budget</span>
-        </button>
-        <button className="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600 transition-colors w-16">
-          <Bot size={22} />
-          <span className="text-[10px] font-medium">AI Agent</span>
-        </button>
-      </div>
-
-      {/* Global Style overrides to hide scrollbar but keep functionality */}
-      <style dangerouslySetContents={{__html: `
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lisbon Horizon - Portugal Road Trip</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Babel for JSX in browser -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
         .hide-scrollbars::-webkit-scrollbar {
-          display: none;
+            display: none;
         }
         .hide-scrollbars {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
         .pb-safe {
-          padding-bottom: env(safe-area-inset-bottom, 12px);
+            padding-bottom: env(safe-area-inset-bottom, 12px);
         }
-      `}} />
-    </div>
-  );
-}
+    </style>
+</head>
+<body class="bg-slate-50 font-sans text-slate-800">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const ITINERARY_DATA = [
+          {
+            dayNumber: 1,
+            date: "30 Ago",
+            weekday: "DOM",
+            title: "Arrivo in Algarve & Falesie Rocciose",
+            focus: "Ritiro auto, prime spettacolari scogliere sull'oceano e aria di mare.",
+            steps: "~ 9.000",
+            events: [
+              { time: "08:00 - 09:30", title: "Atterraggio & Trasferimento 🛬", desc: "Arrivo all'aeroporto di Faro (FAO). Ritiro auto a noleggio (Cambio automatico) e gestione Via Verde.", transport: "Auto (10 min)", icon: "🚗" },
+              { time: "10:30 - 13:00", title: "Praia da Marinha & Sentiero 🌊", desc: "Escursione parziale del sentiero 'Sete Vales Suspensos'. Viste mozzafiato dall'alto sulle falesie calcaree.", transport: "A piedi", icon: "🧗" },
+              { time: "13:30 - 14:30", title: "Pranzo vista Oceano 🍤", desc: "Pausa pranzo in un bar/chiosco locale. Ottimo per un primo assaggio di pesce fresco o una bifana veloce.", transport: "In loco", icon: "🍽️" },
+              { time: "15:00 - 18:00", title: "Ponta da Piedade a Lagos 🌅", desc: "Esplorazione delle formazioni rocciose a picco sull'oceano. Discesa delle scalinate scolpite nella roccia.", transport: "Auto (40 min)", icon: "📸" },
+              { time: "19:30", title: "Cena & Check-in a Lagos 🐙", desc: "Sistemazione in guesthouse e cena in una tasca tipica a base di Polvo à Lagareiro (polpo alla griglia).", transport: "A piedi", icon: "🏨" }
+            ]
+          },
+          {
+            dayNumber: 2,
+            date: "31 Ago",
+            weekday: "LUN",
+            title: "L'Estremo Ovest e Costa Vicentina",
+            focus: "Il punto più a sud-ovest d'Europa, vento costante e spiagge selvagge dei surfisti.",
+            steps: "~ 11.500",
+            events: [
+              { time: "09:30 - 11:30", title: "Capo San Vincenzo 🌬️", desc: "Visita al faro sull'estremità d'Europa. Scogliere spaventose e vento costante.", transport: "Auto (45 min)", icon: "🔭" },
+              { time: "12:30 - 14:00", title: "Praia do Amado 🏄", desc: "Sosta nella spiaggia iconica dei surfisti. Pranzo veloce con Bifana in un bar locale.", transport: "Auto (30 min)", icon: "🥪" },
+              { time: "15:30 - 18:00", title: "Zambujeira do Mar & Falesie Nere 🦅", desc: "Sosta fotografica e proseguimento verso Cabo Sardão per ammirare le cicogne che nidificano sugli scogli.", transport: "Auto (1h 15m)", icon: "🦅" },
+              { time: "19:00", title: "Arrivo a Vila Nova de Milfontes 🏘️", desc: "Check-in e serata rilassante in questo pittoresco borgo sull'estuario del fiume Mira.", transport: "Auto", icon: "🌙" }
+            ]
+          },
+          {
+            dayNumber: 3,
+            date: "01 Set",
+            weekday: "MAR",
+            title: "Borghi di Pescatori & Verso Nord",
+            focus: "Porto Covo, spiagge nere, isole fortezza e arrivo nella penisola di Setúbal.",
+            steps: "~ 10.000",
+            events: [
+              { time: "10:00 - 12:30", title: "Porto Covo & Ilha do Pessegueiro ⚓", desc: "Passeggiata nel borgo dalle case bianche e blu. Sosta alla spiaggia del Pessegueiro per foto all'isola.", transport: "Auto (30 min)", icon: "🏖️" },
+              { time: "13:00 - 14:30", title: "Pranzo a Sines 🦑", desc: "Pausa pranzo nella città natale di Vasco da Gama. Assaggio di frutti di mare.", transport: "Auto (20 min)", icon: "🥘" },
+              { time: "16:00 - 18:00", title: "Verso Setúbal 🚗", desc: "Guida panoramica verso nord fino alla penisola di Setúbal.", transport: "Auto (1h 30m)", icon: "🛣️" },
+              { time: "19:30", title: "Cena tipica: Choco Frito 🦑", desc: "Sistemazione in zona Setúbal e cena a base della specialità locale: la seppia gigante fritta.", transport: "A piedi", icon: "🍟" }
+            ]
+          },
+          {
+            dayNumber: 4,
+            date: "02 Set",
+            weekday: "MER",
+            title: "Arrábida, Cabo Espichel & Dinosauri",
+            focus: "Montagne verdi sul mare azzurro, fari isolati e orme di dinosauri impresse nella pietra.",
+            steps: "~ 12.000",
+            events: [
+              { time: "09:30 - 12:00", title: "Parco Naturale di Arrábida 🌲", desc: "Guida mozzafiato sulla N379-1 tra montagne verdi e mare cristallino.", transport: "Auto (panoramica)", icon: "⛰️" },
+              { time: "12:30 - 14:30", title: "Cabo Espichel 🦕", desc: "Sosta alla scogliera drammatica del faro. Passeggiata per vedere le impronte fossili dei dinosauri.", transport: "Auto (40 min)", icon: "🦖" },
+              { time: "15:00 - 17:00", title: "Sesimbra 🏰", desc: "Esplorazione del borgo di pescatori e spuntino dolce in una pasticceria locale.", transport: "Auto (30 min)", icon: "🏘️" },
+              { time: "18:00", title: "Pernottamento a Sesimbra 🛌", desc: "Ultima serata fuori dalla capitale prima di riconsegnare l'auto l'indomani.", transport: "Auto", icon: "🌙" }
+            ]
+          },
+          {
+            dayNumber: 5,
+            date: "03 Set",
+            weekday: "GIO",
+            title: "Ingresso a Lisbona & Riconsegna Auto",
+            focus: "Arrivo in capitale, liberarsi dell'auto e primo impatto con la città a piedi.",
+            steps: "~ 14.000",
+            events: [
+              { time: "10:00 - 11:30", title: "Arrivo a Lisbona 🌉", desc: "Ingresso in città superando il grande estuario del Tago. Riconsegna dell'auto a noleggio.", transport: "Auto (45 min)", icon: "🔑" },
+              { time: "12:00 - 13:00", title: "Check-in Hotel Ibis Saldanha 🏨", desc: "Deposito bagagli e rinfrescata. Posizione strategica collegata a tutte le linee metro.", transport: "Metro Linea Rossa", icon: "🧳" },
+              { time: "13:30 - 15:00", title: "Pranzo a Baixa 🍲", desc: "Primo pranzo lisbonese in una taverna tipica del centro.", transport: "Metro Gialla", icon: "🍴" },
+              { time: "15:30 - 18:00", title: "Praça do Comércio & Baixa 🏛️", desc: "Passeggiata nell'immensa piazza sul Tago e attraversamento di Rua Augusta.", transport: "A piedi", icon: "🏛️" },
+              { time: "18:30 - 20:00", title: "Tramonto dai Miradouros 🌇", desc: "Salita al Miradouro de São Pedro de Alcântara e proseguimento verso Santa Catarina.", transport: "Elevador da Glória", icon: "📷" }
+            ]
+          },
+          {
+            dayNumber: 6,
+            date: "04 Set",
+            weekday: "VEN",
+            title: "Quartieri Alti, Chiado e Street Art",
+            focus: "Esplorazione dinamica dei quartieri vivaci, pasticcerie iconiche e scorci fotografici.",
+            steps: "~ 15.000",
+            events: [
+              { time: "10:00 - 12:30", title: "Esplorazione del Chiado 🚶", desc: "Giro per boutique moderne, librerie storiche e strade in discesa.", transport: "A piedi", icon: "🛍️" },
+              { time: "12:30 - 13:30", title: "Pausa Pastéis de Nata 🥧", desc: "Sosta alla Manteigaria (Rua do Loreto) per gustare pastéis de nata caldi.", transport: "A piedi", icon: "☕" },
+              { time: "14:00 - 16:00", title: "Bairro Alto 🏘️", desc: "Passeggiata tra le strade labirintiche ammirando facciate colorate e street art.", transport: "A piedi", icon: "🎨" }
+            ]
+          },
+          {
+            dayNumber: 7,
+            date: "05 Set",
+            weekday: "SAB",
+            title: "Sintra Magica & Cabo da Roca",
+            focus: "Gita fuori porta (in treno). Parchi esoterici e il punto più a ovest del continente.",
+            steps: "~ 18.000",
+            events: [
+              { time: "09:00 - 10:00", title: "Treno per Sintra 🚂", desc: "Partenza dalla stazione di Rossio per evitare il traffico e problemi di parcheggio.", transport: "Treno (40 min)", icon: "🚆" },
+              { time: "10:30 - 14:00", title: "Quinta da Regaleira & Parco Pena 🌲", desc: "Visita focalizzata sugli esterni: pozzo iniziatico e parchi lussureggianti.", transport: "A piedi / Bus", icon: "🏰" },
+              { time: "15:30 - 18:30", title: "Cabo da Roca 🌊", desc: "Arrivo alle maestose scogliere, il punto più occidentale d'Europa.", transport: "Bus 403", icon: "🧭" }
+            ]
+          },
+          {
+            dayNumber: 8,
+            date: "06 Set",
+            weekday: "DOM",
+            title: "LX Factory & Belém",
+            focus: "Archeologia industriale riqualificata, camminate sul fiume e pasticcini originali.",
+            steps: "~ 14.000",
+            events: [
+              { time: "10:30 - 13:30", title: "LX Factory 🏭", desc: "Popolare polo creativo sotto il Ponte 25 de Abril. Negozi indie e librerie uniche.", transport: "Tram 15E", icon: "🎭" },
+              { time: "14:00 - 16:30", title: "Passeggiata a Belém ⛵", desc: "Camminata lungofiume fino alla Torre de Belém e al Padrão dos Descobrimentos.", transport: "A piedi", icon: "🛴" },
+              { time: "17:00", title: "Antiga Confeitaria de Belém 🧁", desc: "Assaggio dei veri pastéis artigianali secondo l'antica ricetta segreta.", transport: "A piedi", icon: "🤤" }
+            ]
+          },
+          {
+            dayNumber: 9,
+            date: "07 Set",
+            weekday: "LUN",
+            title: "Oceano in Treno: Cascais",
+            focus: "Viaggio panoramico in treno lungo la foce del Tago fino alle scogliere oceaniche.",
+            steps: "~ 13.000",
+            events: [
+              { time: "10:00 - 11:00", title: "Treno per Cascais 🚈", desc: "Viaggio panoramico con finestrino affacciato sull'oceano dalla stazione di Cais do Sodré.", transport: "Treno (40 min)", icon: "🚉" },
+              { time: "11:30 - 13:30", title: "Boca do Inferno 🌊", desc: "Spettacolare caverna aperta dove le onde si infrangono fragorosamente.", transport: "A piedi", icon: "💥" },
+              { time: "14:00 - 17:00", title: "Cascais & Costa 🚲", desc: "Pranzo sul mare e passeggiata rilassante lungo la costa.", transport: "A piedi", icon: "🚴" }
+            ]
+          },
+          {
+            dayNumber: 10,
+            date: "08 Set",
+            weekday: "MAR",
+            title: "Lisbona del Futuro: Expo '98",
+            focus: "Architettura avveniristica, teleferica e cena finale in stile gourmet.",
+            steps: "~ 11.000",
+            events: [
+              { time: "10:30 - 13:00", title: "Parque das Nações 🏢", desc: "Quartiere moderno, architetture di Calatrava e giardini d'acqua.", transport: "Metro Linea Rossa", icon: "🏙️" },
+              { time: "13:30 - 14:30", title: "Teleférico 🚠", desc: "Volo panoramico sulla teleferica che corre sopra il fiume Tago.", transport: "Teleferica", icon: "🚠" },
+              { time: "19:00 - 21:30", title: "Cena al Mercado da Ribeira 🍽️", desc: "Time Out Market. Area ristorazione vivace con i migliori chef locali.", transport: "Metro", icon: "🍷" }
+            ]
+          },
+          {
+            dayNumber: 11,
+            date: "09 Set",
+            weekday: "MER",
+            title: "Ultimi Scorci e Partenza",
+            focus: "Divertimento sferragliante sul tram, souvenir e viaggio verso l'aeroporto.",
+            steps: "~ 8.000",
+            events: [
+              { time: "09:30 - 11:30", title: "Giro sul Tram 28E 🚋", desc: "Giro panoramico tra i vicoli stretti di Alfama e Graça.", transport: "Tram", icon: "🚋" },
+              { time: "12:00 - 15:30", title: "Pranzo e Souvenir 🛍️", desc: "Ultimi acquisti in centro e relax prima della partenza.", transport: "A piedi", icon: "🎁" },
+              { time: "17:30 - 18:30", title: "Ritiro Bagagli & Aeroporto 🚇", desc: "Ritorno all'hotel per le valigie e viaggio comodo sulla Linea Rossa.", transport: "Metro", icon: "🧳" },
+              { time: "20:30", title: "Volo di rientro Ryanair 🛫", desc: "Decollo dall'aeroporto di Lisbona.", transport: "Aereo", icon: "✈️" }
+            ]
+          }
+        ];
+
+        function App() {
+          const [activeDayIndex, setActiveDayIndex] = useState(4); // Default a Giorno 5 (Arrivo a Lisbona)
+          const activeDay = ITINERARY_DATA[activeDayIndex];
+
+          useEffect(() => {
+            if (window.lucide) {
+              window.lucide.createIcons();
+            }
+          }, [activeDayIndex]);
+
+          return (
+            <div className="min-h-screen bg-slate-50 font-sans text-slate-800 pb-24">
+              {/* HEADER TOP BAR */}
+              <div className="bg-white px-5 pt-10 pb-4 rounded-b-3xl shadow-sm sticky top-0 z-20">
+                <div className="flex justify-between items-start mb-4">
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-2xl">🇵🇹</span>
+                      <h1 className="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-teal-600 to-cyan-500 bg-clip-text text-transparent">
+                        LISBON HORIZON
+                      </h1>
+                    </div>
+                    <div className="flex items-center text-xs text-slate-500 font-medium gap-3">
+                      <span className="flex items-center gap-1"><i data-lucide="calendar-days" className="w-3.5 h-3.5"></i> 30 Ago - 9 Set 2026</span>
+                      <span className="flex items-center gap-1"><i data-lucide="users" className="w-3.5 h-3.5"></i> 2 Viaggiatori</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex justify-between items-center bg-slate-100/80 p-3 rounded-2xl">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+                    <i data-lucide="sun" className="w-4 h-4 text-amber-500 fill-current"></i>
+                    26°C Lisbona
+                  </div>
+                  <div className="flex items-center gap-2 text-sm font-bold text-teal-700 bg-teal-50 px-3 py-1 rounded-full">
+                    <i data-lucide="hourglass" className="w-4 h-4"></i> 30d 12h 00m
+                  </div>
+                </div>
+              </div>
+
+              {/* HORIZONTAL DAY SELECTOR */}
+              <div className="mt-4 px-2">
+                <div className="flex overflow-x-auto gap-3 px-3 pb-4 snap-x hide-scrollbars">
+                  {ITINERARY_DATA.map((day, index) => {
+                    const isActive = index === activeDayIndex;
+                    return (
+                      <button
+                        key={day.dayNumber}
+                        onClick={() => setActiveDayIndex(index)}
+                        className={`snap-start shrink-0 flex flex-col items-center justify-center py-3 px-5 rounded-2xl transition-all duration-300 ${
+                          isActive 
+                            ? 'bg-teal-600 text-white shadow-lg shadow-teal-600/30 scale-105' 
+                            : 'bg-white text-slate-500 border border-slate-200 hover:bg-slate-50'
+                        }`}
+                      >
+                        <span className={`text-xs font-bold ${isActive ? 'text-teal-100' : 'text-slate-400'}`}>
+                          {day.weekday} {day.date.split(' ')[0]}
+                        </span>
+                        <span className={`text-sm font-bold mt-0.5 ${isActive ? 'text-white' : 'text-slate-700'}`}>
+                          Giorno {day.dayNumber}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* DAY OVERVIEW HERO CARD */}
+              <div className="px-5 mt-2">
+                <div className="bg-white rounded-3xl p-5 shadow-sm border border-slate-100 relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-teal-50 to-transparent rounded-bl-full opacity-50 pointer-events-none" />
+                  
+                  <div className="relative z-10">
+                    <div className="inline-block px-3 py-1 bg-teal-50 text-teal-700 text-xs font-bold rounded-full mb-3 uppercase tracking-wider">
+                      Giorno {activeDay.dayNumber} • {activeDay.weekday} {activeDay.date}
+                    </div>
+                    
+                    <h2 className="text-xl font-bold leading-tight mb-2 text-slate-800 pr-20">
+                      {activeDay.title}
+                    </h2>
+                    
+                    <p className="text-sm text-slate-500 mb-4 pr-10 leading-relaxed">
+                      Focus: {activeDay.focus}
+                    </p>
+
+                    <div className="absolute right-0 top-10 transform translate-x-2 bg-gradient-to-r from-slate-800 to-slate-900 text-white p-3 rounded-l-2xl shadow-xl border-y border-l border-slate-700 flex flex-col items-start gap-1 w-32">
+                      <span className="text-[10px] text-slate-300 font-medium uppercase tracking-wider">Passi stimati</span>
+                      <div className="flex items-center gap-1.5 font-bold text-sm">
+                        <i data-lucide="footprints" className="w-3.5 h-3.5 text-teal-400"></i>
+                        {activeDay.steps}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* TIMELINE EVENTS */}
+              <div className="px-5 mt-8 relative">
+                <div className="absolute left-[39px] top-4 bottom-10 w-0.5 bg-teal-100/80 rounded-full z-0" />
+
+                <div className="flex flex-col gap-6 relative z-10">
+                  {activeDay.events.map((event, idx) => (
+                    <div key={idx} className="flex gap-4">
+                      <div className="flex-shrink-0 relative">
+                        <div className="w-10 h-10 rounded-full bg-white border-2 border-teal-100 shadow-sm flex items-center justify-center text-lg z-10 relative">
+                          {event.icon}
+                        </div>
+                      </div>
+
+                      <div className="flex-grow bg-white rounded-2xl p-4 shadow-sm border border-slate-100">
+                        <div className="flex justify-between items-start mb-2">
+                          <span className="text-xs font-bold text-teal-600 bg-teal-50 px-2 py-0.5 rounded-md">
+                            {event.time}
+                          </span>
+                          <span className="flex items-center gap-1 text-[10px] font-semibold text-slate-500 bg-slate-100 px-2 py-1 rounded-full">
+                            📍 {event.transport}
+                          </span>
+                        </div>
+                        
+                        <h3 className="text-base font-bold text-slate-800 mb-1 leading-snug">
+                          {event.title}
+                        </h3>
+                        
+                        <p className="text-sm text-slate-500 leading-relaxed">
+                          {event.desc}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* BOTTOM NAVIGATION BAR */}
+              <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-6 py-3 flex justify-between items-center z-50 pb-safe">
+                <button className="flex flex-col items-center gap-1 text-teal-600 w-16">
+                  <i data-lucide="map-pin" className="w-5 h-5 text-teal-600 fill-teal-100"></i>
+                  <span className="text-[10px] font-bold">Itinerario</span>
+                </button>
+                <button className="flex flex-col items-center gap-1 text-slate-400 w-16">
+                  <i data-lucide="map" className="w-5 h-5"></i>
+                  <span className="text-[10px] font-medium">Mappa</span>
+                </button>
+                <button className="flex flex-col items-center gap-1 text-slate-400 w-16 relative">
+                  <div className="absolute -top-1.5 right-2 w-2 h-2 bg-red-400 rounded-full border border-white"></div>
+                  <i data-lucide="headphones" className="w-5 h-5"></i>
+                  <span className="text-[10px] font-medium">Audio</span>
+                </button>
+                <button className="flex flex-col items-center gap-1 text-slate-400 w-16">
+                  <i data-lucide="wallet" className="w-5 h-5"></i>
+                  <span className="text-[10px] font-medium">Budget</span>
+                </button>
+                <button className="flex flex-col items-center gap-1 text-slate-400 w-16">
+                  <i data-lucide="bot" className="w-5 h-5"></i>
+                  <span className="text-[10px] font-medium">AI Agent</span>
+                </button>
+              </div>
+            </div>
+          );
+        }
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
 
