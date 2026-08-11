@@ -1,347 +1,1359 @@
-<!DOCTYPE html>
-<html lang="it">
+!DOCTYPE html>
+<html lang="it" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lisbon Horizon - Portugal Road Trip</title>
-    <!-- Tailwind CSS -->
+    <title>Portogallo Sud, Lisbona & Madrid 2026 - Travel Companion</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        slate: {
+                            950: '#020617',
+                            900: '#0f172a',
+                            800: '#1e293b',
+                            700: '#334155'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <!-- React & ReactDOM -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <!-- Babel for JSX in browser -->
+    <!-- Babel per JSX -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        .hide-scrollbars::-webkit-scrollbar {
-            display: none;
-        }
-        .hide-scrollbars {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-        .pb-safe {
-            padding-bottom: env(safe-area-inset-bottom, 12px);
-        }
+        .scrollbar-none::-webkit-scrollbar { display: none; }
+        .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="bg-slate-50 font-sans text-slate-800">
+<body class="bg-slate-950 text-slate-100 font-sans antialiased">
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect } = React;
+        const { useState, useMemo, useEffect } = React;
 
-        const ITINERARY_DATA = [
-          {
-            dayNumber: 1,
-            date: "30 Ago",
-            weekday: "DOM",
-            title: "Arrivo in Algarve & Falesie Rocciose",
-            focus: "Ritiro auto, prime spettacolari scogliere sull'oceano e aria di mare.",
-            steps: "~ 9.000",
-            events: [
-              { time: "08:00 - 09:30", title: "Atterraggio & Trasferimento 🛬", desc: "Arrivo all'aeroporto di Faro (FAO). Ritiro auto a noleggio (Cambio automatico) e gestione Via Verde.", transport: "Auto (10 min)", icon: "🚗" },
-              { time: "10:30 - 13:00", title: "Praia da Marinha & Sentiero 🌊", desc: "Escursione parziale del sentiero 'Sete Vales Suspensos'. Viste mozzafiato dall'alto sulle falesie calcaree.", transport: "A piedi", icon: "🧗" },
-              { time: "13:30 - 14:30", title: "Pranzo vista Oceano 🍤", desc: "Pausa pranzo in un bar/chiosco locale. Ottimo per un primo assaggio di pesce fresco o una bifana veloce.", transport: "In loco", icon: "🍽️" },
-              { time: "15:00 - 18:00", title: "Ponta da Piedade a Lagos 🌅", desc: "Esplorazione delle formazioni rocciose a picco sull'oceano. Discesa delle scalinate scolpite nella roccia.", transport: "Auto (40 min)", icon: "📸" },
-              { time: "19:30", title: "Cena & Check-in a Lagos 🐙", desc: "Sistemazione in guesthouse e cena in una tasca tipica a base di Polvo à Lagareiro (polpo alla griglia).", transport: "A piedi", icon: "🏨" }
-            ]
+        const INITIAL_TRIP_DATA = {
+          tripInfo: {
+            title: "Portogallo Sud, Lisbona & Madrid 2026",
+            travelers: "Mamma + Figlio (17 anni)",
+            startDate: "2026-09-04",
+            endDate: "2026-09-12",
+            totalBudgetEur: 2350,
+            flightCostTotalEur: 666
           },
-          {
-            dayNumber: 2,
-            date: "31 Ago",
-            weekday: "LUN",
-            title: "L'Estremo Ovest e Costa Vicentina",
-            focus: "Il punto più a sud-ovest d'Europa, vento costante e spiagge selvagge dei surfisti.",
-            steps: "~ 11.500",
-            events: [
-              { time: "09:30 - 11:30", title: "Capo San Vincenzo 🌬️", desc: "Visita al faro sull'estremità d'Europa. Scogliere spaventose e vento costante.", transport: "Auto (45 min)", icon: "🔭" },
-              { time: "12:30 - 14:00", title: "Praia do Amado 🏄", desc: "Sosta nella spiaggia iconica dei surfisti. Pranzo veloce con Bifana in un bar locale.", transport: "Auto (30 min)", icon: "🥪" },
-              { time: "15:30 - 18:00", title: "Zambujeira do Mar & Falesie Nere 🦅", desc: "Sosta fotografica e proseguimento verso Cabo Sardão per ammirare le cicogne che nidificano sugli scogli.", transport: "Auto (1h 15m)", icon: "🦅" },
-              { time: "19:00", title: "Arrivo a Vila Nova de Milfontes 🏘️", desc: "Check-in e serata rilassante in questo pittoresco borgo sull'estuario del fiume Mira.", transport: "Auto", icon: "🌙" }
-            ]
+          flights: [
+            { id: "fl-1", route: "Bergamo (BGY) â Faro (FAO)", date: "04 Settembre 2026", time: "05:45 â 07:45", costPerPerson: 121, totalCost: 242, status: "Confermata" },
+            { id: "fl-2", route: "Lisbona (LIS) â Madrid (MAD)", date: "11 Settembre 2026", time: "19:05 â 21:30", costPerPerson: 109, totalCost: 218, status: "Confermata" },
+            { id: "fl-3", route: "Madrid (MAD) â Bergamo (BGY)", date: "12 Settembre 2026", time: "18:05 â 20:20", costPerPerson: 103, totalCost: 206, status: "Confermata" }
+          ],
+          carRental: {
+            pickup: "Faro Aeroporto (04/09 ore 08:30)",
+            dropoff: "Lisbona Centro (06/09 ore 19:00)",
+            days: 3,
+            type: "Auto Cambio Automatico con Via Verde",
+            estimatedCost: 140
           },
-          {
-            dayNumber: 3,
-            date: "01 Set",
-            weekday: "MAR",
-            title: "Borghi di Pescatori & Verso Nord",
-            focus: "Porto Covo, spiagge nere, isole fortezza e arrivo nella penisola di Setúbal.",
-            steps: "~ 10.000",
-            events: [
-              { time: "10:00 - 12:30", title: "Porto Covo & Ilha do Pessegueiro ⚓", desc: "Passeggiata nel borgo dalle case bianche e blu. Sosta alla spiaggia del Pessegueiro per foto all'isola.", transport: "Auto (30 min)", icon: "🏖️" },
-              { time: "13:00 - 14:30", title: "Pranzo a Sines 🦑", desc: "Pausa pranzo nella città natale di Vasco da Gama. Assaggio di frutti di mare.", transport: "Auto (20 min)", icon: "🥘" },
-              { time: "16:00 - 18:00", title: "Verso Setúbal 🚗", desc: "Guida panoramica verso nord fino alla penisola di Setúbal.", transport: "Auto (1h 30m)", icon: "🛣️" },
-              { time: "19:30", title: "Cena tipica: Choco Frito 🦑", desc: "Sistemazione in zona Setúbal e cena a base della specialità locale: la seppia gigante fritta.", transport: "A piedi", icon: "🍟" }
-            ]
-          },
-          {
-            dayNumber: 4,
-            date: "02 Set",
-            weekday: "MER",
-            title: "Arrábida, Cabo Espichel & Dinosauri",
-            focus: "Montagne verdi sul mare azzurro, fari isolati e orme di dinosauri impresse nella pietra.",
-            steps: "~ 12.000",
-            events: [
-              { time: "09:30 - 12:00", title: "Parco Naturale di Arrábida 🌲", desc: "Guida mozzafiato sulla N379-1 tra montagne verdi e mare cristallino.", transport: "Auto (panoramica)", icon: "⛰️" },
-              { time: "12:30 - 14:30", title: "Cabo Espichel 🦕", desc: "Sosta alla scogliera drammatica del faro. Passeggiata per vedere le impronte fossili dei dinosauri.", transport: "Auto (40 min)", icon: "🦖" },
-              { time: "15:00 - 17:00", title: "Sesimbra 🏰", desc: "Esplorazione del borgo di pescatori e spuntino dolce in una pasticceria locale.", transport: "Auto (30 min)", icon: "🏘️" },
-              { time: "18:00", title: "Pernottamento a Sesimbra 🛌", desc: "Ultima serata fuori dalla capitale prima di riconsegnare l'auto l'indomani.", transport: "Auto", icon: "🌙" }
-            ]
-          },
-          {
-            dayNumber: 5,
-            date: "03 Set",
-            weekday: "GIO",
-            title: "Ingresso a Lisbona & Riconsegna Auto",
-            focus: "Arrivo in capitale, liberarsi dell'auto e primo impatto con la città a piedi.",
-            steps: "~ 14.000",
-            events: [
-              { time: "10:00 - 11:30", title: "Arrivo a Lisbona 🌉", desc: "Ingresso in città superando il grande estuario del Tago. Riconsegna dell'auto a noleggio.", transport: "Auto (45 min)", icon: "🔑" },
-              { time: "12:00 - 13:00", title: "Check-in Hotel Ibis Saldanha 🏨", desc: "Deposito bagagli e rinfrescata. Posizione strategica collegata a tutte le linee metro.", transport: "Metro Linea Rossa", icon: "🧳" },
-              { time: "13:30 - 15:00", title: "Pranzo a Baixa 🍲", desc: "Primo pranzo lisbonese in una taverna tipica del centro.", transport: "Metro Gialla", icon: "🍴" },
-              { time: "15:30 - 18:00", title: "Praça do Comércio & Baixa 🏛️", desc: "Passeggiata nell'immensa piazza sul Tago e attraversamento di Rua Augusta.", transport: "A piedi", icon: "🏛️" },
-              { time: "18:30 - 20:00", title: "Tramonto dai Miradouros 🌇", desc: "Salita al Miradouro de São Pedro de Alcântara e proseguimento verso Santa Catarina.", transport: "Elevador da Glória", icon: "📷" }
-            ]
-          },
-          {
-            dayNumber: 6,
-            date: "04 Set",
-            weekday: "VEN",
-            title: "Quartieri Alti, Chiado e Street Art",
-            focus: "Esplorazione dinamica dei quartieri vivaci, pasticcerie iconiche e scorci fotografici.",
-            steps: "~ 15.000",
-            events: [
-              { time: "10:00 - 12:30", title: "Esplorazione del Chiado 🚶", desc: "Giro per boutique moderne, librerie storiche e strade in discesa.", transport: "A piedi", icon: "🛍️" },
-              { time: "12:30 - 13:30", title: "Pausa Pastéis de Nata 🥧", desc: "Sosta alla Manteigaria (Rua do Loreto) per gustare pastéis de nata caldi.", transport: "A piedi", icon: "☕" },
-              { time: "14:00 - 16:00", title: "Bairro Alto 🏘️", desc: "Passeggiata tra le strade labirintiche ammirando facciate colorate e street art.", transport: "A piedi", icon: "🎨" }
-            ]
-          },
-          {
-            dayNumber: 7,
-            date: "05 Set",
-            weekday: "SAB",
-            title: "Sintra Magica & Cabo da Roca",
-            focus: "Gita fuori porta (in treno). Parchi esoterici e il punto più a ovest del continente.",
-            steps: "~ 18.000",
-            events: [
-              { time: "09:00 - 10:00", title: "Treno per Sintra 🚂", desc: "Partenza dalla stazione di Rossio per evitare il traffico e problemi di parcheggio.", transport: "Treno (40 min)", icon: "🚆" },
-              { time: "10:30 - 14:00", title: "Quinta da Regaleira & Parco Pena 🌲", desc: "Visita focalizzata sugli esterni: pozzo iniziatico e parchi lussureggianti.", transport: "A piedi / Bus", icon: "🏰" },
-              { time: "15:30 - 18:30", title: "Cabo da Roca 🌊", desc: "Arrivo alle maestose scogliere, il punto più occidentale d'Europa.", transport: "Bus 403", icon: "🧭" }
-            ]
-          },
-          {
-            dayNumber: 8,
-            date: "06 Set",
-            weekday: "DOM",
-            title: "LX Factory & Belém",
-            focus: "Archeologia industriale riqualificata, camminate sul fiume e pasticcini originali.",
-            steps: "~ 14.000",
-            events: [
-              { time: "10:30 - 13:30", title: "LX Factory 🏭", desc: "Popolare polo creativo sotto il Ponte 25 de Abril. Negozi indie e librerie uniche.", transport: "Tram 15E", icon: "🎭" },
-              { time: "14:00 - 16:30", title: "Passeggiata a Belém ⛵", desc: "Camminata lungofiume fino alla Torre de Belém e al Padrão dos Descobrimentos.", transport: "A piedi", icon: "🛴" },
-              { time: "17:00", title: "Antiga Confeitaria de Belém 🧁", desc: "Assaggio dei veri pastéis artigianali secondo l'antica ricetta segreta.", transport: "A piedi", icon: "🤤" }
-            ]
-          },
-          {
-            dayNumber: 9,
-            date: "07 Set",
-            weekday: "LUN",
-            title: "Oceano in Treno: Cascais",
-            focus: "Viaggio panoramico in treno lungo la foce del Tago fino alle scogliere oceaniche.",
-            steps: "~ 13.000",
-            events: [
-              { time: "10:00 - 11:00", title: "Treno per Cascais 🚈", desc: "Viaggio panoramico con finestrino affacciato sull'oceano dalla stazione di Cais do Sodré.", transport: "Treno (40 min)", icon: "🚉" },
-              { time: "11:30 - 13:30", title: "Boca do Inferno 🌊", desc: "Spettacolare caverna aperta dove le onde si infrangono fragorosamente.", transport: "A piedi", icon: "💥" },
-              { time: "14:00 - 17:00", title: "Cascais & Costa 🚲", desc: "Pranzo sul mare e passeggiata rilassante lungo la costa.", transport: "A piedi", icon: "🚴" }
-            ]
-          },
-          {
-            dayNumber: 10,
-            date: "08 Set",
-            weekday: "MAR",
-            title: "Lisbona del Futuro: Expo '98",
-            focus: "Architettura avveniristica, teleferica e cena finale in stile gourmet.",
-            steps: "~ 11.000",
-            events: [
-              { time: "10:30 - 13:00", title: "Parque das Nações 🏢", desc: "Quartiere moderno, architetture di Calatrava e giardini d'acqua.", transport: "Metro Linea Rossa", icon: "🏙️" },
-              { time: "13:30 - 14:30", title: "Teleférico 🚠", desc: "Volo panoramico sulla teleferica che corre sopra il fiume Tago.", transport: "Teleferica", icon: "🚠" },
-              { time: "19:00 - 21:30", title: "Cena al Mercado da Ribeira 🍽️", desc: "Time Out Market. Area ristorazione vivace con i migliori chef locali.", transport: "Metro", icon: "🍷" }
-            ]
-          },
-          {
-            dayNumber: 11,
-            date: "09 Set",
-            weekday: "MER",
-            title: "Ultimi Scorci e Partenza",
-            focus: "Divertimento sferragliante sul tram, souvenir e viaggio verso l'aeroporto.",
-            steps: "~ 8.000",
-            events: [
-              { time: "09:30 - 11:30", title: "Giro sul Tram 28E 🚋", desc: "Giro panoramico tra i vicoli stretti di Alfama e Graça.", transport: "Tram", icon: "🚋" },
-              { time: "12:00 - 15:30", title: "Pranzo e Souvenir 🛍️", desc: "Ultimi acquisti in centro e relax prima della partenza.", transport: "A piedi", icon: "🎁" },
-              { time: "17:30 - 18:30", title: "Ritiro Bagagli & Aeroporto 🚇", desc: "Ritorno all'hotel per le valigie e viaggio comodo sulla Linea Rossa.", transport: "Metro", icon: "🧳" },
-              { time: "20:30", title: "Volo di rientro Ryanair 🛫", desc: "Decollo dall'aeroporto di Lisbona.", transport: "Aereo", icon: "✈️" }
-            ]
-          }
-        ];
+          days: [
+            {
+              id: "2026-09-04",
+              dayNumber: 1,
+              dateStr: "VenerdÃ¬ 4 Settembre",
+              city: "Algarve Orientale & Centrale",
+              title: "Giorno 1 Sud: Faro, Praia da Marinha e Ferragudo",
+              theme: "Ritiro auto, scogliere dell'Algarve, borghi marinari e pernottamento a Lagos",
+              estimatedSteps: "13.500",
+              estimatedDistanceKm: "8.5 km a piedi + 110 km auto",
+              dailyBudgetEur: 130,
+              backupPlan: {
+                id: "bp-1",
+                triggerReason: "Meteo avverso o ritardo volo",
+                title: "Tappa rapida Marinha + Diretti a Lagos",
+                description: "In caso di stanchezza, saltare la sosta a OlhÃ£o e andare direttamente a Benagil/Marinha per poi rilassarsi a Lagos centro."
+              },
+              activities: [
+                {
+                  id: "act-101",
+                  timeSlot: "07:45 - 08:30",
+                  durationMinutes: 45,
+                  title: "Arrivo a Faro & Ritiro Auto a Noleggio",
+                  category: "Trasporto",
+                  location: { name: "Aeroporto di Faro", zone: "Faro" },
+                  description: "Sbarco rapido, ritiro bagagli e ritiro della vettura con cambio automatico e Via Verde.",
+                  whyVisit: "Punto di avvio strategico del Road Trip costiero verso nord.",
+                  priority: 5,
+                  costEur: 45,
+                  bookingRequired: true,
+                  bookingStatus: "Confermata",
+                  designerTip: "Verificare la presenza del dispositivo Via Verde per i pedaggi elettronici delle autostrade A22 e A2.",
+                  status: "pending",
+                  nextTransport: { mode: "Auto", durationMinutes: 20, costEur: 2, advice: "Drive rapido verso OlhÃ£o." }
+                },
+                {
+                  id: "act-102",
+                  timeSlot: "09:00 - 10:30",
+                  durationMinutes: 90,
+                  title: "Borgo Marinaro di OlhÃ£o & Mercato del Pesce in Mattoni",
+                  category: "Quartiere",
+                  location: { name: "Mercado de OlhÃ£o", zone: "OlhÃ£o" },
+                  description: "Passeggiata tra gli iconici edifici rossi del mercato del pesce sul canale di Ria Formosa.",
+                  whyVisit: "Uno dei paesi di pescatori piÃ¹ autentici del sud del Portogallo.",
+                  priority: 4,
+                  costEur: 8,
+                  bookingRequired: false,
+                  designerTip: "Sali sulla terrazza panoramica per fotografare le case cubiche in stile nordafricano.",
+                  status: "pending",
+                  nextTransport: { mode: "Auto", durationMinutes: 45, costEur: 3, advice: "Strada costiera N125 verso Praia da Marinha." }
+                },
+                {
+                  id: "act-103",
+                  timeSlot: "11:30 - 13:30",
+                  durationMinutes: 120,
+                  title: "Praia da Marinha & Sentiero Sulla Scogliera",
+                  category: "Panorama",
+                  location: { name: "Praia da Marinha", zone: "Lagoa" },
+                  description: "Camminata panoramica sulle falesie calcaree arancioni a picco sul mare turquoise e scultura naturale ad arco.",
+                  whyVisit: "Ritenuta una delle spiagge piÃ¹ belle d'Europa.",
+                  priority: 5,
+                  costEur: 0,
+                  bookingRequired: false,
+                  designerTip: "Posizionati sul promontorio ovest per fotografare il doppio arco a forma di cuore.",
+                  photoSpot: {
+                    name: "Arco del Cuore - Marinha",
+                    subject: "Faraglioni dorati nell'Oceano",
+                    bestTime: "Mezzogiorno",
+                    iphoneTip: "Usa l'ottica 0.5x ultra-grandangolare mantenendo l'orizzonte dritto."
+                  },
+                  status: "pending",
+                  nextTransport: { mode: "Auto", durationMinutes: 15, costEur: 0, advice: "Breve tragitto verso Ferragudo." }
+                },
+                {
+                  id: "act-104",
+                  timeSlot": "13:45 - 15:30",
+                  durationMinutes: 105,
+                  title: "Pranzo e Passeggiata a Ferragudo",
+                  category: "Gastronomia",
+                  location: { name: "Ferragudo Centro", zone: "Arade" },
+                  description: "Pranzo a base di pesce fresco alla griglia (sardine e polpo) nelle tascas del borgo bianco di pescatori.",
+                  whyVisit: "Il paesino piÃ¹ fotografico dell'estuario del fiume Arade.",
+                  priority: 5,
+                  costEur: 45,
+                  bookingRequired: false,
+                  designerTip: "Passeggia lungo Rua Dr. Luiz AntÃ³nio dos Santos per scatti tra fiori di bouganville.",
+                  status: "pending",
+                  nextTransport: { mode: "Auto", durationMinutes: 25, costEur: 2, advice: "Direzione Lagos per check-in e tramonto." }
+                },
+                {
+                  id: "act-105",
+                  timeSlot": "16:30 - 19:30",
+                  durationMinutes: 180,
+                  title: "Centro Storico di Lagos & Tramonto a Ponta da Piedade",
+                  category: "Panorama",
+                  location: { name: "Ponta da Piedade", zone: "Lagos" },
+                  description: "Check-in hotel a Lagos, esplorazione della cittadina fortificata e discesa alla scogliera drammatica di Ponta da Piedade.",
+                  whyVisit: "Faraglioni monumentali e caverne rocciose tra i colori del tramonto.",
+                  priority: 5,
+                  costEur: 0,
+                  bookingRequired: false,
+                  designerTip: "Scendi i 182 gradini fino al canale d'acqua tra i faraglioni.",
+                  status: "pending"
+                }
+              ]
+            },
+            {
+              id: "2026-09-05",
+              dayNumber: 2,
+              dateStr: "Sabato 5 Settembre",
+              city: "Sagres & Costa Vicentina",
+              title: "Giorno 2 Sud: La Fine del Mondo & Costa Salvaggia",
+              theme: "Fortezza di Sagres, Cabo de SÃ£o Vicente e la natura incontaminata dell'Alentejo",
+              estimatedSteps: "15.000",
+              estimatedDistanceKm: "10.0 km a piedi + 140 km auto",
+              dailyBudgetEur: 110,
+              activities: [
+                {
+                  id: "act-201",
+                  timeSlot": "09:30 - 11:30",
+                  durationMinutes: 120,
+                  title: "Sagres & Cabo de SÃ£o Vicente (La Fine del Mondo)",
+                  category: "Panorama",
+                  location: { name: "Cabo de SÃ£o Vicente", zone: "Sagres" },
+                  description: "Promontorio roccioso a picco sull'Atlantico con il leggendario faro e le raffiche di vento oceaniche.",
+                  whyVisit: "Punto piÃ¹ a sud-ovest dell'Europa continentale, denso di misticismo e storia navale.",
+                  priority: 5,
+                  costEur: 3,
+                  bookingRequired: false,
+                  designerTip: "Indossare una giacca a vento leggera: le correnti oceaniche qui sono potenti.",
+                  status: "pending",
+                  nextTransport: { mode: "Auto", durationMinutes: 30, costEur: 0, advice: "Risalita verso la Costa Vicentina." }
+                },
+                {
+                  id: "act-202",
+                  timeSlot": "12:00 - 14:00",
+                  durationMinutes: 120,
+                  title: "Carrapateira & Praia do Amado (Spiaggia dei Surfer)",
+                  category: "Passeggiata",
+                  location: { name: "Carrapateira / Praia do Amado", zone: "Costa Vicentina" },
+                  description: "Passerelle di legno panoramiche sopra le dune rocciose della costa atlantica selvaggia e pranzo di mare.",
+                  whyVisit: "Natura selvaggia e paesaggi oceanici non contaminati.",
+                  priority: 5,
+                  costEur: 35,
+                  bookingRequired: false,
+                  designerTip: "Siediti nei ristorantini di legno sulla spiaggia a mangiare pesce fresco.",
+                  status: "pending",
+                  nextTransport: { mode: "Auto", durationMinutes: 50, costEur: 2, advice: "Strada panoramica verso Zambujeira do Mar." }
+                },
+                {
+                  id: "act-203",
+                  timeSlot": "15:00 - 17:00",
+                  durationMinutes: 120,
+                  title: "Borgo Arroccato di Zambujeira do Mar",
+                  category: "Quartiere",
+                  location: { name: "Zambujeira do Mar", zone: "Alentejo Costiero" },
+                  description: "Passeggiata tra le case imbiancate a calce con profili blu, affacciate su una gola rocciosa incantevole.",
+                  whyVisit: "Uno dei paesini costieri piÃ¹ pittoreschi della regione dell'Alentejo.",
+                  priority: 4,
+                  costEur: 0,
+                  bookingRequired: false,
+                  designerTip: "Foto dalla chiesetta della cappella a sbalzo sulla scogliera.",
+                  status: "pending",
+                  nextTransport: { mode: "Auto", durationMinutes: 25, costEur: 1, advice: "Proseguimento verso Porto Covo." }
+                },
+                {
+                  id: "act-204",
+                  timeSlot": "17:30 - 20:30",
+                  durationMinutes: 180,
+                  title: "Porto Covo & Tramonto sulla Praia do Salto",
+                  category: "Panorama",
+                  location: { name: "Porto Covo", zone: "Alentejo" },
+                  description: "Sistemazione nel borgo, passeggiata nella piazza centrale e tramonto sulle cale di sabbia chiara.",
+                  whyVisit: "Atmosfera rilassata, autentica e fuori dalle rotte commerciali.",
+                  priority: 5,
+                  costEur: 30,
+                  bookingRequired: false,
+                  designerTip: "Cena a base di Arroz de Marisco o Cataplana al ristorante locale.",
+                  status: "pending"
+                }
+              ]
+            },
+            {
+              id: "2026-09-06",
+              dayNumber: 3,
+              dateStr: "Domenica 6 Settembre",
+              city: "Alentejo â ArrÃ¡bida â Lisbona",
+              title: "Giorno 3 Sud: Serra da ArrÃ¡bida, Sesimbra & Ingresso a Lisbona",
+              theme: "Castelli sulla costa, scogliere verdi del Parco Naturale e ingresso a Lisbona dal Ponte 25 de Abril",
+              estimatedSteps: "16.000",
+              estimatedDistanceKm: "11.0 km a piedi + 160 km auto",
+              dailyBudgetEur: 100,
+              activities: [
+                {
+                  id: "act-301",
+                  timeSlot": "09:30 - 11:30",
+                  durationMinutes: 120,
+                  title: "Sesimbra & Castello Oltre Mare",
+                  category: "Monumento",
+                  location: { name: "Castelo de Sesimbra", zone: "Sesimbra" },
+                  description: "Esplorazione delle mura fortificate del castello a picco sulla baia di Sesimbra.",
+                  whyVisit: "Fortezza medievale spettacolare con vista spalancata sull'Oceano.",
+                  priority: 4,
+                  costEur: 0,
+                  bookingRequired: false,
+                  designerTip: "L'ingresso al castello Ã¨ gratuito e la camminata sulle mura offre scatti imbattibili.",
+                  status: "pending",
+                  nextTransport: { mode: "Auto", durationMinutes: 20, costEur: 0, advice: "Strada N379-1 panoramica nella Serra da ArrÃ¡bida." }
+                },
+                {
+                  id: "act-302",
+                  timeSlot": "11:45 - 13:45",
+                  durationMinutes: 120,
+                  title: "Strada Panoramica della Serra da ArrÃ¡bida & Cabo Espichel",
+                  category: "Panorama",
+                  location: { name: "Serra da ArrÃ¡bida", zone: "SetÃºbal" },
+                  description: "Guida lungo la strada a sbalzo tra le montagne verdi e le cale caraibiche, poi visita a Cabo Espichel.",
+                  whyVisit: "Uno dei percorsi panoramici in auto piÃ¹ spettacolari di tutto il Portogallo.",
+                  priority: 5,
+                  costEur: 0,
+                  bookingRequired: false,
+                  designerTip: "Fermati al belvedere Miradouro do Norte per fotografare il contrasto verde-blu.",
+                  status: "pending",
+                  nextTransport: { mode: "Auto", durationMinutes: 40, costEur: 3, advice: "Attraversamento del Ponte 25 de Abril verso Lisbona." }
+                },
+                {
+                  id: "act-303",
+                  timeSlot": "15:00 - 16:00",
+                  durationMinutes: 60,
+                  title: "Ingresso Spettacolare a Lisbona dal Ponte 25 de Abril",
+                  category: "Trasporto",
+                  location: { name: "Ponte 25 de Abril", zone: "Lisbona" },
+                  description: "Ingresso trionfale in cittÃ  attraversando il ponte sospeso rosso che sovrasta il Tago.",
+                  whyVisit: "Un'emozione visiva indimenticabile paragonabile al Golden Gate di San Francisco.",
+                  priority: 5,
+                  costEur: 2.85,
+                  bookingRequired: false,
+                  designerTip: "Tieni pronto l'iPhone per registrare un video dalla macchina durante la traversata.",
+                  status: "pending",
+                  nextTransport: { mode: "Auto", durationMinutes: 20, costEur: 0, advice: "Riconsegna auto a Lisbona centro e check-in hotel." }
+                },
+                {
+                  id: "act-304",
+                  timeSlot": "17:30 - 20:30",
+                  durationMinutes: 180,
+                  title: "Riconsegna Auto, Check-in & Sera in PraÃ§a do ComÃ©rcio",
+                  category: "Quartiere",
+                  location: { name: "Baixa / Chiado", zone: "Lisbona Centro" },
+                  description: "Riconsegna dell'auto a noleggio, sistemazione in hotel e prima passeggiata serale lungo il Tago.",
+                  whyVisit: "Inizio ufficiale del soggiorno lisbonese in totale comoditÃ  senza auto.",
+                  priority: 5,
+                  costEur: 25,
+                  bookingRequired: true,
+                  bookingStatus: "Confermata",
+                  designerTip: "Cena tipica in centro e primo assaggio di baccalÃ .",
+                  status: "pending"
+                }
+              ]
+            },
+            {
+              id: "2026-09-07",
+              dayNumber: 4,
+              dateStr: "LunedÃ¬ 7 Settembre",
+              city: "Lisbona",
+              title: "Chiado, Convento do Carmo & Bairro Alto",
+              theme: "Il cuore elegante, i palazzi nobiliari, gli azulejos e i tramonti ad alta quota",
+              estimatedSteps: "18.000",
+              estimatedDistanceKm: "11.2 km",
+              dailyBudgetEur: 90,
+              activities: [
+                {
+                  id: "act-401",
+                  timeSlot": "09:30 - 10:30",
+                  durationMinutes: 60,
+                  title: "Passeggiata nel Chiado & CaffÃ¨ A Brasileira",
+                  category: "Quartiere",
+                  location: { name: "PraÃ§a LuÃ­s de CamÃµes", zone: "Chiado" },
+                  description: "Passeggiata tra librerie storiche e boutiques eleganti nel quartiere degli artisti e poeti.",
+                  whyVisit: "L'atmosfera letteraria e sofisticata della cittÃ .",
+                  priority: 4,
+                  costEur: 5,
+                  bookingRequired: false,
+                  designerTip: "Foto d'obbligo con la statua di bronzo del poeta Fernando Pessoa.",
+                  status: "pending"
+                },
+                {
+                  id: "act-402",
+                  timeSlot": "10:30 - 11:30",
+                  durationMinutes: 60,
+                  title: "Convento do Carmo (Chiesa senza Tetto)",
+                  category: "Monumento",
+                  location: { name: "Largo do Carmo", zone: "Chiado" },
+                  description: "Rovine della chiesa gotica distrutta dal terremoto del 1755, i cui archi si stagliano a cielo aperto.",
+                  whyVisit: "L'attrazione storicamente piÃ¹ suggestiva e visivamente unica di Lisbona.",
+                  priority: 5,
+                  costEur: 7,
+                  bookingRequired: false,
+                  designerTip: "Entra e inquadra gli archi gotici appuntiti verso il cielo azzurro.",
+                  status: "pending"
+                },
+                {
+                  id: "act-403",
+                  timeSlot": "13:30 - 14:00",
+                  durationMinutes: 30,
+                  title: "Degustazione Pastel de Nata da Manteigaria",
+                  category: "Gastronomia",
+                  location: { name: "Manteigaria", zone: "Chiado" },
+                  description: "Pausa golosa per assaggiare il miglior Pastel de Nata sfornato caldo con cannella.",
+                  whyVisit: "Esperienza gastronomica imperdibile.",
+                  priority: 5,
+                  costEur: 3,
+                  bookingRequired: false,
+                  designerTip: "Ascolta la campanella che suona quando sfornano un nuovo vassoio caldo!",
+                  status: "pending"
+                },
+                {
+                  id: "act-404",
+                  timeSlot": "18:30 - 19:30",
+                  durationMinutes: 60,
+                  title: "Tramonto al Miradouro de SÃ£o Pedro de AlcÃ¢ntara",
+                  category: "Panorama",
+                  location: { name: "SÃ£o Pedro de AlcÃ¢ntara", zone: "PrÃ­ncipe Real" },
+                  description: "Giardino alberato con fontane e vista frontale sul Castello di SÃ£o Jorge illuminato.",
+                  whyVisit: "Uno dei panorami serali piÃ¹ romantici e completi.",
+                  priority: 5,
+                  costEur: 0,
+                  bookingRequired: false,
+                  designerTip: "Prendi una bibita al chiosco del parco per goderti la vista.",
+                  status: "pending"
+                }
+              ]
+            },
+            {
+              id: "2026-09-08",
+              dayNumber: 5,
+              dateStr: "MartedÃ¬ 8 Settembre",
+              city: "Sintra & Ocean Coast",
+              title: "Sintra Fiabesca & Pozzo Iniziatico di Regaleira",
+              theme: "PalÃ¡cio da Pena, la Quinta esoterica e la magia delle montagne di Sintra",
+              estimatedSteps: "20.000",
+              estimatedDistanceKm: "13.0 km",
+              dailyBudgetEur: 115,
+              activities: [
+                {
+                  id: "act-501",
+                  timeSlot": "08:40 - 09:20",
+                  durationMinutes: 40,
+                  title: "Treno Rossio â Sintra",
+                  category: "Trasporto",
+                  location: { name: "Stazione Rossio", zone: "Baixa" },
+                  description: "Partenza in treno per evitare le code ed arrivare a Sintra freschi.",
+                  whyVisit: "Collegamento rapido, panoramico ed economico.",
+                  priority: 5,
+                  costEur: 3,
+                  bookingRequired: false,
+                  designerTip: "Utilizzare la carta Navegante o acquistare il biglietto prima alle macchinette.",
+                  status: "pending"
+                },
+                {
+                  id: "act-502",
+                  timeSlot": "09:45 - 12:30",
+                  durationMinutes: 165,
+                  title: "PalÃ¡cio Nacional da Pena",
+                  category: "Monumento",
+                  location: { name: "Monte de Pena", zone: "Sintra" },
+                  description: "Palazzo romantico dai colori sgargianti (giallo, rosso, viola) abbarbicato sulla montagna.",
+                  whyVisit: "L'icona fiabesca per eccellenza del Portogallo.",
+                  priority: 5,
+                  costEur: 20,
+                  bookingRequired: true,
+                  bookingStatus: "Urgente",
+                  designerTip: "Prenotare il primissimo slot delle 09:30 o 10:00 altrimenti si rischiano ore di fila.",
+                  status: "pending"
+                },
+                {
+                  id: "act-503",
+                  timeSlot": "14:15 - 16:30",
+                  durationMinutes: 135,
+                  title: "Quinta da Regaleira (Pozzo Iniziatico)",
+                  category: "Esperienza",
+                  location: { name: "Quinta da Regaleira", zone: "Sintra" },
+                  description: "Parco esoterico con la leggendaria torre rovesciata usata per riti massonici e cunicoli sotterranei.",
+                  whyVisit: "Incredibilmente suggestivo per un diciassettenne e per foto ricche di mistero.",
+                  priority: 5,
+                  costEur: 12,
+                  bookingRequired: true,
+                  bookingStatus: "Confermata",
+                  designerTip: "Scendi lungo la scala a chiocciola del Pozzo e inquadra la luce che entra dall'alto.",
+                  status: "pending"
+                }
+              ]
+            },
+            {
+              id: "2026-09-09",
+              dayNumber: 6,
+              dateStr: "MercoledÃ¬ 9 Settembre",
+              city: "Lisbona",
+              title: "Alfama, Castelo & I Vicoli Antichi",
+              theme: "Punti panoramici a picco sui tetti rossi e l'anima medievale di Lisbona",
+              estimatedSteps: "21.000",
+              estimatedDistanceKm: "13.5 km",
+              dailyBudgetEur: 85,
+              activities: [
+                {
+                  id: "act-601",
+                  timeSlot": "09:30 - 10:00",
+                  durationMinutes: 30,
+                  title: "SÃ© de Lisboa (Cattedrale)",
+                  category: "Monumento",
+                  location: { name: "Largo da SÃ©", zone: "Alfama" },
+                  description: "La cattedrale fortificata con facciata romanica e il leggendario passaggio del tram 28.",
+                  whyVisit: "L'edificio religioso piÃ¹ antico e fotografato del centro.",
+                  priority: 4,
+                  costEur: 5,
+                  bookingRequired: false,
+                  designerTip: "Mettiti sul marciapiede di fronte e aspetta il tram giallo per lo scatto perfetto.",
+                  status: "pending"
+                },
+                {
+                  id: "act-602",
+                  timeSlot": "10:15 - 12:00",
+                  durationMinutes: 105,
+                  title: "Castelo de SÃ£o Jorge",
+                  category: "Monumento",
+                  location: { name: "Castelo de SÃ£o Jorge", zone: "Alfama" },
+                  description: "Esplorazione dei camminamenti di ronda del castello con vista panoramica a 360Â°.",
+                  whyVisit: "Il punto panoramico piÃ¹ alto e la storia fortificata della cittÃ .",
+                  priority: 5,
+                  costEur: 15,
+                  bookingRequired: true,
+                  bookingStatus: "Urgente",
+                  designerTip: "Acquista i biglietti online in anticipo per saltare la coda all'ingresso.",
+                  status: "pending"
+                },
+                {
+                  id: "act-603",
+                  timeSlot": "12:30 - 13:45",
+                  durationMinutes: 75,
+                  title: "Pranzo Autentico a O Velho Eurico",
+                  category: "Gastronomia",
+                  location: { name: "O Velho Eurico", zone: "Mouraria" },
+                  description: "Tasca rivisitata da giovani chef con piatti tradizionali a prezzi pop.",
+                  whyVisit: "Miglior rapporto qualitÃ /prezzo per la cucina portoghese genuina.",
+                  priority: 5,
+                  costEur: 22,
+                  bookingRequired: true,
+                  bookingStatus: "Urgente",
+                  designerTip: "Ordina il Bacalhau a BrÃ¡s e le crocchette di maiale.",
+                  status: "pending"
+                },
+                {
+                  id: "act-604",
+                  timeSlot": "18:30 - 19:30",
+                  durationMinutes: 60,
+                  title: "Tramonto al Miradouro da Senhora do Monte",
+                  category: "Panorama",
+                  location: { name: "Senhora do Monte", zone: "GraÃ§a" },
+                  description: "Sosta sul belvedere piÃ¹ alto di Lisbona all'ombra dei pini con vista dorata.",
+                  whyVisit: "Punto fotografico supremo per la luce dorata del tramonto.",
+                  priority: 5,
+                  costEur: 0,
+                  bookingRequired: false,
+                  designerTip: "Perfetto per riprese timelaps con l'iPhone o foto panoramiche.",
+                  status: "pending"
+                }
+              ]
+            },
+            {
+              id: "2026-09-10",
+              dayNumber: 7,
+              dateStr: "GiovedÃ¬ 10 Settembre",
+              city: "Lisbona",
+              title: "BelÃ©m, L'Epoca delle Scoperte & LX Factory",
+              theme: "Stile manuelino, sculture sul fiume e archeologia industriale alternativa",
+              estimatedSteps: "17.500",
+              estimatedDistanceKm: "11.0 km",
+              dailyBudgetEur: 95,
+              activities: [
+                {
+                  id: "act-701",
+                  timeSlot": "10:15 - 11:30",
+                  durationMinutes: 75,
+                  title: "Mosteiro dos JerÃ³nimos (Chiostro Manuelino)",
+                  category: "Monumento",
+                  location: { name: "Mosteiro dos JerÃ³nimos", zone: "BelÃ©m" },
+                  description: "Capolavoro assoluto dell'architettura manuelina con sculture su pietra finissime.",
+                  whyVisit: "Patrimonio UNESCO d'importanza storica ed estetica incalcolabile.",
+                  priority: 5,
+                  costEur: 12,
+                  bookingRequired: true,
+                  bookingStatus: "Confermata",
+                  designerTip: "Concentrati sul chiostro interno e le colonne scolpite a forma di cime navali.",
+                  status: "pending"
+                },
+                {
+                  id: "act-702",
+                  timeSlot": "13:30 - 14:15",
+                  durationMinutes: 45,
+                  title: "PastÃ©is de BelÃ©m (L'Originale)",
+                  category: "Gastronomia",
+                  location: { name: "Rua de BelÃ©m 84", zone: "BelÃ©m" },
+                  description: "Il laboratorio storico dove dal 1837 si sforna il dolce originale con ricetta segreta.",
+                  whyVisit: "La tappa golosa per eccellenza del viaggio.",
+                  priority: 5,
+                  costEur: 4,
+                  bookingRequired: false,
+                  designerTip: "Siediti nelle sale interne ricoperte di azulejos invece di fare la fila fuori da asporto.",
+                  status: "pending"
+                },
+                {
+                  id: "act-703",
+                  timeSlot": "15:45 - 18:00",
+                  durationMinutes: 135,
+                  title: "LX Factory: Street Art e Libreria Ler Devagar",
+                  category: "Quartiere",
+                  location: { name: "LX Factory", zone: "AlcÃ¢ntara" },
+                  description: "Ex complesso tessile industriale trasformato in distretto creativo con gallerie, murales e boutiques.",
+                  whyVisit: "Posto giovane, dinamico e perfetto per acquisti di design unico.",
+                  priority: 5,
+                  costEur: 0,
+                  bookingRequired: false,
+                  designerTip: "Sali al secondo piano della libreria Ler Devagar per fotografare la bicicletta volante.",
+                  status: "pending"
+                }
+              ]
+            },
+            {
+              id: "2026-09-11",
+              dayNumber: 8,
+              dateStr: "VenerdÃ¬ 11 Settembre",
+              city: "Lisbona â Madrid",
+              title: "Arrivederci Portogallo & Salto Notturno a Madrid",
+              theme: "Ultimi acquisti, volo per la Spagna ed immersione nella Movida",
+              estimatedSteps: "13.000",
+              estimatedDistanceKm: "8.0 km",
+              dailyBudgetEur: 110,
+              activities: [
+                {
+                  id: "act-801",
+                  timeSlot": "10:00 - 12:30",
+                  durationMinutes: 150,
+                  title: "Ultima passeggiata in Baixa e pranzo veloce con Bifana",
+                  category: "Gastronomia",
+                  location: { name: "As Bifanas do Afonso", zone: "Baixa" },
+                  description: "Ultimi scatti tra le stradine del centro e spuntino tipico con il famoso panino di maiale marinato.",
+                  whyVisit: "L'ultimo saluto pieno di sapore alla capitale portoghese.",
+                  priority: 4,
+                  costEur: 10,
+                  bookingRequired: false,
+                  designerTip: "Metti la senape e la salsa piccante al piri-piri sulla Bifana.",
+                  status: "pending"
+                },
+                {
+                  id: "act-802",
+                  timeSlot": "19:05 - 21:30",
+                  durationMinutes: 145,
+                  title: "Volo LIS â MAD e Arrivo a Madrid",
+                  category: "Trasporto",
+                  location: { name: "Aeroporto Barajas", zone: "Madrid" },
+                  description: "Volo rapido di collegamento tra le due capitali iberiche e trasferimento in centro.",
+                  whyVisit: "Punto di svolta del viaggio per l'incursione spagnola.",
+                  priority: 5,
+                  costEur: 0,
+                  bookingRequired: true,
+                  bookingStatus: "Confermata",
+                  designerTip: "Prendi la linea 8 della Metro o un Uber per arrivare in hotel a Puerta del Sol.",
+                  status: "pending"
+                },
+                {
+                  id: "act-803",
+                  timeSlot": "22:30 - 23:45",
+                  durationMinutes: 75,
+                  title: "Tapas Notturne nel Quartiere MalasaÃ±a",
+                  category: "Gastronomia",
+                  location: { name: "MalasaÃ±a / Chueca", zone: "Madrid Centro" },
+                  description: "Uscita serale dinamica tra i locali storici di Madrid assaporando JamÃ³n IbÃ©rico e croquetas.",
+                  whyVisit: "Vivere in prima persona l'energia e la vita notturna madrilena.",
+                  priority: 5,
+                  costEur: 30,
+                  bookingRequired: false,
+                  designerTip: "In Spagna si cena tardissimo, alle 23:00 i locali sono nel pieno della vita!",
+                  status: "pending"
+                }
+              ]
+            },
+            {
+              id: "2026-09-12",
+              dayNumber: 9,
+              dateStr: "Sabato 12 Settembre",
+              city: "Madrid â Bergamo",
+              title: "Il Blitz Madrileno: Santiago BernabÃ©u & Monumenti",
+              theme: "Il tempio del calcio ristrutturato, la Gran VÃ­a e il rientro a casa",
+              estimatedSteps: "17.000",
+              estimatedDistanceKm: "11.0 km",
+              dailyBudgetEur: 90,
+              activities: [
+                {
+                  id: "act-901",
+                  timeSlot": "09:30 - 11:30",
+                  durationMinutes: 120,
+                  title: "Tour del Nuovo Stadio Santiago BernabÃ©u",
+                  category: "Esperienza",
+                  location: { name: "Estadio Santiago BernabÃ©u", zone: "ChamartÃ­n" },
+                  description: "Visita al capolavoro di ingegneria sportiva con campo retrattile, museo dei trofei e spalti.",
+                  whyVisit: "Punto culminante del viaggio per un ragazzo di 17 anni e un'opera architettonica pazzesca.",
+                  priority: 5,
+                  costEur: 28,
+                  bookingRequired: true,
+                  bookingStatus: "Urgente",
+                  designerTip: "Prenotate il primissimo slot delle 09:30 per completare il tour senza ritardi.",
+                  photoSpot: {
+                    name: "Spalti Superiori BernabÃ©u",
+                    subject: "Panoramica sullo stadio futuristico",
+                    bestTime: "Mattina",
+                    iphoneTip: "Inquadra il tetto in acciaio e il campo dall'alto della tribuna principale."
+                  },
+                  status: "pending"
+                },
+                {
+                  id: "act-902",
+                  timeSlot": "11:45 - 13:15",
+                  durationMinutes: 90,
+                  title: "Passeggiata Gran VÃ­a, Puerta del Sol & Plaza Mayor",
+                  category: "Passeggiata",
+                  location: { name: "Plaza Mayor", zone: "Madrid Centro" },
+                  description: "Dorsale monumentale di Madrid con l'Edificio Metropolis, l'Orso e il Corbezzolo e i portici reali.",
+                  whyVisit: "Tutti i simboli di Madrid in una singola camminata scenografica.",
+                  priority: 5,
+                  costEur: 0,
+                  bookingRequired: false,
+                  designerTip: "Scatta una foto con l'iconica insegna al neon Schweppes sulla Gran VÃ­a.",
+                  status: "pending"
+                },
+                {
+                  id: "act-903",
+                  timeSlot": "13:30 - 14:30",
+                  durationMinutes: 60,
+                  title: "Pranzo Tradizionale con Bocadillo de Calamares",
+                  category: "Gastronomia",
+                  location: { name: "Plaza Mayor", zone: "Centro" },
+                  description: "Pranzo al volo con il mitico panino ai calamari fritti nei locali storici attorno alla piazza.",
+                  whyVisit: "L'istituzione gastronomica popolare piÃ¹ famosa di Madrid.",
+                  priority: 4,
+                  costEur: 8,
+                  bookingRequired: false,
+                  designerTip: "Aggiungi maionese all'aglio e limone sul panino caldo.",
+                  status: "pending"
+                },
+                {
+                  id: "act-904",
+                  timeSlot": "14:45 - 15:30",
+                  durationMinutes: 45,
+                  title: "Palacio Real & Cattedrale dell'Almudena (Vista Esterna)",
+                  category: "Monumento",
+                  location: { name: "Plaza de Oriente", zone: "Centro" },
+                  description: "Visuale esterna dell'imponente palazzo reale barocco e dei giardini di Sabatini.",
+                  whyVisit: "Architettura regale di massima imponenza.",
+                  priority: 4,
+                  costEur: 0,
+                  bookingRequired: false,
+                  designerTip: "Spostamento rapido in hotel per recuperare i bagagli prima di andare all'aeroporto.",
+                  status: "pending"
+                },
+                {
+                  id: "act-905",
+                  timeSlot": "18:05 - 20:20",
+                  durationMinutes: 135,
+                  title: "Volo Madrid (MAD) â Bergamo (BGY)",
+                  category: "Trasporto",
+                  location: { name: "Aeroporto Barajas T4", zone: "Madrid" },
+                  description: "Rientro a Bergamo e conclusione del Travel Companion Tour 2026.",
+                  whyVisit: "Fine del fantastico viaggio in Portogallo e Spagna.",
+                  priority: 5,
+                  costEur: 0,
+                  bookingRequired: true,
+                  bookingStatus: "Confermata",
+                  status: "pending"
+                }
+              ]
+            }
+          ],
+          restaurants: [
+            { id: "rest-1", name: "O Velho Eurico", zone: "Mouraria", cuisine: "Tasca Portoghese Reinterpretata", priceRange: "â¬â¬", specialties: ["Bacalhau Ã  BrÃ¡s", "Riso con anatra"], whyRecommended: "Cucina tradizionale autentica preparata da giovani chef.", mealType: "Pranzo", bookingRequired: true, rating: 5, isFavorite: true },
+            { id: "rest-2", name: "Bairro do Avillez", zone: "Chiado", cuisine: "Portoghese Gourmet & Tapas", priceRange: "â¬â¬", specialties: ["Pica-pau di manzo", "Crocchette di baccalÃ "], whyRecommended: "Il complesso ristorativo dello chef stellato JosÃ© Avillez.", mealType: "Cena", bookingRequired: true, rating: 5, isFavorite: true },
+            { id: "rest-3", name: "O Camilo", zone: "Lagos / Algarve", cuisine: "Pesce Fresco & Frutti di Mare", priceRange: "â¬â¬â¬", specialties: ["Sardine alla griglia", "Cataplana de Marisco"], whyRecommended: "Ristorante a sbalzo sulla scogliera con vista sull'Oceano.", mealType: "Pranzo", bookingRequired: true, rating: 5, isFavorite: true },
+            { id: "rest-4", name: "ZÃ© InÃ¡cio", zone: "Porto Covo / Alentejo", cuisine: "Cucina Tradizionale Alentejana", priceRange: "â¬â¬", specialties: ["Arroz de Marisco", "Carne de Porco Ã  Alentejana"], whyRecommended: "Taverna tipica con pesce freschissimo della costa.", mealType: "Cena", bookingRequired: false, rating: 5, isFavorite: true }
+          ],
+          foodGuide: [
+            { id: "food-1", name: "Pastel de Nata", description: "Cestino di pasta sfoglia croccante con crema cotta al forno e caramellata.", bestWhere: "Manteigaria (Chiado)", priority: 5, tried: true },
+            { id: "food-2", name: "Cataplana de Marisco", description: "Stufato di frutti di mare, gamberi, pesce e verdure cotto in pentola di rame.", bestWhere: "Lagos / Algarve", priority: 5, tried: false },
+            { id: "food-3", name: "Bacalhau Ã  BrÃ¡s", description: "BaccalÃ  sfilacciato saltato in padella con patate sottili e uovo.", bestWhere: "O Velho Eurico (Mouraria)", priority: 5, tried: false },
+            { id: "food-4", name: "Bifana", description: "Panino tradizionale imbottito di maiale marinato nel vino e aglio.", bestWhere: "As Bifanas do Afonso (Baixa)", priority: 4, tried: false },
+            { id: "food-5", name: "Bocadillo de Calamares", description: "Panino tipico di Madrid con anelli di calamari fritti.", bestWhere: "Plaza Mayor (Madrid)", priority: 4, tried: false }
+          ],
+          checklists: [
+            { id: "chk-1", category: "Prima del viaggio", text: "Noleggio auto Faro con cambio automatico e Via Verde", completed: true },
+            { id: "chk-2", category: "Prima del viaggio", text: "Biglietti online PalÃ¡cio da Pena (Slot 09:30)", completed: true },
+            { id: "chk-3", category: "Prima del viaggio", text: "Prenotazione Tour Santiago BernabÃ©u (Slot 09:30)", completed: true },
+            { id: "chk-4", category: "Documenti", text: "Carte d'identitÃ  valide per l'espatrio (Mamma + Figlio)", completed: true },
+            { id: "chk-5", category: "Durante il viaggio", text: "Scaricare app Uber e Bolt con carta registrata", completed: true }
+          ]
+        };
 
         function App() {
-          const [activeDayIndex, setActiveDayIndex] = useState(4); // Default a Giorno 5 (Arrivo a Lisbona)
-          const activeDay = ITINERARY_DATA[activeDayIndex];
+          const [activeTab, setActiveTab] = useState('home');
+          const [selectedDayId, setSelectedDayId] = useState('2026-09-04');
+          const [tripData, setTripData] = useState(INITIAL_TRIP_DATA);
+          const [selectedActivity, setSelectedActivity] = useState(null);
+          const [nowMode, setNowMode] = useState(false);
+          const [activeBackupDayId, setActiveBackupDayId] = useState(null);
+          const [userExpenses, setUserExpenses] = useState([
+            { id: 'exp-1', category: 'Voli', amountEur: 666, description: 'Voli BGY-FAO, LIS-MAD, MAD-BGY per 2' },
+            { id: 'exp-2', category: 'Auto', amountEur: 140, description: 'Noleggio Auto 3 giorni Faro-Lisbona' },
+            { id: 'exp-3', category: 'Attrazioni', amountEur: 64, description: 'Biglietti Pena + Regaleira Sintra' }
+          ]);
+          const [newExpDesc, setNewExpDesc] = useState('');
+          const [newExpAmount, setNewExpAmount] = useState('');
 
-          useEffect(() => {
-            if (window.lucide) {
-              window.lucide.createIcons();
-            }
-          }, [activeDayIndex]);
+          const totalSpent = useMemo(() => {
+            return userExpenses.reduce((sum, exp) => sum + Number(exp.amountEur), 0);
+          }, [userExpenses]);
+
+          const currentDay = useMemo(() => {
+            return tripData.days.find(d => d.id === selectedDayId) || tripData.days[0];
+          }, [selectedDayId, tripData]);
+
+          const currentActivity = useMemo(() => {
+            if (!currentDay) return null;
+            return currentDay.activities.find(a => a.status === 'pending') || currentDay.activities[0];
+          }, [currentDay]);
+
+          const nextActivity = useMemo(() => {
+            if (!currentDay || !currentActivity) return null;
+            const idx = currentDay.activities.findIndex(a => a.id === currentActivity.id);
+            return currentDay.activities[idx + 1] || null;
+          }, [currentDay, currentActivity]);
+
+          const toggleActivityStatus = (dayId, actId) => {
+            setTripData(prev => {
+              const newDays = prev.days.map(day => {
+                if (day.id !== dayId) return day;
+                const newActs = day.activities.map(act => {
+                  if (act.id !== actId) return act;
+                  const nextStatus = act.status === 'pending' ? 'completed' : act.status === 'completed' ? 'skipped' : 'pending';
+                  return { ...act, status: nextStatus };
+                });
+                return { ...day, activities: newActs };
+              });
+              return { ...prev, days: newDays };
+            });
+          };
+
+          const toggleFoodTried = (foodId) => {
+            setTripData(prev => ({
+              ...prev,
+              foodGuide: prev.foodGuide.map(f => f.id === foodId ? { ...f, tried: !f.tried } : f)
+            }));
+          };
+
+          const toggleChecklist = (chkId) => {
+            setTripData(prev => ({
+              ...prev,
+              checklists: prev.checklists.map(c => c.id === chkId ? { ...c, completed: !c.completed } : c)
+            }));
+          };
+
+          const handleAddExpense = (e) => {
+            e.preventDefault();
+            if (!newExpDesc || !newExpAmount) return;
+            setUserExpenses(prev => [
+              ...prev,
+              { id: `exp-${Date.now()}`, category: 'Extra', amountEur: Number(newExpAmount), description: newExpDesc }
+            ]);
+            setNewExpDesc('');
+            setNewExpAmount('');
+          };
 
           return (
-            <div className="min-h-screen bg-slate-50 font-sans text-slate-800 pb-24">
+            <div className="flex flex-col h-screen max-w-md mx-auto bg-slate-950 text-slate-100 font-sans antialiased overflow-hidden select-none border-x border-slate-800 shadow-2xl">
+              
               {/* HEADER TOP BAR */}
-              <div className="bg-white px-5 pt-10 pb-4 rounded-b-3xl shadow-sm sticky top-0 z-20">
-                <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="text-2xl">🇵🇹</span>
-                      <h1 className="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-teal-600 to-cyan-500 bg-clip-text text-transparent">
-                        LISBON HORIZON
-                      </h1>
-                    </div>
-                    <div className="flex items-center text-xs text-slate-500 font-medium gap-3">
-                      <span className="flex items-center gap-1"><i data-lucide="calendar-days" className="w-3.5 h-3.5"></i> 30 Ago - 9 Set 2026</span>
-                      <span className="flex items-center gap-1"><i data-lucide="users" className="w-3.5 h-3.5"></i> 2 Viaggiatori</span>
-                    </div>
-                  </div>
+              <header className="flex items-center justify-between px-4 pt-10 pb-3 bg-slate-900/90 backdrop-blur-md border-b border-slate-800/80 z-20">
+                <div>
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-amber-400 flex items-center gap-1">
+                    <span className="inline-block w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span> Travel Companion
+                  </span>
+                  <h1 className="text-sm font-extrabold text-white tracking-tight">Portogallo Sud, Lisbona & Madrid</h1>
                 </div>
+                <button 
+                  onClick={() => setNowMode(!nowMode)}
+                  className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 shadow-lg ${
+                    nowMode ? 'bg-amber-400 text-slate-950 ring-2 ring-amber-300' : 'bg-slate-800 text-slate-200 border border-slate-700'
+                  }`}
+                >
+                  <span className="font-bold">â¡</span>
+                  {nowMode ? 'Vista Tab' : 'Cosa faccio ora?'}
+                </button>
+              </header>
 
-                <div className="flex justify-between items-center bg-slate-100/80 p-3 rounded-2xl">
-                  <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-                    <i data-lucide="sun" className="w-4 h-4 text-amber-500 fill-current"></i>
-                    26°C Lisbona
-                  </div>
-                  <div className="flex items-center gap-2 text-sm font-bold text-teal-700 bg-teal-50 px-3 py-1 rounded-full">
-                    <i data-lucide="hourglass" className="w-4 h-4"></i> 30d 12h 00m
-                  </div>
-                </div>
-              </div>
-
-              {/* HORIZONTAL DAY SELECTOR */}
-              <div className="mt-4 px-2">
-                <div className="flex overflow-x-auto gap-3 px-3 pb-4 snap-x hide-scrollbars">
-                  {ITINERARY_DATA.map((day, index) => {
-                    const isActive = index === activeDayIndex;
-                    return (
-                      <button
-                        key={day.dayNumber}
-                        onClick={() => setActiveDayIndex(index)}
-                        className={`snap-start shrink-0 flex flex-col items-center justify-center py-3 px-5 rounded-2xl transition-all duration-300 ${
-                          isActive 
-                            ? 'bg-teal-600 text-white shadow-lg shadow-teal-600/30 scale-105' 
-                            : 'bg-white text-slate-500 border border-slate-200 hover:bg-slate-50'
-                        }`}
-                      >
-                        <span className={`text-xs font-bold ${isActive ? 'text-teal-100' : 'text-slate-400'}`}>
-                          {day.weekday} {day.date.split(' ')[0]}
-                        </span>
-                        <span className={`text-sm font-bold mt-0.5 ${isActive ? 'text-white' : 'text-slate-700'}`}>
-                          Giorno {day.dayNumber}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* DAY OVERVIEW HERO CARD */}
-              <div className="px-5 mt-2">
-                <div className="bg-white rounded-3xl p-5 shadow-sm border border-slate-100 relative overflow-hidden">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-teal-50 to-transparent rounded-bl-full opacity-50 pointer-events-none" />
-                  
-                  <div className="relative z-10">
-                    <div className="inline-block px-3 py-1 bg-teal-50 text-teal-700 text-xs font-bold rounded-full mb-3 uppercase tracking-wider">
-                      Giorno {activeDay.dayNumber} • {activeDay.weekday} {activeDay.date}
+              {/* CONTENUTO PRINCIPALE SCROLLABILE */}
+              <main className="flex-1 overflow-y-auto px-4 py-4 space-y-5 pb-24 scrollbar-none">
+                
+                {/* MODALITÃ "COSA FACCIO ADESSO?" */}
+                {nowMode && currentActivity && (
+                  <div className="bg-gradient-to-br from-amber-500/20 via-slate-900 to-slate-900 p-5 rounded-2xl border border-amber-500/40 space-y-4 shadow-xl">
+                    <div className="flex justify-between items-center">
+                      <span className="px-2.5 py-1 bg-amber-400/20 text-amber-300 border border-amber-400/30 text-[10px] font-bold rounded-full uppercase tracking-wider">
+                        In questo momento
+                      </span>
+                      <span className="text-xs text-slate-400 flex items-center gap-1 font-mono">
+                        <span className="text-amber-400">ð</span> {currentActivity.timeSlot}
+                      </span>
                     </div>
-                    
-                    <h2 className="text-xl font-bold leading-tight mb-2 text-slate-800 pr-20">
-                      {activeDay.title}
-                    </h2>
-                    
-                    <p className="text-sm text-slate-500 mb-4 pr-10 leading-relaxed">
-                      Focus: {activeDay.focus}
+
+                    <div>
+                      <h2 className="text-lg font-extrabold text-white">{currentActivity.title}</h2>
+                      <p className="text-xs text-amber-200/90 flex items-center gap-1 mt-1">
+                        ð {currentActivity.location.name} â¢ {currentActivity.location.zone}
+                      </p>
+                    </div>
+
+                    <p className="text-xs text-slate-300 leading-relaxed bg-slate-950/60 p-3 rounded-xl border border-slate-800">
+                      {currentActivity.description}
                     </p>
 
-                    <div className="absolute right-0 top-10 transform translate-x-2 bg-gradient-to-r from-slate-800 to-slate-900 text-white p-3 rounded-l-2xl shadow-xl border-y border-l border-slate-700 flex flex-col items-start gap-1 w-32">
-                      <span className="text-[10px] text-slate-300 font-medium uppercase tracking-wider">Passi stimati</span>
-                      <div className="flex items-center gap-1.5 font-bold text-sm">
-                        <i data-lucide="footprints" className="w-3.5 h-3.5 text-teal-400"></i>
-                        {activeDay.steps}
+                    {currentActivity.designerTip && (
+                      <div className="text-xs text-amber-200 bg-amber-950/30 p-2.5 rounded-xl border border-amber-900/40">
+                        ð¡ <strong>Consiglio Designer:</strong> {currentActivity.designerTip}
+                      </div>
+                    )}
+
+                    {currentActivity.nextTransport && (
+                      <div className="flex items-center justify-between text-xs bg-slate-800/80 p-3 rounded-xl border border-slate-700">
+                        <span className="text-slate-400 flex items-center gap-1">
+                          ð Prossimo spostamento:
+                        </span>
+                        <span className="font-semibold text-white">
+                          {currentActivity.nextTransport.mode} ({currentActivity.nextTransport.durationMinutes} min)
+                        </span>
+                      </div>
+                    )}
+
+                    {nextActivity && (
+                      <div className="pt-2 border-t border-slate-800">
+                        <span className="text-[10px] uppercase tracking-wider text-slate-400 font-bold block mb-1">Tappa Successiva:</span>
+                        <div className="flex justify-between items-center text-xs text-slate-300 bg-slate-950/40 p-2.5 rounded-lg border border-slate-800/50">
+                          <span className="font-semibold text-white">{nextActivity.title}</span>
+                          <span className="text-slate-400 font-mono">{nextActivity.timeSlot}</span>
+                        </div>
+                      </div>
+                    )}
+
+                    <button 
+                      onClick={() => toggleActivityStatus(selectedDayId, currentActivity.id)}
+                      className="w-full py-3 bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs uppercase tracking-wider rounded-xl transition shadow-lg flex items-center justify-center gap-2"
+                    >
+                      â Segna come completata
+                    </button>
+                  </div>
+                )}
+
+                {/* TAB 1: OGGI & DASHBOARD */}
+                {activeTab === 'home' && !nowMode && (
+                  <div className="space-y-4">
+                    
+                    {/* CARDE SCHEDA GIORNO */}
+                    <div className="bg-slate-900 rounded-2xl p-4 border border-slate-800 shadow-md space-y-3">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <span className="text-[10px] text-amber-400 font-bold uppercase tracking-wider block">{currentDay.dateStr}</span>
+                          <h2 className="text-lg font-extrabold text-white">{currentDay.city}</h2>
+                        </div>
+                        <div className="text-right">
+                          <span className="text-[10px] text-slate-400 block uppercase">Budget Giorno</span>
+                          <span className="text-xs font-bold text-emerald-400">â¬{currentDay.dailyBudgetEur}</span>
+                        </div>
+                      </div>
+
+                      <p className="text-xs text-slate-300 italic border-l-2 border-amber-400 pl-2 py-0.5">
+                        "{currentDay.theme}"
+                      </p>
+
+                      {/* METRICHE GIORNATA */}
+                      <div className="grid grid-cols-3 gap-2 pt-1 text-center">
+                        <div className="bg-slate-950/60 p-2 rounded-xl border border-slate-800/80">
+                          <span className="text-[9px] text-slate-400 block uppercase font-bold">Passi Stimati</span>
+                          <span className="text-xs font-bold text-white">{currentDay.estimatedSteps}</span>
+                        </div>
+                        <div className="bg-slate-950/60 p-2 rounded-xl border border-slate-800/80">
+                          <span className="text-[9px] text-slate-400 block uppercase font-bold">Distanza</span>
+                          <span className="text-[11px] font-bold text-white truncate block">{currentDay.estimatedDistanceKm}</span>
+                        </div>
+                        <div className="bg-slate-950/60 p-2 rounded-xl border border-slate-800/80">
+                          <span className="text-[9px] text-slate-400 block uppercase font-bold">Tappe</span>
+                          <span className="text-xs font-bold text-white">{currentDay.activities.length} tappe</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* SELETTORE GIORNO QUICK-SWIPE */}
+                    <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
+                      {tripData.days.map((day) => (
+                        <button
+                          key={day.id}
+                          onClick={() => setSelectedDayId(day.id)}
+                          className={`flex-shrink-0 px-3 py-2 rounded-xl text-xs font-medium transition-all ${
+                            selectedDayId === day.id
+                              ? 'bg-amber-400 text-slate-950 font-bold shadow-md'
+                              : 'bg-slate-900 text-slate-400 border border-slate-800 hover:text-white'
+                          }`}
+                        >
+                          G{day.dayNumber} - {day.city.split(' ')[0]}
+                        </button>
+                      ))}
+                    </div>
+
+                    {/* TIMELINE VERTICALE */}
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center">
+                        <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Timeline della Giornata</h3>
+                        {currentDay.backupPlan && (
+                          <button 
+                            onClick={() => setActiveBackupDayId(activeBackupDayId ? null : currentDay.id)}
+                            className="text-[10px] text-rose-400 bg-rose-950/40 border border-rose-800/60 px-2 py-1 rounded-full flex items-center gap-1 font-bold"
+                          >
+                            â ï¸ Piano B
+                          </button>
+                        )}
+                      </div>
+
+                      {/* BOX PIANO B SE ATTIVATO */}
+                      {activeBackupDayId === currentDay.id && currentDay.backupPlan && (
+                        <div className="bg-rose-950/30 border border-rose-800/80 p-3.5 rounded-xl space-y-1.5">
+                          <div className="flex items-center gap-1.5 text-rose-300 font-bold text-xs">
+                            â ï¸ Piano B: {currentDay.backupPlan.title}
+                          </div>
+                          <p className="text-xs text-rose-200/80 leading-relaxed">{currentDay.backupPlan.description}</p>
+                        </div>
+                      )}
+
+                      <div className="relative pl-4 border-l-2 border-slate-800 space-y-3 my-2">
+                        {currentDay.activities.map((act) => (
+                          <div key={act.id} className="relative">
+                            {/* PALLINO TIMELINE */}
+                            <div 
+                              onClick={() => toggleActivityStatus(selectedDayId, act.id)}
+                              className={`absolute -left-[21px] top-2.5 w-3.5 h-3.5 rounded-full border-2 cursor-pointer transition-all ${
+                                act.status === 'completed' ? 'bg-emerald-400 border-emerald-300' :
+                                act.status === 'skipped' ? 'bg-slate-600 border-slate-500' : 'bg-amber-400 border-slate-950'
+                              }`}
+                            />
+
+                            <div 
+                              onClick={() => setSelectedActivity(act)}
+                              className={`p-3 rounded-xl border transition cursor-pointer ${
+                                act.status === 'completed' ? 'bg-slate-900/40 border-slate-800 opacity-60' :
+                                act.status === 'skipped' ? 'bg-slate-950/40 border-slate-900 opacity-40 line-through' :
+                                'bg-slate-900 border-slate-800 hover:border-slate-700'
+                              }`}
+                            >
+                              <div className="flex justify-between items-start">
+                                <span className="text-[10px] font-mono text-amber-400 font-bold">{act.timeSlot}</span>
+                                <span className="text-[9px] px-1.5 py-0.5 bg-slate-800 text-slate-300 rounded border border-slate-700">
+                                  {'â­'.repeat(act.priority)}
+                                </span>
+                              </div>
+                              
+                              <h4 className="text-xs font-bold text-white mt-1">{act.title}</h4>
+                              <p className="text-[11px] text-slate-400 flex items-center gap-1 mt-0.5">
+                                ð {act.location.zone} â¢ {act.category}
+                              </p>
+
+                              {act.designerTip && (
+                                <div className="mt-2 text-[10px] text-amber-200/90 bg-amber-950/30 p-2 rounded-lg border border-amber-900/40">
+                                  ð¡ {act.designerTip}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                  </div>
+                )}
+
+                {/* TAB 2: ITINERARIO COMPLETO */}
+                {activeTab === 'itinerary' && (
+                  <div className="space-y-3">
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Itinerario Completo (4 - 12 Settembre)</h3>
+                    {tripData.days.map((day) => (
+                      <div key={day.id} className="bg-slate-900 border border-slate-800 rounded-xl p-3.5 space-y-2">
+                        <div className="flex justify-between items-center border-b border-slate-800 pb-2">
+                          <div>
+                            <span className="text-[10px] font-bold text-amber-400">GIORNO {day.dayNumber}</span>
+                            <h4 className="text-xs font-bold text-white">{day.dateStr} â {day.city}</h4>
+                          </div>
+                          <span className="text-xs font-bold text-emerald-400">â¬{day.dailyBudgetEur}</span>
+                        </div>
+                        <p className="text-xs text-slate-300">{day.title}</p>
+                        <div className="flex justify-between items-center text-[10px] text-slate-400 pt-1">
+                          <span>{day.activities.length} Tappe in programma</span>
+                          <button 
+                            onClick={() => { setSelectedDayId(day.id); setActiveTab('home'); }}
+                            className="text-amber-400 font-bold flex items-center gap-0.5"
+                          >
+                            Vedi dettaglio &gt;
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* TAB 3: ESPLORA (RISTORANTI & CIBO) */}
+                {activeTab === 'explore' && (
+                  <div className="space-y-4">
+                    <div>
+                      <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Ristoranti Consigliati</h3>
+                      <div className="space-y-2.5">
+                        {tripData.restaurants.map((rest) => (
+                          <div key={rest.id} className="bg-slate-900 border border-slate-800 rounded-xl p-3 space-y-1">
+                            <div className="flex justify-between items-start">
+                              <h4 className="text-xs font-bold text-white">{rest.name}</h4>
+                              <span className="text-xs font-bold text-amber-400">{rest.priceRange}</span>
+                            </div>
+                            <p className="text-[11px] text-slate-400">{rest.zone} â¢ {rest.cuisine}</p>
+                            <p className="text-[11px] text-slate-300 italic">{rest.whyRecommended}</p>
+                            <div className="flex gap-1 flex-wrap pt-1">
+                              {rest.specialties.map((spec, i) => (
+                                <span key={i} className="text-[9px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded border border-slate-700">
+                                  {spec}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Cosa Mangiare (Guida Gastronomica)</h3>
+                      <div className="space-y-2">
+                        {tripData.foodGuide.map((food) => (
+                          <div 
+                            key={food.id}
+                            onClick={() => toggleFoodTried(food.id)}
+                            className={`p-3 rounded-xl border transition cursor-pointer flex justify-between items-center ${
+                              food.tried ? 'bg-emerald-950/20 border-emerald-800/60' : 'bg-slate-900 border-slate-800'
+                            }`}
+                          >
+                            <div>
+                              <h5 className="text-xs font-bold text-white flex items-center gap-1.5">
+                                {food.name} {food.tried && <span className="text-[9px] bg-emerald-400/20 text-emerald-300 border border-emerald-400/30 px-1.5 py-0.5 rounded-full font-bold">Provato!</span>}
+                              </h5>
+                              <p className="text-[11px] text-slate-400 mt-0.5">{food.description}</p>
+                              <span className="text-[10px] text-amber-300/80 block mt-1">Dove: {food.bestWhere}</span>
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     </div>
                   </div>
-                </div>
-              </div>
+                )}
 
-              {/* TIMELINE EVENTS */}
-              <div className="px-5 mt-8 relative">
-                <div className="absolute left-[39px] top-4 bottom-10 w-0.5 bg-teal-100/80 rounded-full z-0" />
-
-                <div className="flex flex-col gap-6 relative z-10">
-                  {activeDay.events.map((event, idx) => (
-                    <div key={idx} className="flex gap-4">
-                      <div className="flex-shrink-0 relative">
-                        <div className="w-10 h-10 rounded-full bg-white border-2 border-teal-100 shadow-sm flex items-center justify-center text-lg z-10 relative">
-                          {event.icon}
-                        </div>
+                {/* TAB 4: PRENOTAZIONI & AUTO & CHECKLIST */}
+                {activeTab === 'bookings' && (
+                  <div className="space-y-4">
+                    {/* NOLEGGIO AUTO */}
+                    <div className="bg-slate-900 border border-slate-800 rounded-xl p-3.5 space-y-2">
+                      <div className="flex justify-between items-center text-xs">
+                        <span className="font-bold text-amber-400 flex items-center gap-1">ð Noleggio Auto Faro â Lisbona</span>
+                        <span className="px-2 py-0.5 bg-emerald-950 text-emerald-300 border border-emerald-800 rounded text-[9px] font-bold">
+                          3 Giorni
+                        </span>
                       </div>
-
-                      <div className="flex-grow bg-white rounded-2xl p-4 shadow-sm border border-slate-100">
-                        <div className="flex justify-between items-start mb-2">
-                          <span className="text-xs font-bold text-teal-600 bg-teal-50 px-2 py-0.5 rounded-md">
-                            {event.time}
-                          </span>
-                          <span className="flex items-center gap-1 text-[10px] font-semibold text-slate-500 bg-slate-100 px-2 py-1 rounded-full">
-                            📍 {event.transport}
-                          </span>
-                        </div>
-                        
-                        <h3 className="text-base font-bold text-slate-800 mb-1 leading-snug">
-                          {event.title}
-                        </h3>
-                        
-                        <p className="text-sm text-slate-500 leading-relaxed">
-                          {event.desc}
-                        </p>
+                      <p className="text-xs text-slate-200">{tripData.carRental.type}</p>
+                      <div className="text-[11px] text-slate-400 space-y-0.5">
+                        <div>Ritiro: <strong className="text-slate-200">{tripData.carRental.pickup}</strong></div>
+                        <div>Riconsegna: <strong className="text-slate-200">{tripData.carRental.dropoff}</strong></div>
                       </div>
                     </div>
-                  ))}
-                </div>
-              </div>
 
-              {/* BOTTOM NAVIGATION BAR */}
-              <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-6 py-3 flex justify-between items-center z-50 pb-safe">
-                <button className="flex flex-col items-center gap-1 text-teal-600 w-16">
-                  <i data-lucide="map-pin" className="w-5 h-5 text-teal-600 fill-teal-100"></i>
-                  <span className="text-[10px] font-bold">Itinerario</span>
+                    <div>
+                      <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Voli (â¬666 Totali per 2)</h3>
+                      <div className="space-y-2">
+                        {tripData.flights.map((fl) => (
+                          <div key={fl.id} className="bg-slate-900 border border-slate-800 rounded-xl p-3 space-y-1.5">
+                            <div className="flex justify-between items-center text-xs">
+                              <span className="font-bold text-amber-400 flex items-center gap-1">âï¸ {fl.route}</span>
+                              <span className="px-2 py-0.5 bg-emerald-950 text-emerald-300 border border-emerald-800 rounded text-[9px] font-bold">
+                                {fl.status}
+                              </span>
+                            </div>
+                            <div className="flex justify-between text-[11px] text-slate-300">
+                              <span>Data: {fl.date}</span>
+                              <span className="font-mono">{fl.time}</span>
+                            </div>
+                            <div className="text-right text-[11px] text-slate-400">
+                              Totale 2 pers: <strong className="text-white">â¬{fl.totalCost}</strong>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Checklist Viaggio</h3>
+                      <div className="space-y-1.5">
+                        {tripData.checklists.map((chk) => (
+                          <div 
+                            key={chk.id}
+                            onClick={() => toggleChecklist(chk.id)}
+                            className="bg-slate-900 border border-slate-800 rounded-xl p-3 flex items-center justify-between text-xs cursor-pointer"
+                          >
+                            <span className={chk.completed ? 'line-through text-slate-500' : 'text-slate-200'}>
+                              {chk.text}
+                            </span>
+                            <input 
+                              type="checkbox" 
+                              checked={chk.completed} 
+                              readOnly
+                              className="w-4 h-4 rounded accent-amber-400"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* TAB 5: BUDGET TRACKER */}
+                {activeTab === 'budget' && (
+                  <div className="space-y-4">
+                    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
+                      <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Monitoraggio Spese</h3>
+                      
+                      <div className="grid grid-cols-2 gap-2 text-center">
+                        <div className="bg-slate-950 p-2.5 rounded-xl border border-slate-800">
+                          <span className="text-[9px] text-slate-400 block uppercase font-bold">Budget Previsto</span>
+                          <span className="text-sm font-extrabold text-white">â¬{tripData.tripInfo.totalBudgetEur}</span>
+                        </div>
+                        <div className="bg-slate-950 p-2.5 rounded-xl border border-slate-800">
+                          <span className="text-[9px] text-slate-400 block uppercase font-bold">Totale Speso</span>
+                          <span className="text-sm font-extrabold text-amber-400">â¬{totalSpent}</span>
+                        </div>
+                      </div>
+
+                      <div className="pt-1">
+                        <div className="flex justify-between text-[11px] mb-1 text-slate-300 font-bold">
+                          <span>Utilizzo Budget</span>
+                          <span>{((totalSpent / tripData.tripInfo.totalBudgetEur) * 100).toFixed(0)}%</span>
+                        </div>
+                        <div className="w-full bg-slate-950 h-2 rounded-full overflow-hidden border border-slate-800">
+                          <div 
+                            className="bg-amber-400 h-full transition-all duration-500"
+                            style={{ width: `${Math.min((totalSpent / tripData.tripInfo.totalBudgetEur) * 100, 100)}%` }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* FORM REGISTRA SPESA */}
+                    <form onSubmit={handleAddExpense} className="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                      <h4 className="text-xs font-bold text-white uppercase tracking-wider">Aggiungi Nuova Spesa</h4>
+                      <input 
+                        type="text" 
+                        placeholder="Descrizione spesa (es. Ristorante, Pedaggio)"
+                        value={newExpDesc}
+                        onChange={e => setNewExpDesc(e.target.value)}
+                        className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 outline-none"
+                      />
+                      <div className="flex gap-2">
+                        <input 
+                          type="number" 
+                          placeholder="Importo in â¬"
+                          value={newExpAmount}
+                          onChange={e => setNewExpAmount(e.target.value)}
+                          className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 outline-none"
+                        />
+                        <button 
+                          type="submit"
+                          className="px-4 py-2.5 bg-amber-400 text-slate-950 font-bold text-xs rounded-xl flex items-center gap-1"
+                        >
+                          + Aggiungi
+                        </button>
+                      </div>
+                    </form>
+
+                    {/* REGISTRO SPESE */}
+                    <div className="space-y-1.5">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Storico Spese</h4>
+                      {userExpenses.map((exp) => (
+                        <div key={exp.id} className="bg-slate-900/60 border border-slate-800 rounded-xl p-2.5 flex justify-between items-center text-xs">
+                          <div>
+                            <span className="font-semibold text-white block">{exp.description}</span>
+                            <span className="text-[10px] text-slate-400">{exp.category}</span>
+                          </div>
+                          <span className="font-mono font-bold text-amber-400">â¬{exp.amountEur}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+              </main>
+
+              {/* MODALE DETTAGLIO ATTIVITÃ */}
+              {selectedActivity && (
+                <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 z-50">
+                  <div className="bg-slate-900 border border-slate-800 w-full max-w-md rounded-t-2xl sm:rounded-2xl p-5 space-y-3.5 max-h-[85vh] overflow-y-auto">
+                    <div className="flex justify-between items-start">
+                      <span className="text-[10px] font-bold text-amber-400 uppercase tracking-wider">{selectedActivity.category}</span>
+                      <button 
+                        onClick={() => setSelectedActivity(null)}
+                        className="text-slate-400 hover:text-white p-1 text-base font-bold"
+                      >
+                        â
+                      </button>
+                    </div>
+
+                    <h3 className="text-base font-extrabold text-white">{selectedActivity.title}</h3>
+                    
+                    <p className="text-xs text-slate-300 leading-relaxed">{selectedActivity.description}</p>
+
+                    <div className="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-1 text-xs">
+                      <div className="text-amber-300 font-bold">PerchÃ© andarci:</div>
+                      <div className="text-slate-300">{selectedActivity.whyVisit}</div>
+                    </div>
+
+                    {selectedActivity.photoSpot && (
+                      <div className="bg-amber-950/20 border border-amber-900/40 p-3 rounded-xl space-y-1 text-xs">
+                        <div className="text-amber-400 font-bold flex items-center gap-1">
+                          ð¸ Consiglio Fotografico iPhone
+                        </div>
+                        <p className="text-slate-300">{selectedActivity.photoSpot.iphoneTip}</p>
+                      </div>
+                    )}
+
+                    <button 
+                      onClick={() => setSelectedActivity(null)}
+                      className="w-full py-2.5 bg-slate-800 text-white font-bold text-xs rounded-xl mt-2"
+                    >
+                      Chiudi
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* BOTTOM NAVIGATION BAR (FIXED) */}
+              <nav className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-slate-900/90 backdrop-blur-lg border-t border-slate-800/80 flex justify-around py-2 px-1 z-30">
+                <button 
+                  onClick={() => { setActiveTab('home'); setNowMode(false); }}
+                  className={`flex flex-col items-center gap-1 transition-all ${activeTab === 'home' && !nowMode ? 'text-amber-400 font-bold' : 'text-slate-400'}`}
+                >
+                  <span>ð§­</span>
+                  <span className="text-[9px]">Oggi</span>
                 </button>
-                <button className="flex flex-col items-center gap-1 text-slate-400 w-16">
-                  <i data-lucide="map" className="w-5 h-5"></i>
-                  <span className="text-[10px] font-medium">Mappa</span>
+
+                <button 
+                  onClick={() => { setActiveTab('itinerary'); setNowMode(false); }}
+                  className={`flex flex-col items-center gap-1 transition-all ${activeTab === 'itinerary' ? 'text-amber-400 font-bold' : 'text-slate-400'}`}
+                >
+                  <span>ð</span>
+                  <span className="text-[9px]">Itinerario</span>
                 </button>
-                <button className="flex flex-col items-center gap-1 text-slate-400 w-16 relative">
-                  <div className="absolute -top-1.5 right-2 w-2 h-2 bg-red-400 rounded-full border border-white"></div>
-                  <i data-lucide="headphones" className="w-5 h-5"></i>
-                  <span className="text-[10px] font-medium">Audio</span>
+
+                <button 
+                  onClick={() => { setActiveTab('explore'); setNowMode(false); }}
+                  className={`flex flex-col items-center gap-1 transition-all ${activeTab === 'explore' ? 'text-amber-400 font-bold' : 'text-slate-400'}`}
+                >
+                  <span>ð²</span>
+                  <span className="text-[9px]">Esplora</span>
                 </button>
-                <button className="flex flex-col items-center gap-1 text-slate-400 w-16">
-                  <i data-lucide="wallet" className="w-5 h-5"></i>
-                  <span className="text-[10px] font-medium">Budget</span>
+
+                <button 
+                  onClick={() => { setActiveTab('bookings'); setNowMode(false); }}
+                  className={`flex flex-col items-center gap-1 transition-all ${activeTab === 'bookings' ? 'text-amber-400 font-bold' : 'text-slate-400'}`}
+                >
+                  <span>ð</span>
+                  <span className="text-[9px]">Auto/Voli</span>
                 </button>
-                <button className="flex flex-col items-center gap-1 text-slate-400 w-16">
-                  <i data-lucide="bot" className="w-5 h-5"></i>
-                  <span className="text-[10px] font-medium">AI Agent</span>
+
+                <button 
+                  onClick={() => { setActiveTab('budget'); setNowMode(false); }}
+                  className={`flex flex-col items-center gap-1 transition-all ${activeTab === 'budget' ? 'text-amber-400 font-bold' : 'text-slate-400'}`}
+                >
+                  <span>ð³</span>
+                  <span className="text-[9px]">Budget</span>
                 </button>
-              </div>
+              </nav>
+
             </div>
           );
         }
@@ -350,4 +1362,3 @@
     </script>
 </body>
 </html>
-
