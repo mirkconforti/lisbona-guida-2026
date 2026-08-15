@@ -1,0 +1,1188 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0D3049">
+<title>Portugal · Travel Companion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F1EAD9;
+  --paper2:#E8DFC9;
+  --ink:#17262C;
+  --ink-soft:#4A5A5F;
+  --navy:#0D3049;
+  --navy2:#123B58;
+  --azul:#1C6088;
+  --azul-pale:#D6E8EE;
+  --azul-pale2:#EAF3F6;
+  --ochre:#B9752E;
+  --ochre-pale:#F3E1C9;
+  --coral:#AE4A3B;
+  --coral-pale:#F3DCD6;
+  --olive:#5E7048;
+  --olive-pale:#E1E7D4;
+  --line:rgba(13,48,73,.14);
+  --card:#FFFFFF;
+  --shadow:0 1px 2px rgba(13,48,73,.06), 0 8px 24px -12px rgba(13,48,73,.18);
+  --radius:16px;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:'Inter',system-ui,sans-serif;
+  background:var(--paper);
+  color:var(--ink);
+  -webkit-font-smoothing:antialiased;
+  overscroll-behavior-y:none;
+}
+.serif{font-family:'Fraunces',serif;}
+#root{max-width:540px;margin:0 auto;min-height:100vh;background:var(--paper);position:relative;display:flex;flex-direction:column;}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;cursor:pointer;}
+
+/* ---- azulejo pattern ---- */
+.azulejo-band{
+  background-color:var(--navy);
+  background-image:
+    radial-gradient(circle at 12px 12px, rgba(255,255,255,.10) 0 3px, transparent 3.5px),
+    radial-gradient(circle at 36px 36px, rgba(255,255,255,.10) 0 3px, transparent 3.5px),
+    linear-gradient(135deg, rgba(255,255,255,.05) 25%, transparent 25%, transparent 75%, rgba(255,255,255,.05) 75%),
+    linear-gradient(45deg, rgba(255,255,255,.05) 25%, transparent 25%, transparent 75%, rgba(255,255,255,.05) 75%);
+  background-size:48px 48px, 48px 48px, 24px 24px, 24px 24px;
+  background-position:0 0, 24px 24px, 0 0, 0 0;
+}
+
+/* ---- top header ---- */
+.hero{
+  color:#fff;
+  padding:22px 20px 26px;
+  border-radius:0 0 26px 26px;
+  position:relative;
+  overflow:hidden;
+}
+.hero-top{display:flex;align-items:center;justify-content:space-between;position:relative;z-index:2;}
+.hero-flag{font-size:22px;letter-spacing:.02em;}
+.hero-title{font-family:'Fraunces',serif;font-weight:600;font-size:26px;line-height:1.05;margin:10px 0 4px;position:relative;z-index:2;}
+.hero-sub{font-size:12.5px;opacity:.82;letter-spacing:.02em;position:relative;z-index:2;}
+.hero-route{font-size:11.5px;opacity:.72;margin-top:6px;position:relative;z-index:2;}
+.hero-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.22);
+  padding:4px 10px;border-radius:999px;font-size:11.5px;font-weight:600;
+}
+
+/* ---- content scroll area ---- */
+.view{padding:16px 16px 100px;flex:1;}
+.section-eyebrow{
+  font-size:11px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--azul);
+  margin:22px 0 8px;display:flex;align-items:center;gap:8px;
+}
+.section-eyebrow::after{content:"";flex:1;height:1px;background:var(--line);}
+h2.title{font-family:'Fraunces',serif;font-weight:600;font-size:20px;margin:2px 0 12px;}
+p.lede{font-size:13.5px;color:var(--ink-soft);line-height:1.5;margin:0 0 14px;}
+
+/* ---- cards ---- */
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:14px;
+  margin-bottom:12px;
+}
+.card.flat{box-shadow:none;}
+.card-tap{cursor:pointer;}
+.row{display:flex;align-items:center;gap:10px;}
+.row.between{justify-content:space-between;}
+.row.top{align-items:flex-start;}
+
+/* ---- badges / pills ---- */
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:700;letter-spacing:.02em;padding:3px 8px;border-radius:999px;white-space:nowrap;}
+.badge.must{background:var(--coral-pale);color:var(--coral);}
+.badge.high{background:var(--ochre-pale);color:var(--ochre);}
+.badge.worth{background:var(--azul-pale);color:var(--azul);}
+.badge.optional{background:#EDEAE0;color:var(--ink-soft);}
+.badge.info{background:var(--azul-pale2);color:var(--azul);}
+.badge.olive{background:var(--olive-pale);color:var(--olive);}
+.chip{
+  display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;
+  background:#fff;border:1px solid var(--line);padding:7px 12px;border-radius:999px;
+  white-space:nowrap;
+}
+.chip.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+.chip-scroll{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 10px;scrollbar-width:none;}
+.chip-scroll::-webkit-scrollbar{display:none;}
+
+/* ---- buttons ---- */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  font-weight:700;font-size:13px;padding:10px 14px;border-radius:12px;border:none;
+}
+.btn.primary{background:var(--navy);color:#fff;}
+.btn.ghost{background:var(--azul-pale2);color:var(--azul);}
+.btn.outline{background:transparent;border:1px solid var(--line);color:var(--ink);}
+.btn.block{width:100%;}
+.btn.sm{padding:7px 11px;font-size:12px;border-radius:10px;}
+
+/* ---- timeline ---- */
+.timeline{position:relative;margin-top:6px;}
+.timeline::before{
+  content:"";position:absolute;left:29px;top:6px;bottom:6px;width:2px;
+  background:repeating-linear-gradient(to bottom, var(--line) 0 5px, transparent 5px 10px);
+}
+.t-item{display:flex;gap:12px;margin-bottom:14px;position:relative;}
+.t-time{
+  width:58px;flex-shrink:0;font-family:'Fraunces',serif;font-weight:600;font-size:14px;color:var(--navy);
+  padding-top:10px;text-align:right;
+}
+.t-dot{
+  width:16px;height:16px;border-radius:50%;background:#fff;border:3px solid var(--azul);
+  margin-top:11px;flex-shrink:0;z-index:1;
+}
+.t-dot.must{border-color:var(--coral);}
+.t-dot.high{border-color:var(--ochre);}
+.t-dot.done{background:var(--olive);border-color:var(--olive);}
+.t-body{flex:1;min-width:0;}
+
+/* ---- detail rows ---- */
+.kv{display:flex;gap:8px;font-size:12.5px;padding:6px 0;border-bottom:1px dashed var(--line);}
+.kv:last-child{border-bottom:none;}
+.kv .k{color:var(--ink-soft);width:96px;flex-shrink:0;}
+.kv .v{flex:1;font-weight:500;}
+.source-note{font-size:10.5px;color:var(--ink-soft);margin-top:8px;font-style:italic;}
+.verify{color:var(--coral);font-weight:700;}
+
+/* ---- bottom nav ---- */
+.tabbar{
+  position:sticky;bottom:0;left:0;right:0;
+  background:rgba(241,234,217,.92);backdrop-filter:blur(10px);
+  border-top:1px solid var(--line);
+  display:flex;justify-content:space-around;padding:8px 4px calc(8px + env(safe-area-inset-bottom));
+  z-index:50;
+}
+.tab{display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;color:var(--ink-soft);font-size:9.5px;font-weight:700;padding:4px 8px;border-radius:10px;letter-spacing:.02em;}
+.tab .ic{font-size:19px;}
+.tab.on{color:var(--navy);}
+.tab.on .ic{transform:translateY(-1px);}
+
+/* ---- quick chips home ---- */
+.quick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0 4px;}
+.quick-item{
+  background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 4px;
+  display:flex;flex-direction:column;align-items:center;gap:5px;font-size:10.5px;font-weight:700;color:var(--navy);
+}
+.quick-item .ic{font-size:19px;}
+
+/* ---- day tabs ---- */
+.day-tabs{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 12px;scrollbar-width:none;}
+.day-tabs::-webkit-scrollbar{display:none;}
+.day-tab{
+  flex-shrink:0;width:58px;text-align:center;padding:10px 4px;border-radius:14px;background:#fff;
+  border:1px solid var(--line);
+}
+.day-tab .dn{font-size:10px;font-weight:700;color:var(--ink-soft);}
+.day-tab .dd{font-family:'Fraunces',serif;font-weight:600;font-size:17px;}
+.day-tab.on{background:var(--navy);border-color:var(--navy);}
+.day-tab.on .dn{color:rgba(255,255,255,.65);}
+.day-tab.on .dd{color:#fff;}
+
+/* ---- misc ---- */
+.divider{height:1px;background:var(--line);margin:14px 0;}
+.checkbox{width:20px;height:20px;border-radius:6px;border:2px solid var(--azul);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;}
+.checkbox.on{background:var(--olive);border-color:var(--olive);}
+.progress{height:8px;border-radius:99px;background:var(--azul-pale);overflow:hidden;}
+.progress > div{height:100%;background:var(--olive);border-radius:99px;}
+.alert{
+  background:var(--coral-pale);border:1px solid rgba(174,74,59,.25);color:#7A3226;
+  padding:10px 12px;border-radius:12px;font-size:12.5px;font-weight:600;line-height:1.4;margin-bottom:10px;
+  display:flex;gap:8px;align-items:flex-start;
+}
+textarea.note-input{width:100%;border:1px solid var(--line);border-radius:12px;padding:10px;font-family:inherit;font-size:13px;resize:vertical;min-height:70px;background:#fff;}
+.modal-overlay{position:fixed;inset:0;background:rgba(13,20,24,.5);z-index:99;display:flex;align-items:flex-end;justify-content:center;}
+.sheet{background:var(--paper);width:100%;max-width:540px;border-radius:22px 22px 0 0;max-height:88vh;overflow-y:auto;padding:6px 16px 24px;animation:up .22s ease;}
+@keyframes up{from{transform:translateY(24px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+.sheet-handle{width:38px;height:4px;background:var(--line);border-radius:99px;margin:10px auto 6px;}
+.close-x{position:absolute;top:14px;right:14px;background:rgba(255,255,255,.15);color:#fff;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:15px;border:none;}
+.small{font-size:11.5px;color:var(--ink-soft);}
+.tag-region{font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-soft);}
+.photo-card{background:linear-gradient(180deg,var(--azul-pale2),#fff);border:1px solid var(--azul-pale);border-radius:14px;padding:12px;margin-top:10px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+::selection{background:var(--ochre-pale);}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+/* =========================================================
+   PORTOGALLO 4–11 SET 2026 — TRAVEL COMPANION
+   Dati di viaggio — vedi note "source"/"DA VERIFICARE" inline
+   ========================================================= */
+function mapsQ(q){ return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(q); }
+function mapsDir(q){ return "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(q); }
+
+const ICONS = {flight:"✈️",car:"🚗",walk:"🚶",trek:"🥾",kayak:"🛶",beach:"🏖️",photo:"📸",food:"🍴",hotel:"🏨",
+  castle:"🏰",garden:"🌳",view:"🌅",tram:"🚋",train:"🚆",bus:"🚌",ticket:"🎟️",sea:"🌊",coffee:"☕",sunset:"🌇",
+  walk2:"🗺️",church:"⛪",market:"🛍️"};
+
+const PR = {must:{label:"MUST DO", emoji:"🔥", cls:"must"}, high:{label:"HIGH PRIORITY", emoji:"⭐", cls:"high"},
+  worth:{label:"WORTH IT", emoji:"✅", cls:"worth"}, optional:{label:"OPTIONAL", emoji:"➕", cls:"optional"}};
+
+/* ---------------- DAYS ---------------- */
+const DAYS = [
+{
+  id:1, date:"2026-09-04", label:"4 SET", weekday:"Venerdì", region:"ALGARVE",
+  title:"Faro → Praia da Marinha → Benagil → Algar Seco → Lagos",
+  hotel:{name:"Aqualuz Lagos by The Editory (o alternativa simile)", note:"4★, piscina, 10 min a piedi dal centro/marina di Lagos, parcheggio disponibile. Alternativa più economica: Vinyl Flat B&B (vicino marina, ~8.2/10). Prezzo a notte in alta stagione settembrina: DA VERIFICARE su Booking/Hotel diretto — indicativamente 100–150€/notte, sopra il budget ideale di 100€ per l'alta stagione dell'Algarve.", nights:2, map:mapsQ("Aqualuz Lagos by The Editory")},
+  activities:[
+    {t:"07:45", ti:"Atterraggio Faro (FAO)", ic:ICONS.flight, pr:"must", du:"—", co:"Volo prenotato", ds:"Volo Bergamo (BGY) → Faro (FAO), arrivo 07:45. Ritiro bagagli ~20–30 min.", al:"Sbarco presto: molti banchi noleggio aprono dalle 06:00, ma conferma l'orario esatto della tua compagnia."},
+    {t:"08:20", ti:"Ritiro auto a noleggio", ic:ICONS.car, pr:"must", du:"30–40 min", co:"Vedi sezione Auto", ds:"Banco noleggio in aeroporto o navetta al deposito esterno (variabile per compagnia). Controlla l'auto e fotografa ogni graffio prima di firmare.", bk:{level:"red", note:"PRENOTARE SUBITO — l'auto non è ancora prenotata", url:"#"}, map:mapsQ("Faro Airport car rental")},
+    {t:"09:15", ti:"Faro → Praia da Marinha", ic:ICONS.car, pr:"worth", du:"Maps 45 min · reale 55–60 min", co:"Pedaggio A22 ~4–5€", ds:"Autostrada A22 poi strade secondarie verso Benagil/Marinha. Faro stessa non riceve tempo oggi: è solo il punto di arrivo.", map:mapsDir("Praia da Marinha, Lagoa")},
+    {t:"10:15", ti:"Praia da Marinha", ic:ICONS.beach, pr:"must", du:"1 h", co:"Gratis (parcheggio a pagamento)", ds:"La spiaggia più fotografata dell'Algarve: scogliere ocra, archi naturali, acqua turchese vista dall'alto. Solo panorama, non bagno (lo facciamo a Camilo).",
+      ph:{title:"📸 MUST PHOTO — Praia da Marinha", how:"Dal parcheggio, 5 min a piedi fino alla scalinata panoramica in cima alla scogliera.", cosa:"Gli archi e i faraglioni dall'alto, con la scalinata di legno come elemento in primo piano.", dir:"Verso ovest per includere gli archi principali in controluce dolce.", ultrawide:"Sì, essenziale per includere l'intera baia.", momento:"Mattina presto (come oggi): luce laterale morbida, meno gente."},
+      pk:{name:"Parque de Estacionamento Praia da Marinha", note:"Grande parcheggio sterrato, a pagamento in alta stagione (~2–3€/h). Si riempie dopo le 10:30 in settembre — arrivare presto come da programma.", map:mapsQ("Parque de Estacionamento Praia da Marinha")}},
+    {t:"11:20", ti:"Marinha → Benagil", ic:ICONS.car, pr:"worth", du:"10 min", co:"—", ds:"Brevissimo spostamento costiero.", map:mapsDir("Benagil, Lagoa")},
+    {t:"11:40", ti:"Kayak alla Grotta di Benagil", ic:ICONS.kayak, pr:"must", du:"2 h (tour guidato)", co:"€25–45 a persona, stimato — verificare all'atto della prenotazione", ds:"Dal 2024 l'accesso alla grotta è consentito SOLO con operatore autorizzato: niente più nuoto libero né kayak fai-da-te. Tour guidato in kayak da spiaggia di Benagil o Carvalho, ~1,5–2h, con soste per foto dentro la grotta (i motoscafi non possono fermarsi, i kayak sì).",
+      bk:{level:"red", note:"PRENOTARE SUBITO — nei weekend estivi gli slot migliori si esauriscono. Cerca operatori locali certificati (es. Benagil Kayak Tours, Kayak Adventures Algarve) con recensioni verificate e cancellazione gratuita.", url:"https://www.google.com/search?q=Benagil+cave+kayak+tour+official+operator"},
+      al:"Divieto assoluto di nuoto verso la grotta e di sbarco sulla spiaggia interna: multe da €300 a oltre €200.000 per gli operatori che sgarrano — quindi nessuna guida se la piega.",
+      ph:{title:"📸 MUST PHOTO — Grotta di Benagil", how:"Solo dall'interno del kayak, guidati.", cosa:"Il foro di luce zenitale sopra la spiaggia interna della grotta.", dir:"Verso l'apertura superiore, telefono in custodia impermeabile.", ultrawide:"Sì, la grotta è enorme.", momento:"Mattina, luce che entra dall'alto più intensa."},
+      pk:{name:"Parcheggio Benagil (Rua Praia de Benagil)", note:"Piccolo e affollato in stagione — molti operatori includono un punto di ritrovo con indicazioni proprie.", map:mapsQ("Praia de Benagil parking")}},
+    {t:"13:45", ti:"Pranzo a Benagil / Carvoeiro", ic:ICONS.food, pr:"worth", du:"1 h", co:"€15–25 a persona", ds:"Cataplana o peixe grelhado in una tasca di pesce vicino alla spiaggia, non il primo ristorante turistico sul lungomare."},
+    {t:"15:00", ti:"Algar Seco (Carvoeiro)", ic:ICONS.sea, pr:"high", du:"45 min", co:"Gratis", ds:"Formazioni rocciose spettacolari, grotte, il celebre 'Boneco' (finestra naturale sul mare) raggiungibile con breve sentiero e scalini.",
+      ph:{title:"📸 GREAT PHOTO — Algar Seco / Boneco", how:"10 min a piedi dal parcheggio lungo sentiero e scale scavate nella roccia.", cosa:"La finestra naturale 'Boneco' incorniciando l'oceano.", ultrawide:"Sì.", momento:"Metà pomeriggio, luce ancora alta."},
+      pk:{name:"Parque Algar Seco", note:"Parcheggio gratuito ma piccolo, arriva fuori dai picchi di mezzogiorno.", map:mapsQ("Algar Seco parking Carvoeiro")}},
+    {t:"16:00", ti:"Carvoeiro → Lagos", ic:ICONS.car, pr:"worth", du:"Maps 35 min · reale 45 min", co:"—", ds:"Strada N125, possibile traffico in uscita da Carvoeiro nel tardo pomeriggio.", map:mapsDir("Lagos, Portugal")},
+    {t:"17:00", ti:"Check-in hotel a Lagos", ic:ICONS.hotel, pr:"worth", du:"—", co:"Vedi Hotel", ds:"Primo di due pernottamenti a Lagos."},
+    {t:"18:30", ti:"Passeggiata Marina + centro storico di Lagos", ic:ICONS.walk, pr:"worth", du:"1,5 h", co:"Gratis", ds:"Mura storiche, Praça Gil Eanes, stradine acciottolate. Ottimo per orientarsi prima di domani."},
+    {t:"20:15", ti:"Cena a Lagos", ic:ICONS.food, pr:"worth", du:"1,5 h", co:"€20–30 a persona", ds:"Cerca una tasca fuori dall'asse principale turistico (zona Rua 25 de Abril è la più battuta, prova le traverse)."}
+  ]
+},
+{
+  id:2, date:"2026-09-05", label:"5 SET", weekday:"Sabato", region:"ALGARVE",
+  title:"Ponta da Piedade → Praia do Camilo → Sagres → Cabo de São Vicente",
+  hotel:{name:"Stessa struttura di Lagos", note:"Seconda notte, nessun trasferimento.", nights:0},
+  activities:[
+    {t:"08:00", ti:"Colazione a Lagos", ic:ICONS.coffee, pr:"worth", du:"45 min", co:"—", ds:"—"},
+    {t:"08:45", ti:"Ponta da Piedade — solo a piedi", ic:ICONS.walk2, pr:"must", du:"1,5–2 h reali (cammino + foto + soste)", co:"Gratis (parcheggio a pagamento)", ds:"NIENTE barca: il percorso a piedi è superiore. Dal parcheggio, scendi la lunga scalinata (144 gradini) verso il faro; da lì il sentiero costeggia scogliere dorate, archi e faraglioni con più punti panoramici. Ordine consigliato: parcheggio → passerella sul promontorio ovest (vista d'insieme) → scalinata verso il livello del mare → grotte e archi via sentiero secondario verso est.",
+      ph:{title:"📸 MUST PHOTO — Ponta da Piedade", how:"Dal promontorio sopra la scalinata principale, poi di nuovo dal livello dell'acqua.", cosa:"Gli archi dorati e i faraglioni, con le barche turchesi in basso per scala.", ultrawide:"Sì per il primo punto panoramico; standard/tele per gli archi ravvicinati.", momento:"Mattina presto come oggi, luce calda e radente sulla roccia ocra."},
+      pk:{name:"Parque de Estacionamento Ponta da Piedade", note:"Parcheggio grande ma pieno entro le 10 in alta stagione — arriviamo presto apposta.", map:mapsQ("Ponta da Piedade parking")}},
+    {t:"10:45", ti:"Ponta da Piedade → Praia do Camilo", ic:ICONS.car, pr:"worth", du:"5 min", co:"—", map:mapsDir("Praia do Camilo, Lagos")},
+    {t:"11:00", ti:"Praia do Camilo — il bagno del viaggio", ic:ICONS.beach, pr:"high", du:"1 h 15", co:"Gratis (parcheggio a pagamento, passerella di legno)", ds:"Scelta come UNICO bagno del viaggio: piccola baia protetta tra scogliere ocra, accesso via passerella e scalinata di legno scenografica, acqua limpida e meno affollata di Dona Ana. Alternative scartate: Dona Ana (più grande ma più affollata e meno spettacolare all'accesso) e Praia dos Estudantes (bella ma minuscola, poco spazio per rilassarsi).",
+      pk:{name:"Parque Praia do Camilo", note:"Piccolo, si riempie presto — considerare di lasciare l'auto a Ponta da Piedade e camminare (15 min) se pieno.", map:mapsQ("Praia do Camilo parking")}},
+    {t:"12:15", ti:"Lagos → Sagres", ic:ICONS.car, pr:"worth", du:"Maps 30 min · reale 35–40 min", co:"—", map:mapsDir("Sagres, Portugal")},
+    {t:"13:00", ti:"Pranzo a Sagres", ic:ICONS.food, pr:"worth", du:"1 h", co:"€18–28 a persona", ds:"Peixe grelhado o marisco in una tasca vicino al porto, lontano dall'asse principale."},
+    {t:"14:15", ti:"Fortaleza de Sagres", ic:ICONS.castle, pr:"worth", du:"1 h", co:"Ingresso stimato €3–5 — DA VERIFICARE orari/prezzo 2026", ds:"Promontorio fortificato legato a Enrico il Navigatore: mura, la grande 'Rosa dos Ventos' e panorami mozzafiato sull'oceano su tre lati. Solo esterni/spalti, niente visita museale approfondita."},
+    {t:"16:00", ti:"Sagres → Cabo de São Vicente", ic:ICONS.car, pr:"worth", du:"10 min", co:"—", map:mapsDir("Cabo de São Vicente")},
+    {t:"16:15", ti:"Cabo de São Vicente — scogliere e attesa del tramonto", ic:ICONS.view, pr:"must", du:"~3,5 h (esplorazione + attesa tramonto)", co:"Gratis", ds:"Il punto più sud-occidentale d'Europa continentale: scogliere a picco di 75 m, faro attivo dal 1846, vento quasi sempre forte. Vale la pena restare fino al tramonto (circa 20:05–20:10 a inizio settembre): è uno dei tramonti più famosi del continente.",
+      ph:{title:"📸 MUST PHOTO — Cabo de São Vicente al tramonto", how:"Passeggiata libera lungo il bordo della scogliera (tenersi a distanza di sicurezza, niente parapetti in molti punti).", cosa:"Il faro in controluce con il sole che scende nell'Atlantico.", dir:"Verso ovest/sud-ovest.", ultrawide:"Sì per includere faro e scogliere insieme.", momento:"Ultimi 30–40 minuti prima del tramonto e i 10 minuti successivi (cielo che si accende)."},
+      al:"Vento spesso molto forte: tenere bambini/oggetti lontani dal bordo, molti tratti sono privi di barriere."},
+    {t:"20:15", ti:"Cena a Sagres", ic:ICONS.food, pr:"worth", du:"1,5 h", co:"€20–28 a persona", ds:"Cena dopo il tramonto per evitare di guidare al buio più del necessario."},
+    {t:"21:45", ti:"Rientro a Lagos", ic:ICONS.car, pr:"worth", du:"35–40 min", co:"—", ds:"Strada N268 poco illuminata di notte: guida prudente.", map:mapsDir("Lagos, Portugal")}
+  ]
+},
+{
+  id:3, date:"2026-09-06", label:"6 SET", weekday:"Domenica", region:"COSTA VICENTINA",
+  title:"Carrapateira → Arrifana (trekking) → Vila Nova de Milfontes",
+  hotel:{name:"Casa do Adro (o alternativa centrale simile)", note:"Piccola struttura centrale a Vila Nova de Milfontes, colazione molto apprezzata nelle recensioni. Prezzo a notte: DA VERIFICARE — stima €90–130/notte in alta stagione. Alternative: Duna Parque Beach Club (più grande, vicino spiaggia), Hotel Dom Nuno (centrale).", nights:1, map:mapsQ("Casa do Adro Vila Nova de Milfontes")},
+  activities:[
+    {t:"08:00", ti:"Colazione e check-out a Lagos", ic:ICONS.coffee, pr:"worth", du:"1 h", co:"—", ds:"Carichiamo i bagagli in auto: oggi si cambia base."},
+    {t:"08:45", ti:"Lagos → Carrapateira", ic:ICONS.car, pr:"worth", du:"Maps 45 min · reale 55 min", co:"—", ds:"Si esce dall'Algarve verso la Costa Vicentina, il paesaggio cambia: più selvaggio, meno costruito.", map:mapsDir("Carrapateira, Portugal")},
+    {t:"09:40", ti:"Praia da Bordeira (Carrapateira)", ic:ICONS.beach, pr:"must", du:"1 h", co:"Gratis", ds:"Spiaggia immensa e selvaggia con dune, laguna del fiume Bordeira e scogliere: la Costa Vicentina in un colpo d'occhio. Solo panorama/foto, mare spesso mosso.",
+      ph:{title:"📸 MUST PHOTO — Praia da Bordeira", how:"Dal miradouro sopra il parcheggio o scendendo verso le dune.", cosa:"Le curve del fiume Bordeira che disegnano la sabbia prima di incontrare l'oceano.", ultrawide:"Sì.", momento:"Mattina, luce piatta ma paesaggio comunque scenografico."},
+      pk:{name:"Parque Praia da Bordeira", note:"Ampio parcheggio sterrato gratuito.", map:mapsQ("Praia da Bordeira parking")}},
+    {t:"10:40", ti:"Carrapateira → Arrifana", ic:ICONS.car, pr:"worth", du:"Maps 20 min · reale 25 min", co:"—", map:mapsDir("Praia da Arrifana, Aljezur")},
+    {t:"11:05", ti:"Trekking costiero da Arrifana (Rota Vicentina)", ic:ICONS.trek, pr:"high", du:"2,5–3 h reali (cammino + foto + acqua/pausa) su ~7–8 km", co:"Gratis", ds:"Anello sul tratto della Rota Vicentina attorno al Farol/Fortaleza da Arrifana: sentiero panoramico sul bordo delle scogliere verso sud, con vista sulla spiaggia di Arrifana dall'alto e formazioni rocciose scolpite dal vento. Difficoltà media: fondo sterrato/roccioso, alcuni tratti esposti vicino al bordo, dislivello moderato (100–150 m cumulati). Non tecnico ma richiede attenzione ai bordi.",
+      ph:{title:"📸 GREAT PHOTO — scogliere di Arrifana", how:"Lungo il sentiero, punti panoramici segnalati a intervalli regolari.", cosa:"La spiaggia di Arrifana incorniciata dalle scogliere frastagliate, spesso con surfisti in acqua.", ultrawide:"Sì.", momento:"Metà mattina, ancora luce laterale morbida."},
+      al:"Portare acqua (min. 1L a persona), scarpe da trekking, cappello: pochissima ombra lungo il percorso. Verificare bandiera meteo/vento forte prima di avvicinarsi al bordo.",
+      pk:{name:"Parque Farol da Arrifana", note:"Parcheggio gratuito presso il faro/fortaleza, punto di partenza e arrivo del percorso.", map:mapsQ("Farol da Arrifana parking")}},
+    {t:"13:45", ti:"Pranzo ad Arrifana", ic:ICONS.food, pr:"worth", du:"1 h", co:"€18–26 a persona", ds:"Ristorante con vista sulla spiaggia, pesce alla griglia — meritato dopo il trekking."},
+    {t:"15:00", ti:"Arrifana → Vila Nova de Milfontes", ic:ICONS.car, pr:"worth", du:"Maps 1h05 · reale 1h20", co:"—", ds:"Strada N120/N393 attraverso Aljezur e Odemira: panoramica ma con curve, prevedere soste se serve.", map:mapsDir("Vila Nova de Milfontes")},
+    {t:"16:30", ti:"Check-in a Vila Nova de Milfontes", ic:ICONS.hotel, pr:"worth", du:"—", co:"Vedi Hotel", ds:"Il borgo è scelto anche per spezzare comodamente il trasferimento verso l'Arrábida di domani."},
+    {t:"17:30", ti:"Borgo e foce del Mira", ic:ICONS.walk, pr:"worth", du:"1,5 h", co:"Gratis", ds:"Passeggiata lungo il lungofiume, Forte de São Clemente, spiaggia fluviale della Franquia."},
+    {t:"19:40", ti:"Tramonto sulla foce del Mira", ic:ICONS.sunset, pr:"high", du:"40 min", co:"Gratis", ds:"Uno dei tramonti più fotografati dell'Alentejo costiero: il fiume che si allarga verso l'oceano.",
+      ph:{title:"📸 GREAT PHOTO — tramonto sul Mira", how:"Dal lungofiume o dalla spiaggia della Franquia.", cosa:"Barche da pesca in controluce sull'acqua piatta del fiume.", momento:"20 minuti prima/dopo il tramonto (~20:00 inizio settembre)."}},
+    {t:"20:45", ti:"Cena a Vila Nova de Milfontes", ic:ICONS.food, pr:"worth", du:"1,5 h", co:"€20–30 a persona", ds:"Marisco o peixe fresco: il borgo ha un'ottima scena gastronomica per le sue dimensioni."}
+  ]
+},
+{
+  id:4, date:"2026-09-07", label:"7 SET", weekday:"Lunedì", region:"ARRÁBIDA → LISBONA",
+  title:"Vila Nova de Milfontes → Serra da Arrábida → riconsegna auto a Lisbona",
+  hotel:{name:"Zona Baixa/Chiado, Lisbona", note:"Prima di 4 notti a Lisbona. Vedi sezione Hotel per candidati specifici.", nights:1},
+  activities:[
+    {t:"08:00", ti:"Colazione e check-out", ic:ICONS.coffee, pr:"worth", du:"45 min", co:"—", ds:"Giornata di trasferimento lungo: partenza puntuale importante."},
+    {t:"08:45", ti:"Vila Nova de Milfontes → Serra da Arrábida", ic:ICONS.car, pr:"worth", du:"Maps 2h05 · reale 2h20", co:"Pedaggio A2 ~15–18€", ds:"Autostrada A2 verso nord, poi la panoramica N379-1 attraverso il parco naturale. Considerare una sosta caffè a metà strada.", map:mapsDir("Serra da Arrábida")},
+    {t:"11:10", ti:"Strada panoramica N379-1 e miradouros dell'Arrábida", ic:ICONS.view, pr:"must", du:"1 h", co:"Gratis", ds:"Una delle strade più scenografiche del Portogallo: curve tra macchia mediterranea, calcare bianco e mare turchese in stile mediterraneo (non oceanico). Fermate ai miradouri principali lungo il percorso.",
+      ph:{title:"📸 MUST PHOTO — Miradouro do Portinho da Arrábida", how:"Piazzole di sosta segnalate lungo la N379-1.", cosa:"La baia turchese di Portinho incorniciata dalle scogliere calcaree bianche.", ultrawide:"Sì.", momento:"Metà mattina, luce alta e mare più luminoso."}},
+    {t:"12:10", ti:"Portinho da Arrábida", ic:ICONS.sea, pr:"high", du:"1 h", co:"Parcheggio a pagamento in alta stagione", ds:"Piccola baia dall'acqua color Caraibi: solo vista/foto (niente bagno, priorità già usata a Camilo). Breve passeggiata sul lungomare.",
+      pk:{name:"Parque Portinho da Arrábida", note:"Accesso talvolta regolamentato in alta stagione con navette da parcheggi esterni — verificare il giorno stesso eventuali limitazioni alla circolazione.", map:mapsQ("Portinho da Arrabida parking")}},
+    {t:"13:15", ti:"Pranzo in zona Arrábida", ic:ICONS.food, pr:"worth", du:"1 h", co:"€18–28 a persona", ds:"Ristorante di pesce vicino a Portinho o Sesimbra — NON Setúbal, come da programma."},
+    {t:"14:45", ti:"Arrábida → Lisbona (riconsegna auto)", ic:ICONS.car, pr:"must", du:"Maps 55 min · reale 1h15 (traffico urbano)", co:"—", ds:"Attraverso il Ponte 25 de Abril o la circonvallazione, con possibile traffico da rush hour pomeridiano.", map:mapsDir("Lisbon Airport")},
+    {t:"16:15", ti:"Riconsegna auto a noleggio", ic:ICONS.car, pr:"must", du:"30 min", co:"Verifica eventuale costo one-way Faro→Lisbona", ds:"Consigliata riconsegna in Aeroporto di Lisbona (LIS): punto di restituzione più semplice per accedere poi al centro in metro. Fotografare l'auto alla riconsegna come alla consegna.", al:"Il noleggio one-way (ritiro Faro, riconsegna Lisbona) spesso comporta un supplemento: verificarlo PRIMA di prenotare, non alla riconsegna."},
+    {t:"17:00", ti:"Aeroporto → hotel (metro Linea Rossa + cambio)", ic:ICONS.train, pr:"worth", du:"30–35 min reali", co:"€1,65 biglietto singolo Metro (o carta Navegante ricaricabile)", ds:"Linea Rossa da Aeroporto fino a Alameda/São Sebastião, poi cambio per Baixa-Chiado (Linea Blu/Verde a seconda della fermata hotel)."},
+    {t:"17:45", ti:"Check-in hotel a Lisbona", ic:ICONS.hotel, pr:"worth", du:"—", co:"—", ds:"—"},
+    {t:"19:00", ti:"Passeggiata serale leggera Baixa/Chiado + cena", ic:ICONS.walk, pr:"worth", du:"2 h", co:"€20–30 a persona", ds:"Primo assaggio della città senza affaticarsi troppo: domani inizia la parte intensa di Lisbona."}
+  ]
+},
+{
+  id:5, date:"2026-09-08", label:"8 SET", weekday:"Martedì", region:"LISBONA",
+  title:"Baixa → Alfama → Castelo de São Jorge → Graça → Tram 28 → Chiado",
+  hotel:{name:"Stesso hotel", nights:0},
+  activities:[
+    {t:"08:30", ti:"Colazione", ic:ICONS.coffee, pr:"worth", du:"45 min", co:"—", ds:"—"},
+    {t:"09:15", ti:"Baixa — Praça do Comércio e Rua Augusta", ic:ICONS.walk2, pr:"worth", du:"45 min", co:"Gratis", ds:"Il cuore ricostruito dopo il terremoto del 1755: piazza affacciata sul Tago, arco trionfale, griglia ordinata di strade."},
+    {t:"10:00", ti:"Sé de Lisboa → Alfama", ic:ICONS.walk2, pr:"worth", du:"1 h", co:"Gratis", ds:"Solo esterno della cattedrale (niente visite religiose approfondite, come richiesto). Si entra nel dedalo di Alfama: vicoli, azulejos, panni stesi."},
+    {t:"11:00", ti:"Miradouro de Santa Luzia + Portas do Sol", ic:ICONS.view, pr:"must", du:"30 min", co:"Gratis", ds:"Due miradouros a pochi passi l'uno dall'altro, tra i più fotogenici di Lisbona: pergolato di glicine, azulejos, vista sui tetti di Alfama fino al Tago.",
+      ph:{title:"📸 MUST PHOTO — Miradouro de Santa Luzia", how:"Direttamente sulla piazzetta, nessun accesso particolare.", cosa:"I tetti rossi di Alfama e il Tago incorniciati dal pergolato e dai pannelli di azulejos.", momento:"Mattina: meno gente, luce che disegna bene i tetti."}},
+    {t:"11:45", ti:"Castelo de São Jorge", ic:ICONS.castle, pr:"must", du:"1,5 h reali (ingresso + spalti + foto)", co:"€17 adulto (fonte ufficiale, verificato gennaio 2026)", ds:"Fortezza moresca sulla collina più alta del centro: mura, torri, giardini con pavoni, e il miglior panorama a 360° della città. Priorità a mura e panorama, non alle sale museali interne.",
+      bk:{level:"orange", note:"Consigliata prenotazione online sulla piattaforma ufficiale BOL (BilheteiraOnline) per saltare la fila.", url:"https://CasteloSaoJorge.bol.pt/"},
+      ph:{title:"📸 MUST PHOTO — spalti del Castelo de São Jorge", how:"Cammino di ronda accessibile dall'interno del castello.", cosa:"Il fiume Tago, il ponte 25 de Abril e i tetti di Alfama e Baixa insieme.", ultrawide:"Sì.", momento:"Metà mattina/inizio pomeriggio per luce piena sulla città."},
+      al:"Orario estivo (1 mar–31 ott): 09:00–21:00, ultimo ingresso 20:30. Fonte: sito ufficiale castelodesaojorge.pt."},
+    {t:"13:15", ti:"Pranzo vicino Alfama/Castelo", ic:ICONS.food, pr:"worth", du:"1 h", co:"€15–25 a persona", ds:"Tasca con petiscos, lontano dai ristoranti-vetrina proprio sotto il castello."},
+    {t:"14:30", ti:"Miradouro da Graça / Senhora do Monte", ic:ICONS.view, pr:"high", du:"30 min", co:"Gratis", ds:"Meno turistico di Santa Luzia, panorama forse ancora più ampio verso il castello e il fiume.",
+      ph:{title:"📸 GREAT PHOTO — Senhora do Monte", how:"Salita a piedi da Graça (10 min) o tram 28 fino alla fermata più vicina.", cosa:"Il Castelo de São Jorge visto da lontano, con la città che degrada verso il fiume.", momento:"Tardo pomeriggio, luce dorata."}},
+    {t:"15:15", ti:"Tram 28E — l'esperienza", ic:ICONS.tram, pr:"must", du:"45 min di percorso + attesa", co:"€3,30 biglietto a bordo (contante esatto) · €7,25 pass giornaliero trasporti · gratis con Lisboa Card", ds:"Percorso Martim Moniz ↔ Campo de Ourique via Graça, Alfama, Baixa, Chiado, Estrela: 7 km, ~45 min, curve strette tra le case. Per un posto a sedere, salire ai capolinea (Martim Moniz o Campo de Ourique/Prazeres) evitando la fascia 10:00–18:00.",
+      al:"Attenzione ai borseggiatori: è il mezzo pubblico più turistico della città. Tenere zaino davanti e telefono in tasca interna.",
+      bk:{level:"green", note:"Non serve prenotazione: si sale e si paga a bordo o si usa un titolo di viaggio già caricato."}},
+    {t:"17:15", ti:"Chiado e Bairro Alto", ic:ICONS.walk2, pr:"worth", du:"1,5 h", co:"Gratis", ds:"Librerie storiche, teatri, poi le stradine di Bairro Alto che si animano verso sera."},
+    {t:"19:30", ti:"Cena a Bairro Alto/Chiado", ic:ICONS.food, pr:"worth", du:"1,5 h", co:"€22–32 a persona", ds:"Petiscos e vino portoghese in una tasca fuori dalle strade principali."}
+  ]
+},
+{
+  id:6, date:"2026-09-09", label:"9 SET", weekday:"Mercoledì", region:"SINTRA",
+  title:"Palácio da Pena → Castelo dos Mouros → centro storico → Quinta da Regaleira → Cabo da Roca",
+  hotel:{name:"Stesso hotel a Lisbona", nights:0},
+  activities:[
+    {t:"07:15", ti:"Lisbona → Sintra in treno", ic:ICONS.train, pr:"must", du:"40 min", co:"€2,30 a tratta (linea Sintra, treni CP)", ds:"Da Rossio o Oriente: partire presto è la chiave per battere le code alla Pena. Auto già riconsegnata: oggi si viaggia solo con mezzi pubblici.",
+      al:"Giornata molto intensa (come da programma): partenza anticipata necessaria per riuscire a fare tutto con calma."},
+    {t:"08:00", ti:"Stazione di Sintra → Palácio da Pena", ic:ICONS.bus, pr:"worth", du:"15–20 min", co:"Bus 434 ~€7,50 andata/ritorno circolare (Sintra–Pena–Mouros–Sintra)", ds:"Alternativa: tuk-tuk o taxi condiviso. A piedi sono 45 min di salita ripida, sconsigliato con orari serrati."},
+    {t:"08:30", ti:"Palácio da Pena — parco e terrazze", ic:ICONS.castle, pr:"must", du:"1,5 h reali", co:"€45 adulto — Bilhete 'Visita Total' (parco+palazzo), fonte ufficiale parquesdesintra.pt verificata", ds:"Il palazzo romantico più fotografato del Portogallo: torri colorate, terrazze panoramiche, parco di 200 ettari con specie da tutto il mondo. Focus su esterni, terrazze e parco — niente visita approfondita degli interni, come richiesto.",
+      bk:{level:"red", note:"PRENOTARE SUBITO con fascia oraria specifica sul sito ufficiale (l'orario sul biglietto è quello di ingresso al PALAZZO, non al parco). In alta stagione gli slot mattutini si esauriscono con giorni di anticipo.", url:"https://www.parquesdesintra.pt/pt/planear-a-visita/entrada-sem-filas-no-palacio-da-pena/"},
+      ph:{title:"📸 MUST PHOTO — Palácio da Pena", how:"Dalle terrazze interne o dal Cruz Alta poco distante nel parco.", cosa:"Le torri rosse e gialle contro il verde della Serra de Sintra.", ultrawide:"Sì per lo scatto d'insieme.", momento:"Prima mattina: luce piena, meno folla nelle foto."},
+      al:"Dal 2 marzo al 1 aprile 2026 gli Appartamenti Privati sono chiusi per lavori — non rilevante per settembre, ma verificare aggiornamenti prima della partenza."},
+    {t:"10:15", ti:"Pena → Castelo dos Mouros", ic:ICONS.walk, pr:"worth", du:"15 min a piedi (sentiero nel bosco) o bus 434", co:"—", ds:"Collegamento diretto tra i due siti, immerso nella foresta della Serra."},
+    {t:"10:30", ti:"Castelo dos Mouros", ic:ICONS.castle, pr:"must", du:"1 h", co:"€12 adulto (fonte ufficiale parquesdesintra.pt)", ds:"Fortezza moresca dell'VIII secolo: cammini di ronda serpeggianti lungo la cresta della montagna, panorama su Pena da un lato e sull'oceano dall'altro. Percorso consigliato: salire alla torre più alta prima che si affolli, poi seguire le mura in senso orario.",
+      ph:{title:"📸 GREAT PHOTO — mura del Castelo dos Mouros", how:"Camminando lungo le mura merlate.", cosa:"Il Palácio da Pena visibile in lontananza dalle mura del castello.", ultrawide:"Sì."},
+      al:"Orario 09:30–18:00, ultimo ingresso 17:30 (fonte ufficiale)."},
+    {t:"11:45", ti:"Discesa verso il centro storico di Sintra", ic:ICONS.bus, pr:"worth", du:"20–30 min", co:"Bus 434 incluso nel biglietto circolare", ds:"—"},
+    {t:"12:30", ti:"Pranzo + Travesseiro e Queijada", ic:ICONS.food, pr:"worth", du:"1,5 h", co:"€15–25 a persona + €2–4 per dolce", ds:"Pranzo leggero nel centro storico, poi tappa dolce d'obbligo: il travesseiro (sfoglia con crema di mandorle) da Piriquita, storica pasticceria in Rua das Padarias."},
+    {t:"14:15", ti:"Quinta da Regaleira", ic:ICONS.garden, pr:"must", du:"1,5 h", co:"€20 adulto (fonte ufficiale regaleira.pt, tariffe 2026 verificate)", ds:"La tenuta più enigmatica di Sintra: il Pozzo Iniziatico a spirale, grotte, tunnel sotterranei, giardini simbolici massonici. Percorso ottimizzato: scendi subito al Pozzo Iniziatico (si affolla presto), poi esplora grotte e tunnel, infine il palazzo e i giardini superiori con calma.",
+      bk:{level:"orange", note:"Consigliata prenotazione online con orario per saltare la fila (può superare i 90 min in alta stagione).", url:"https://www.regaleira.pt/"},
+      al:"Nessun parcheggio auto in loco — irrilevante oggi, ci arriviamo a piedi dal centro (10–15 min in salita)."},
+    {t:"15:50", ti:"Sintra → Cabo da Roca", ic:ICONS.bus, pr:"worth", du:"40 min reali", co:"Bus 403 ~€5 a tratta", ds:"Linea regolare Sintra–Cabo da Roca–Cascais.", map:mapsDir("Cabo da Roca")},
+    {t:"16:35", ti:"Cabo da Roca", ic:ICONS.view, pr:"must", du:"1 h", co:"€5 ingresso essenziale al farol (fonte ufficiale, opzione €10 per visita panoramica)", ds:"Il punto più occidentale dell'Europa continentale: scogliere a picco sull'Atlantico, faro, il monumento con le coordinate geografiche.",
+      ph:{title:"📸 MUST PHOTO — Cabo da Roca", how:"Passerella verso il monumento/croce sul bordo della scogliera.", cosa:"Il faro bianco-rosso con l'oceano sconfinato alle spalle.", ultrawide:"Sì.", momento:"Tardo pomeriggio, luce che si addolcisce."}},
+    {t:"17:45", ti:"Cabo da Roca → Sintra → Lisbona", ic:ICONS.train, pr:"worth", du:"Bus 40 min + treno 40 min", co:"—", ds:"Rientro via Sintra (stesso bus 403, poi treno CP verso Rossio)."},
+    {t:"19:30", ti:"Cena a Lisbona", ic:ICONS.food, pr:"worth", du:"1,5 h", co:"€20–30 a persona", ds:"Giornata lunga e intensa: cena tranquilla vicino all'hotel."}
+  ]
+},
+{
+  id:7, date:"2026-09-10", label:"10 SET", weekday:"Giovedì", region:"LISBONA",
+  title:"Belém → Pastéis de Belém → Estrela → Príncipe Real → Chiado",
+  hotel:{name:"Stesso hotel", nights:0},
+  activities:[
+    {t:"08:30", ti:"Colazione", ic:ICONS.coffee, pr:"worth", du:"45 min", co:"—", ds:"—"},
+    {t:"09:15", ti:"Verso Belém (tram 15E)", ic:ICONS.tram, pr:"worth", du:"25–30 min reali", co:"Incluso in pass giornaliero o €3,30 a bordo", ds:"Tram moderno (non storico come il 28) da Praça da Figueira/Cais do Sodré lungo il fiume."},
+    {t:"09:50", ti:"Mosteiro dos Jerónimos — solo esterno", ic:ICONS.church, pr:"must", du:"30 min", co:"Gratis (esterno)", ds:"Capolavoro manuelino patrimonio UNESCO: la facciata sud e il portale sono da ammirare a lungo. Niente ingresso agli interni, come da programma.",
+      ph:{title:"📸 MUST PHOTO — Mosteiro dos Jerónimos", how:"Dal Jardim Praça do Império di fronte, o dal lato del portale sud.", cosa:"L'intricato dettaglio scultoreo manuelino della facciata.", momento:"Mattina, luce diretta sulla pietra chiara."}},
+    {t:"10:30", ti:"Pastéis de Belém", ic:ICONS.food, pr:"must", du:"45 min reali (fila + consumo)", co:"€1,30–1,60 a pastel", ds:"La pasticceria originale dal 1837, non un semplice snack: fila quasi sempre presente ma scorre rapidamente al banco da asporto (la sala interna ha fila separata più lunga). Consigliato: prendere per asporto ('para levar') se la fila per sedersi è lunga, mangiarli caldi con cannella e zucchero a velo sul momento."},
+    {t:"11:30", ti:"Padrão dos Descobrimentos", ic:ICONS.view, pr:"worth", du:"30–45 min", co:"Ingresso terrazza panoramica stimato €6 — DA VERIFICARE", ds:"Monumento a forma di caravella dedicato agli esploratori portoghesi: si può salire per un altro bel panorama sul Tago (opzionale se il tempo stringe)."},
+    {t:"12:15", ti:"Torre de Belém — solo esterno", ic:ICONS.castle, pr:"must", du:"30 min", co:"Gratis (esterno)", ds:"Icona manuelina sul fiume, patrimonio UNESCO. Foto dall'esterno, niente coda per l'ingresso (spesso lunga in alta stagione).",
+      ph:{title:"📸 MUST PHOTO — Torre de Belém", how:"Dal lungofiume/pontile di fronte alla torre.", cosa:"La torre con il Tago e possibilmente il ponte 25 de Abril sullo sfondo.", momento:"Mattina/mezzogiorno per luce piena sulla pietra."}},
+    {t:"13:00", ti:"Pranzo a Belém/Alcântara", ic:ICONS.food, pr:"worth", du:"1 h", co:"€18–28 a persona", ds:"—"},
+    {t:"14:30", ti:"Basílica da Estrela + Jardim da Estrela", ic:ICONS.church, pr:"worth", du:"1 h", co:"Gratis", ds:"Solo esterno della basilica (cupola imponente), poi relax nel giardino romantico con laghetto — buona pausa dopo la mattinata intensa."},
+    {t:"16:00", ti:"Príncipe Real", ic:ICONS.walk2, pr:"high", du:"1,5 h", co:"Gratis", ds:"Quartiere elegante e verde, boutique indipendenti, il miradouro del Jardim do Príncipe Real e il celebre cedro secolare."},
+    {t:"17:45", ti:"Discesa verso Chiado", ic:ICONS.walk, pr:"worth", du:"20 min", co:"Gratis", ds:"—"},
+    {t:"19:30", ti:"Cena a Chiado/Cais do Sodré", ic:ICONS.food, pr:"worth", du:"1,5 h", co:"€22–32 a persona", ds:"Ultima cena 'vera' del viaggio: vale la pena scegliere con cura."}
+  ]
+},
+{
+  id:8, date:"2026-09-11", label:"11 SET", weekday:"Venerdì", region:"LISBONA → RIENTRO",
+  title:"Ultima passeggiata → pranzo → aeroporto → volo LIS→BGY 17:20",
+  hotel:{name:"Check-out mattutino", nights:0},
+  activities:[
+    {t:"08:30", ti:"Colazione e check-out", ic:ICONS.coffee, pr:"worth", du:"1 h", co:"—", ds:"Bagagli in deposito hotel se possibile."},
+    {t:"09:30", ti:"Ultima passeggiata: Rossio + Elevador/Miradouro São Pedro de Alcântara", ic:ICONS.walk2, pr:"worth", du:"1,5 h", co:"Gratis", ds:"Piazza Rossio con la pavimentazione a onde, poi salita verso il miradouro con vista su Bairro Alto e il castello — un ultimo sguardo d'insieme sulla città."},
+    {t:"11:15", ti:"Tempo libero / ultimi acquisti", ic:ICONS.market, pr:"optional", du:"1 h", co:"—", ds:"Conserve di sardine, vino, ceramiche, pastéis de nata da portare a casa (si conservano bene 1–2 giorni)."},
+    {t:"12:30", ti:"Pranzo leggero", ic:ICONS.food, pr:"worth", du:"1 h", co:"€15–22 a persona", ds:"Meglio qualcosa di leggero prima del viaggio: petiscos o un bifana veloce."},
+    {t:"13:30", ti:"Lisbona → Aeroporto (Metro Linea Rossa)", ic:ICONS.train, pr:"must", du:"25 min reali + cammino con bagagli", co:"€1,65 biglietto singolo", ds:"Da Baixa-Chiado o Rossio: cambio verso Alameda poi Linea Rossa diretta fino a 'Aeroporto'."},
+    {t:"14:15", ti:"Arrivo in aeroporto e check-in", ic:ICONS.flight, pr:"must", du:"2 h di margine", co:"—", ds:"Margine ampio prima del volo delle 17:20, comodo per un ultimo caffè."},
+    {t:"17:20", ti:"Decollo Lisbona (LIS) → Bergamo (BGY)", ic:ICONS.flight, pr:"must", du:"—", co:"Volo prenotato", ds:"Fine del viaggio."}
+  ]
+}
+];
+
+/* ---------------- BOOKINGS ---------------- */
+const BOOKINGS = [
+  {id:"volo_and", cat:"✈️ Volo", title:"Bergamo (BGY) → Faro (FAO)", when:"4 set 2026, arrivo 07:45", place:"—", status:"booked", note:"Confermato."},
+  {id:"volo_rit", cat:"✈️ Volo", title:"Lisbona (LIS) → Bergamo (BGY)", when:"11 set 2026, partenza 17:20", place:"—", status:"booked", note:"Confermato."},
+  {id:"auto", cat:"🚗 Auto", title:"Noleggio auto — ritiro Faro / riconsegna Lisbona", when:"4–7 set 2026", place:"Faro Airport → Lisbon Airport", status:"todo", level:"red", note:"Confrontare compagnie (vedi sezione Auto). Verificare costo one-way.", url:"https://www.autoportugal.it/it-aeroporto-di-faro-algarve/"},
+  {id:"hotel_lagos", cat:"🏨 Hotel", title:"Lagos — 2 notti", when:"4–6 set 2026", place:"Lagos", status:"todo", level:"orange", note:"Candidato: Aqualuz Lagos by The Editory. Verificare prezzo/disponibilità."},
+  {id:"hotel_vnm", cat:"🏨 Hotel", title:"Vila Nova de Milfontes — 1 notte", when:"6–7 set 2026", place:"Vila Nova de Milfontes", status:"todo", level:"orange", note:"Candidato: Casa do Adro (centrale)."},
+  {id:"hotel_lis", cat:"🏨 Hotel", title:"Lisbona — 4 notti", when:"7–11 set 2026", place:"Zona Baixa/Chiado", status:"todo", level:"orange", note:"Vedi sezione Hotel per candidati."},
+  {id:"kayak", cat:"🛶 Kayak", title:"Kayak Grotta di Benagil (tour guidato)", when:"4 set 2026, mattina", place:"Benagil", status:"todo", level:"red", note:"Prenotare con largo anticipo, obbligatorio operatore autorizzato."},
+  {id:"pena", cat:"🎟️ Sintra", title:"Palácio da Pena — Visita Total", when:"9 set 2026, 08:30", place:"Sintra", status:"todo", level:"red", note:"Fascia oraria specifica, prenotare presto.", url:"https://www.parquesdesintra.pt/"},
+  {id:"regaleira", cat:"🎟️ Sintra", title:"Quinta da Regaleira", when:"9 set 2026, 14:15", place:"Sintra", status:"todo", level:"orange", note:"Consigliata prenotazione online.", url:"https://www.regaleira.pt/"},
+  {id:"mouros", cat:"🎟️ Sintra", title:"Castelo dos Mouros", when:"9 set 2026, 10:30", place:"Sintra", status:"todo", level:"green", note:"Non indispensabile prenotare in anticipo, ma consigliato online."},
+  {id:"saojorge", cat:"🎟️ Lisbona", title:"Castelo de São Jorge", when:"8 set 2026, 11:45", place:"Lisbona", status:"todo", level:"orange", note:"Prenotare su BOL per saltare la fila.", url:"https://CasteloSaoJorge.bol.pt/"},
+  {id:"rist1", cat:"🍴 Ristoranti", title:"Ristoranti chiave (Benagil, Sagres, Arrifana, VNM)", when:"vari giorni", place:"—", status:"todo", level:"green", note:"Consigliata prenotazione solo per cene serali in alta stagione."}
+];
+
+/* ---------------- FOOD ---------------- */
+const FOOD_MUST = [
+  {r:"ALGARVE", items:[
+    {n:"Cataplana de marisco", d:"Stufato di pesce e frutti di mare cotto nel tipico tegame di rame a conchiglia."},
+    {n:"Peixe grelhado", d:"Pesce alla griglia del giorno — orata, dourada, robalo."},
+    {n:"Polvo à lagareiro", d:"Polpo al forno con abbondante olio d'oliva e patate a rondelle."},
+    {n:"Percebes", d:"Pollici di mare, se disponibili — sapore intenso, delicatessen locale."}
+  ]},
+  {r:"LISBONA", items:[
+    {n:"Bacalhau (à Brás, à Gomes de Sá...)", d:"Il baccalà nelle sue mille preparazioni, piatto nazionale."},
+    {n:"Bifana", d:"Panino con fettine di maiale marinate, veloce e ottimo per pranzo."},
+    {n:"Pastel de nata", d:"La sfoglia con crema pasticcera — a Belém è d'obbligo, ma buona ovunque."},
+    {n:"Ginjinha", d:"Liquore di amarena, da bere in piedi in un bicchierino al Ginjinha do Rossio."}
+  ]},
+  {r:"SINTRA", items:[
+    {n:"Travesseiro", d:"Sfoglia ripiena di crema di mandorle e uova — da Piriquita."},
+    {n:"Queijada", d:"Piccola torta di formaggio fresco e cannella, dolce tipico locale."}
+  ]}
+];
+
+const RESTAURANTS = [
+  {day:1, zone:"Benagil / Carvoeiro", name:"Tasca di pesce vicino alla spiaggia (nome specifico da confermare in loco)", price:"€15–25", tip:"Evitare il primo locale sul fronte spiaggia: le tascas 1–2 vie indietro sono spesso migliori e meno care."},
+  {day:2, zone:"Sagres", name:"Ristorante di pesce vicino al porto peschereccio", price:"€18–28", tip:"Cerca dove pranzano i pescatori locali, non solo i turisti diretti a Cabo de São Vicente."},
+  {day:3, zone:"Arrifana", name:"Ristorante con vista sulla spiaggia di Arrifana", price:"€18–26", tip:"I locali con terrazza sulla scogliera si riempiono presto a pranzo: arrivare per le 13:00."},
+  {day:3, zone:"Vila Nova de Milfontes", name:"Marisqueira o tasca sul lungofiume", price:"€20–30", tip:"Chiedi il pescato del giorno piuttosto che il menù fisso."},
+  {day:5, zone:"Bairro Alto / Chiado", name:"Tasca di petiscos fuori dall'asse principale", price:"€22–32", tip:"Le strade parallele a Rua da Atalaia hanno meno turisti e prezzi più onesti."},
+  {day:6, zone:"Sintra centro storico", name:"Piriquita (Rua das Padarias, 1)", price:"€2–4 a dolce", tip:"Storica dal 1862, meta obbligata per il travesseiro — c'è quasi sempre un po' di fila, mettila in conto."},
+  {day:7, zone:"Belém", name:"Pastéis de Belém (Rua de Belém, 84-92)", price:"€1,30–1,60 a pastel", tip:"Fila per asporto molto più veloce di quella per il tavolo interno."}
+];
+
+/* ---------------- PHOTO GUIDE INDEX (aggregates spots from days) ---------------- */
+function collectPhotoSpots(){
+  const out=[];
+  DAYS.forEach(d=>d.activities.forEach(a=>{ if(a.ph) out.push({day:d.id, dayLabel:d.label, region:d.region, ...a.ph, activityTitle:a.ti}); }));
+  return out;
+}
+
+/* ---------------- CAR RENTAL ---------------- */
+const CAR_INFO = {
+  pickup:"Faro Airport — 4 settembre 2026",
+  dropoff:"Lisbona (aeroporto consigliato) — 7 settembre 2026",
+  vehicle:"Auto piccola/compatta (es. classe VW Polo/Fiat 500/Opel Corsa). Niente SUV salvo reale necessità (non prevista su questo itinerario).",
+  priorities:["Affidabilità della compagnia","Condizioni assicurative chiare","Franchigia bassa o azzerabile","Trasparenza sui costi extra","Assistenza stradale inclusa","Politica carburante (preferire 'pieno su pieno')","Deposito cauzionale contenuto","Copertura pneumatici/vetri","Solo alla fine: il prezzo"],
+  companies:[
+    {n:"Compagnie internazionali (Europcar, Sixt, Hertz, Avis, Enterprise)", note:"Presenti direttamente in aeroporto a Faro, banco dedicato, generalmente più costose ma assistenza rapida e flotta più recente."},
+    {n:"Broker/aggregatori con copertura kasko inclusa (es. Discover Cars, Rentalcars, Okayautos)", note:"Spesso permettono di aggiungere una polizza a franchigia zero a un costo inferiore rispetto a quella venduta al banco — utile per la 'tranquillità' richiesta."},
+    {n:"Compagnie locali (Auto Turistica, Angrauto, 2Rent, Centauro, Guerin)", note:"Prezzi più bassi ma verificare con più attenzione le recensioni sul deposito cauzionale e sui tempi di restituzione della caparra."}
+  ],
+  insurance:{
+    base:"Il noleggio base in Portogallo include quasi sempre RC, incendio e furto, ma con una franchigia (eccesso) spesso alta (€800–1.500).",
+    upgrade:"Per la tranquillità richiesta: aggiungere una copertura Super CDW / 'franchigia zero' che azzeri o riduca fortemente l'eccesso, e che copra anche pneumatici, vetri e sottoscocca (quasi mai inclusi nella polizza base).",
+    age:"Età minima per noleggiare in Portogallo: 21 anni (supplemento 'giovane conducente' spesso richiesto sotto i 25).",
+    payment:"Serve una carta di credito (non debito/prepagata) intestata al conducente principale per il deposito cauzionale."
+  },
+  costBreakdown:["Prezzo base del noleggio","+ Coperture assicurative aggiuntive (Super CDW / zero franchigia)","+ Eventuali extra (secondo conducente, navigatore, seggiolino, E-Toll)","+ Deposito cauzionale (bloccato sulla carta, non un costo ma da prevedere in disponibilità)","= Costo totale reale — MAI il solo prezzo pubblicizzato"],
+  tolls:"Le autostrade portoghesi (A22 Algarve, A2) sono quasi tutte a pedaggio elettronico automatico: verificare se la compagnia include un dispositivo Via Verde/E-Toll o se richiede pagamento a parte entro pochi giorni.",
+  verify:"Nessun prezzo definitivo è stato fissato: le tariffe di noleggio auto cambiano quotidianamente. Confrontare le opzioni 4–8 settimane prima della partenza e rileggere sempre le condizioni di cancellazione gratuita."
+};
+
+/* ---------------- TICKETS SUMMARY ---------------- */
+const TICKETS = [
+  {n:"Palácio da Pena (Visita Total)", price:"€45 adulto / €20 sénior / gratis <6 anni / €115 famiglia", when:"9 set, 08:30", book:"Necessaria, fascia oraria specifica", url:"https://www.parquesdesintra.pt/", source:"parquesdesintra.pt — verificato gen 2026"},
+  {n:"Castelo dos Mouros", price:"€12 adulto", when:"9 set, 10:30", book:"Consigliata online", url:"https://www.parquesdesintra.pt/", source:"parquesdesintra.pt — verificato gen 2026"},
+  {n:"Quinta da Regaleira", price:"€20 adulto / €15 giovane-sénior", when:"9 set, 14:15", book:"Consigliata online, orario", url:"https://www.regaleira.pt/", source:"regaleira.pt — tariffe 2026 verificate"},
+  {n:"Farol do Cabo da Roca (visita essenziale)", price:"€5 adulto", when:"9 set, 16:35", book:"Non necessaria", url:"https://www.parquesdesintra.pt/", source:"parquesdesintra.pt — verificato gen 2026"},
+  {n:"Castelo de São Jorge", price:"€17 adulto / gratis <12 anni", when:"8 set, 11:45", book:"Consigliata online (piattaforma ufficiale BOL)", url:"https://CasteloSaoJorge.bol.pt/", source:"castelodesaojorge.pt — verificato apr 2026"},
+  {n:"Kayak Grotta di Benagil (tour guidato)", price:"€25–45 a persona (stima)", when:"4 set, mattina", book:"Obbligatoria con operatore autorizzato", url:"#", source:"Comparazione operatori 2026 — DA VERIFICARE prezzo esatto alla prenotazione"},
+  {n:"Fortaleza de Sagres", price:"€3–5 stimato", when:"5 set, 14:15", book:"Non necessaria", url:"#", source:"DA VERIFICARE — orari/prezzo 2026"},
+  {n:"Padrão dos Descobrimentos (terrazza)", price:"€6 stimato", when:"10 set, 11:30", book:"Non necessaria", url:"#", source:"DA VERIFICARE"}
+];
+
+/* ---------------- PACKING ---------------- */
+const PACKING = ["Scarpe da trekking (per Arrifana e camminate lunghe)","Scarpe comode da città (per Lisbona/Sintra, molto acciottolato)","Zaino giornaliero 20–25L","Bottiglia d'acqua riutilizzabile","Protezione solare alta (scogliere e trekking esposti)","Cappello","Power bank + cavo","Costume da bagno (un solo bagno previsto, Praia do Camilo)","Asciugamano leggero a rapida asciugatura","Felpa o giacca leggera (vento forte su Cabo de São Vicente/Cabo da Roca anche in settembre)","Custodia impermeabile per lo smartphone (kayak a Benagil)","Documenti auto a noleggio + patente + carta di credito intestata al conducente"];
+
+/* ---------------- SAFETY ---------------- */
+const SAFETY = [
+  {t:"Scogliere e bordi", d:"Cabo de São Vicente, Cabo da Roca, Arrifana: molti tratti senza parapetto. Mai avvicinarsi al bordo con vento forte o terreno umido."},
+  {t:"Vento", d:"Sulla costa atlantica il vento è quasi sempre presente e spesso forte: tenere oggetti leggeri (cappelli, teli) sotto controllo."},
+  {t:"Oceano", d:"Anche a Praia do Camilo controllare bandiere/correnti: l'Atlantico dell'Algarve è più fresco e mosso del Mediterraneo."},
+  {t:"Kayak a Benagil", d:"Seguire sempre le istruzioni della guida; mai tentare di entrare in grotta autonomamente (vietato e sanzionato)."},
+  {t:"Sole", d:"Protezione alta anche nei giorni nuvolosi, soprattutto durante il trekking di Arrifana dove l'ombra è scarsa."},
+  {t:"Guida", d:"Strade secondarie strette e tortuose su Costa Vicentina e Arrábida: guida prudente, soste programmate per chi si stanca."},
+  {t:"Parcheggi", d:"In alta stagione i parcheggi delle spiagge più famose si riempiono entro metà mattina: rispettare gli orari di partenza indicati nel piano."}
+];
+
+/* ---------------- WEATHER (climate reference, non live) ---------------- */
+const WEATHER_NOTE = {
+  algarve:"Inizio settembre in Algarve: clima ancora estivo, massime tipiche 27–30°C, minime 19–21°C, mare ~22–23°C, scarsissime probabilità di pioggia.",
+  vicentina:"Costa Vicentina/Alentejo: temperature simili all'Algarve ma vento più costante e mare più fresco (~19–20°C) — l'Atlantico qui è meno riparato.",
+  lisbona:"Lisbona/Sintra a settembre: massime 26–28°C, minime 17–18°C, generalmente stabile. Sintra spesso 2–3°C più fresca e più ventosa/nebbiosa in mattinata per la Serra.",
+  disclaimer:"Questi sono valori climatici medi storici, NON una previsione. Controllare le previsioni meteo aggiornate (IPMA — Instituto Português do Mar e da Atmosfera, ipma.pt) nei giorni immediatamente precedenti la partenza, in particolare per le condizioni del mare a Benagil (kayak) e il vento su Costa Vicentina (trekking)."
+};
+
+/* ---------------- BUDGET ---------------- */
+const BUDGET = [
+  {cat:"✈️ Voli", stato:"PRENOTATO", note:"Bergamo↔Faro/Lisbona, 2 persone", pp:"—", tot:"—"},
+  {cat:"🚗 Auto a noleggio", stato:"DA PRENOTARE", note:"4 giorni, compatta + assicurazione completa", pp:"—", tot:"Stima €180–320 totale (con copertura estesa)"},
+  {cat:"⛽ Carburante", stato:"STIMATO", note:"~4 giorni di guida, ~700–800 km totali", pp:"—", tot:"Stima €80–110"},
+  {cat:"🛣️ Pedaggi", stato:"STIMATO", note:"A22 + A2", pp:"—", tot:"Stima €25–35"},
+  {cat:"🅿️ Parcheggi", stato:"STIMATO", note:"Spiagge e centri storici", pp:"—", tot:"Stima €25–40"},
+  {cat:"🏨 Hotel", stato:"DA PRENOTARE", note:"7 notti totali (2 Lagos, 1 VNM, 4 Lisbona)", pp:"—", tot:"Stima €700–1.050 totale (€100–150/notte media alta stagione)"},
+  {cat:"🎟️ Attrazioni Sintra + Lisbona", stato:"STIMATO", note:"Pena+Mouros+Regaleira+Roca+Castelo São Jorge, x2 persone", pp:"~€99", tot:"~€198"},
+  {cat:"🛶 Kayak Benagil", stato:"DA PRENOTARE", note:"x2 persone", pp:"€25–45", tot:"€50–90"},
+  {cat:"🚋 Trasporti Lisbona/Sintra", stato:"STIMATO", note:"Treni, bus, tram, metro", pp:"~€25–30", tot:"~€50–60"},
+  {cat:"🍴 Ristoranti", stato:"STIMATO", note:"Pranzi e cene, 8 giorni", pp:"~€25/pasto medio", tot:"Stima €500–650 totale"},
+  {cat:"☕ Colazioni & 🥧 pasticcerie", stato:"STIMATO", note:"Incluse in molti hotel; extra pasticcerie", pp:"—", tot:"Stima €40–60"},
+  {cat:"🛒 Varie/souvenir", stato:"STIMATO", note:"—", pp:"—", tot:"Stima €50–100"}
+];
+
+/* =========================================================
+   STORAGE (window.storage — con fallback in memoria)
+   ========================================================= */
+const memStore = {};
+async function sGet(key, shared=false){
+  try{
+    if(window.storage){ const r = await window.storage.get(key, shared); return r ? JSON.parse(r.value) : null; }
+  }catch(e){ /* key not found or storage unavailable */ }
+  return memStore[key] !== undefined ? memStore[key] : null;
+}
+async function sSet(key, value, shared=false){
+  memStore[key] = value;
+  try{
+    if(window.storage){ await window.storage.set(key, JSON.stringify(value), shared); }
+  }catch(e){ /* ignore, memory fallback still applied */ }
+}
+
+/* =========================================================
+   STATE
+   ========================================================= */
+const today = new Date();
+function todayISO(){ const d=today; return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+function tripDayForToday(){ return DAYS.find(d=>d.date===todayISO()) || null; }
+
+let STATE = {
+  view: "home",
+  currentDayId: (tripDayForToday()||DAYS[0]).id,
+  checklist: {},      // {dayId: {activityIndex: bool}}
+  bookingStatus: {},  // {bookingId: 'booked'|'todo'}
+  packing: {},        // {index: bool}
+  diary: {},          // {dayId: {momento,foto,piatto,luogo,libera}}
+  notes: {}
+};
+
+async function loadState(){
+  const c = await sGet("checklist"); if(c) STATE.checklist = c;
+  const b = await sGet("bookingStatus"); if(b) STATE.bookingStatus = b; else { const init={}; BOOKINGS.forEach(x=>init[x.id]=x.status); STATE.bookingStatus=init; }
+  const p = await sGet("packing"); if(p) STATE.packing = p;
+  const dy = await sGet("diary"); if(dy) STATE.diary = dy;
+}
+
+function fmtDate(iso){
+  const d = new Date(iso+"T12:00:00");
+  const days=["Domenica","Lunedì","Martedì","Mercoledì","Giovedì","Venerdì","Sabato"];
+  return days[d.getDay()]+" "+d.getDate()+"/"+(d.getMonth()+1);
+}
+
+/* =========================================================
+   RENDER — shared bits
+   ========================================================= */
+function priorityBadge(pr){
+  const p = PR[pr] || PR.worth;
+  return `<span class="badge ${p.cls}">${p.emoji} ${p.label}</span>`;
+}
+function navBtn(query, label){
+  return `<a class="btn ghost sm" href="${mapsDir(query)}" target="_blank" rel="noopener">🧭 ${label||'Naviga'}</a>`;
+}
+function bookLevelDot(level){
+  const map={red:"🔴",orange:"🟠",green:"🟢"};
+  return map[level]||"";
+}
+
+function header(title, sub){
+  return `
+  <div class="hero azulejo-band">
+    <div class="hero-top">
+      <div class="hero-flag">🇵🇹</div>
+      <div class="hero-pill">${sub||''}</div>
+    </div>
+    <div class="hero-title serif">${title}</div>
+  </div>`;
+}
+
+function homeHero(){
+  const d = tripDayForToday();
+  const start = new Date("2026-09-04T00:00:00");
+  const diffDays = Math.ceil((start - today)/86400000);
+  let sub = "";
+  if(d){ sub = "Oggi · Giorno "+d.id+" di 8"; }
+  else if(diffDays > 0){ sub = diffDays+" giorni al volo"; }
+  else { sub = "Viaggio concluso — Boa viagem!"; }
+  return `
+  <div class="hero azulejo-band">
+    <div class="hero-top">
+      <div class="hero-flag">🇵🇹 PORTOGALLO</div>
+      <div class="hero-pill">${sub}</div>
+    </div>
+    <div class="hero-title serif">4–11 Settembre 2026</div>
+    <div class="hero-sub">Faro → Algarve → Costa Vicentina → Arrábida → Lisbona → Sintra</div>
+  </div>`;
+}
+
+/* =========================================================
+   VIEW: HOME
+   ========================================================= */
+async function renderHome(){
+  const d = tripDayForToday();
+  const start = new Date("2026-09-04T00:00:00");
+  const beforeTrip = today < start;
+  let body = "";
+
+  if(d){
+    // during trip — show TODAY mode
+    const nextAct = d.activities.find(a=>a.t >= nowHHMM()) || d.activities[d.activities.length-1];
+    body += `
+    <div class="section-eyebrow">🔴 Modalità Oggi</div>
+    <div class="card">
+      <div class="tag-region">${d.region} · ${fmtDate(d.date)}</div>
+      <h2 class="title" style="margin-top:4px;">${d.title}</h2>
+      <div class="row between" style="margin:10px 0 4px;">
+        <div class="small">🕐 Prossima attività</div>
+      </div>
+      ${renderActivityCard(nextAct, d.id, d.activities.indexOf(nextAct), true)}
+      <button class="btn primary block" style="margin-top:8px;" onclick="goto('day', ${d.id})">▶️ Vai al piano completo di oggi</button>
+    </div>`;
+  } else if (beforeTrip){
+    const readiness = computeReadiness();
+    body += `
+    <div class="section-eyebrow">✅ Dashboard pre-viaggio</div>
+    <div class="card">
+      <div class="row between"><h2 class="title" style="margin:0;">Viaggio pronto al ${readiness}%</h2></div>
+      <div class="progress" style="margin:10px 0 14px;"><div style="width:${readiness}%;"></div></div>
+      ${BOOKINGS.map(b=>`
+        <div class="row between" style="padding:7px 0;border-bottom:1px dashed var(--line);">
+          <div class="row" style="gap:8px;">
+            <span>${STATE.bookingStatus[b.id]==='booked' ? '✅' : '☐'}</span>
+            <span style="font-size:12.5px;">${b.cat} — ${b.title}</span>
+          </div>
+        </div>`).join('')}
+      <button class="btn primary block" style="margin-top:12px;" onclick="goto('bookings')">📋 Vai alle prenotazioni</button>
+    </div>`;
+  } else {
+    body += `
+    <div class="card">
+      <h2 class="title">Boa viagem! 🇵🇹</h2>
+      <p class="lede">Il viaggio configurato in questa app copre il 4–11 settembre 2026. Puoi comunque consultare l'itinerario, il diario e le foto quando vuoi.</p>
+      <button class="btn primary block" onclick="goto('day', 1)">Rivedi l'itinerario</button>
+    </div>`;
+  }
+
+  body += `
+  <div class="quick-grid">
+    <button class="quick-item" onclick="goto('food')"><span class="ic">🍴</span>Food</button>
+    <button class="quick-item" onclick="goto('photo')"><span class="ic">📸</span>Photo</button>
+    <button class="quick-item" onclick="goto('car')"><span class="ic">🚗</span>Auto</button>
+    <button class="quick-item" onclick="goto('tickets')"><span class="ic">🎟️</span>Biglietti</button>
+  </div>
+  <div class="quick-grid" style="margin-top:8px;">
+    <button class="quick-item" onclick="goto('weather')"><span class="ic">🌡️</span>Meteo</button>
+    <button class="quick-item" onclick="goto('packing')"><span class="ic">🎒</span>Valigia</button>
+    <button class="quick-item" onclick="goto('safety')"><span class="ic">⚠️</span>Sicurezza</button>
+    <button class="quick-item" onclick="goto('budget')"><span class="ic">💶</span>Budget</button>
+  </div>
+
+  <div class="section-eyebrow">📅 Cronologia del viaggio</div>
+  <div class="day-tabs">
+    ${DAYS.map(dd=>`<button class="day-tab ${d&&d.id===dd.id?'on':''}" onclick="goto('day', ${dd.id})"><div class="dn">${dd.label}</div><div class="dd serif">${dd.region.slice(0,4)}</div></button>`).join('')}
+  </div>
+
+  <div class="section-eyebrow">🎒 360° camera — vale la pena?</div>
+  <div class="card">
+    <p class="lede" style="margin-bottom:8px;">Valutazione specifica per QUESTO viaggio, non un consiglio generico d'acquisto.</p>
+    <div class="kv"><div class="k">Kayak Benagil</div><div class="v">Sì, valore alto: riprese immersive dentro la grotta impossibili da ottenere con foto singole.</div></div>
+    <div class="kv"><div class="k">Trekking Arrifana</div><div class="v">Utile per video panoramici a 360° delle scogliere, ma non indispensabile.</div></div>
+    <div class="kv"><div class="k">Road trip</div><div class="v">Bel valore per timelapse di guida sulla N379-1 Arrábida, opzionale altrove.</div></div>
+    <div class="kv"><div class="k">Sintra/Lisbona</div><div class="v">Poco utile: spazi affollati, meglio smartphone tradizionale.</div></div>
+    <div class="divider"></div>
+    <div class="row" style="gap:8px;"><span class="badge worth">Per questo viaggio: SÌ, se già in dubbio</span></div>
+    <p class="small" style="margin-top:6px;">Motivazione: il kayak a Benagil e il road trip sulla Costa Vicentina/Arrábida sono le due occasioni in cui una 360° aggiunge davvero qualcosa che lo smartphone non può catturare da solo. Per il resto del viaggio (Sintra, Lisbona, trekking) lo smartphone con le indicazioni PHOTO SPOT di questa app è sufficiente.</p>
+  </div>
+  `;
+  return body;
+}
+function nowHHMM(){ const n=new Date(); return String(n.getHours()).padStart(2,"0")+":"+String(n.getMinutes()).padStart(2,"0"); }
+function computeReadiness(){
+  const total = BOOKINGS.length;
+  const done = BOOKINGS.filter(b=>STATE.bookingStatus[b.id]==='booked').length;
+  return Math.round((done/total)*100);
+}
+
+/* =========================================================
+   VIEW: DAY (itinerary)
+   ========================================================= */
+function renderActivityCard(a, dayId, idx, compact){
+  const done = STATE.checklist[dayId] && STATE.checklist[dayId][idx];
+  return `
+  <div class="card flat" style="border:1px solid var(--line);padding:12px;${compact?'margin:8px 0 0;':''}">
+    <div class="row between top">
+      <div class="row" style="gap:8px;">
+        <span style="font-size:20px;">${a.ic}</span>
+        <div>
+          <div style="font-weight:700;font-size:14px;">${a.ti}</div>
+          <div class="small">${a.t}${a.du?(' · '+a.du):''}</div>
+        </div>
+      </div>
+      ${priorityBadge(a.pr)}
+    </div>
+    ${a.ds?`<p style="font-size:12.5px;margin:8px 0 6px;color:var(--ink-soft);">${a.ds}</p>`:''}
+    ${a.al?`<div class="alert">⚠️ ${a.al}</div>`:''}
+    ${a.co?`<div class="kv"><div class="k">💶 Costo</div><div class="v">${a.co}</div></div>`:''}
+    ${a.bk?`<div class="kv"><div class="k">${bookLevelDot(a.bk.level)} Prenotazione</div><div class="v">${a.bk.note}</div></div>`:''}
+    ${a.ph?renderPhotoBlock(a.ph):''}
+    ${a.pk?renderParkingBlock(a.pk):''}
+    <div class="row" style="gap:8px;margin-top:10px;flex-wrap:wrap;">
+      ${a.map?`<a class="btn ghost sm" href="${a.map}" target="_blank" rel="noopener">🧭 Naviga</a>`:''}
+      ${a.bk && a.bk.url && a.bk.url!=='#' ? `<a class="btn outline sm" href="${a.bk.url}" target="_blank" rel="noopener">🔗 Prenota</a>` : ''}
+    </div>
+  </div>`;
+}
+function renderPhotoBlock(ph){
+  return `
+  <div class="photo-card">
+    <div style="font-weight:700;font-size:12.5px;color:var(--azul);">${ph.title}</div>
+    <div class="grid2" style="margin-top:8px;">
+      ${ph.how?`<div><div class="small" style="font-weight:700;">Come arrivare</div><div class="small">${ph.how}</div></div>`:''}
+      ${ph.cosa?`<div><div class="small" style="font-weight:700;">Cosa fotografare</div><div class="small">${ph.cosa}</div></div>`:''}
+      ${ph.dir?`<div><div class="small" style="font-weight:700;">Direzione</div><div class="small">${ph.dir}</div></div>`:''}
+      ${ph.momento?`<div><div class="small" style="font-weight:700;">Momento migliore</div><div class="small">${ph.momento}</div></div>`:''}
+      ${ph.ultrawide?`<div><div class="small" style="font-weight:700;">Ultra-wide</div><div class="small">${ph.ultrawide}</div></div>`:''}
+    </div>
+  </div>`;
+}
+function renderParkingBlock(pk){
+  return `
+  <div class="kv"><div class="k">🅿️ Parcheggio</div><div class="v">${pk.name} — ${pk.note} ${pk.map?`<a href="${pk.map}" target="_blank" rel="noopener" style="color:var(--azul);font-weight:700;">Apri mappa ↗</a>`:''}</div></div>`;
+}
+
+async function renderDay(dayId){
+  const d = DAYS.find(x=>x.id===dayId);
+  STATE.currentDayId = dayId;
+  const checklistDay = STATE.checklist[dayId] || {};
+  const doneCount = Object.values(checklistDay).filter(Boolean).length;
+  return `
+  <div class="hero azulejo-band">
+    <div class="hero-top">
+      <button class="chip" style="background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.25);" onclick="goto('home')">← Home</button>
+      <div class="hero-pill">${d.weekday} · ${d.date.split('-').reverse().slice(0,2).join('/')}</div>
+    </div>
+    <div class="hero-title serif" style="font-size:21px;">${d.title}</div>
+    <div class="hero-sub">📍 ${d.region}${d.hotel && d.hotel.nights>0?' · 🏨 '+d.hotel.name:''}</div>
+  </div>
+  <div class="view" style="padding-top:14px;">
+    <div class="day-tabs">
+      ${DAYS.map(dd=>`<button class="day-tab ${dd.id===dayId?'on':''}" onclick="goto('day', ${dd.id})"><div class="dn">${dd.label}</div><div class="dd serif">D${dd.id}</div></button>`).join('')}
+    </div>
+
+    ${d.hotel && d.hotel.nights>0 ? `
+    <div class="card">
+      <div class="row between"><div class="row" style="gap:8px;"><span style="font-size:18px;">🏨</span><b style="font-size:13.5px;">${d.hotel.name}</b></div>${navBtn(d.hotel.name+' hotel','Naviga')}</div>
+      <p class="small" style="margin-top:6px;">${d.hotel.note}</p>
+    </div>` : ''}
+
+    <div class="section-eyebrow">⏱️ Cronoprogramma</div>
+    <div class="timeline">
+      ${d.activities.map((a,idx)=>`
+        <div class="t-item">
+          <div class="t-time">${a.t}</div>
+          <div class="t-dot ${a.pr==='must'?'must':a.pr==='high'?'high':''} ${checklistDay[idx]?'done':''}" onclick="toggleCheck(${dayId}, ${idx})"></div>
+          <div class="t-body">${renderActivityCard(a, dayId, idx)}</div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="section-eyebrow">☑️ Checklist di giornata</div>
+    <div class="card">
+      <div class="small">Completate ${doneCount} / ${d.activities.length} attività — tocca il pallino accanto a un orario per segnarla.</div>
+      <div class="progress" style="margin-top:10px;"><div style="width:${Math.round(doneCount/d.activities.length*100)}%;"></div></div>
+    </div>
+
+    <div class="section-eyebrow">📔 Diario del giorno</div>
+    <div class="card">
+      ${renderDiaryForm(dayId)}
+    </div>
+  </div>`;
+}
+
+async function toggleCheck(dayId, idx){
+  if(!STATE.checklist[dayId]) STATE.checklist[dayId] = {};
+  STATE.checklist[dayId][idx] = !STATE.checklist[dayId][idx];
+  await sSet("checklist", STATE.checklist);
+  render();
+}
+
+function renderDiaryForm(dayId){
+  const entry = STATE.diary[dayId] || {};
+  const fields = [["momento","Momento più bello"],["foto","Foto preferita"],["piatto","Miglior piatto"],["luogo","Luogo preferito"],["libera","Nota libera"]];
+  return fields.map(([k,label])=>`
+    <div style="margin-bottom:10px;">
+      <div class="small" style="font-weight:700;margin-bottom:4px;">${label}</div>
+      <textarea class="note-input" style="min-height:44px;" data-day="${dayId}" data-field="${k}" oninput="saveDiaryField(this)">${entry[k]||''}</textarea>
+    </div>`).join('');
+}
+let diaryTimer=null;
+function saveDiaryField(el){
+  const dayId = el.getAttribute('data-day'), field = el.getAttribute('data-field');
+  if(!STATE.diary[dayId]) STATE.diary[dayId]={};
+  STATE.diary[dayId][field] = el.value;
+  clearTimeout(diaryTimer);
+  diaryTimer = setTimeout(()=>sSet("diary", STATE.diary), 500);
+}
+
+/* =========================================================
+   VIEW: MAP / LUOGHI & NAVIGA
+   ========================================================= */
+let mapFilter = "tutti";
+function renderMap(){
+  const cats = [
+    {k:"tutti", l:"Tutti"}, {k:"must", l:"🔥 Must"}, {k:"hotel", l:"🏨 Hotel"},
+    {k:"food", l:"🍴 Cibo"}, {k:"photo", l:"📸 Foto"}, {k:"trek", l:"🥾 Trek"}
+  ];
+  const places = [];
+  DAYS.forEach(d=>{
+    if(d.hotel && d.hotel.nights>0) places.push({cat:"hotel", ic:"🏨", n:d.hotel.name, sub:"Hotel · "+d.label, q:d.hotel.name});
+    d.activities.forEach(a=>{
+      let cat = a.ic===ICONS.food?"food": a.ph?"photo": a.ic===ICONS.trek?"trek": (a.pr==="must"?"must":"other");
+      places.push({cat, ic:a.ic, n:a.ti, sub:d.label+" · "+a.t, q:a.map ? null : a.ti});
+      if(a.map) places[places.length-1].mapUrl = a.map;
+    });
+  });
+  const filtered = mapFilter==="tutti" ? places : places.filter(p=>p.cat===mapFilter);
+  return `
+  ${header("Mappa & Naviga","🗺️")}
+  <div class="view">
+    <p class="lede">Elenco filtrabile di tutte le tappe del viaggio con accesso diretto alla navigazione. (In questa build non è integrata una mappa interattiva unica — ogni tappa apre Google Maps con il percorso pronto.)</p>
+    <div class="chip-scroll">
+      ${cats.map(c=>`<button class="chip ${mapFilter===c.k?'active':''}" onclick="setMapFilter('${c.k}')">${c.l}</button>`).join('')}
+    </div>
+    ${filtered.map(p=>`
+      <div class="card flat" style="border:1px solid var(--line);padding:12px;">
+        <div class="row between">
+          <div class="row" style="gap:8px;"><span style="font-size:18px;">${p.ic}</span><div><div style="font-weight:700;font-size:13px;">${p.n}</div><div class="small">${p.sub}</div></div></div>
+          <a class="btn ghost sm" href="${p.mapUrl || mapsDir(p.q || p.n)}" target="_blank" rel="noopener">🧭</a>
+        </div>
+      </div>`).join('')}
+  </div>`;
+}
+function setMapFilter(k){ mapFilter=k; render(); }
+
+/* =========================================================
+   VIEW: BOOKINGS
+   ========================================================= */
+async function renderBookings(){
+  const readiness = computeReadiness();
+  return `
+  ${header("Le mie prenotazioni","📋")}
+  <div class="view">
+    <div class="card">
+      <div class="row between"><b>Viaggio pronto</b><b>${readiness}%</b></div>
+      <div class="progress" style="margin-top:8px;"><div style="width:${readiness}%;"></div></div>
+    </div>
+    ${BOOKINGS.map(b=>{
+      const status = STATE.bookingStatus[b.id] || b.status;
+      return `
+      <div class="card flat" style="border:1px solid var(--line);padding:12px;">
+        <div class="row between top">
+          <div class="row" style="gap:10px;">
+            <button class="checkbox ${status==='booked'?'on':''}" onclick="toggleBooking('${b.id}')">${status==='booked'?'✓':''}</button>
+            <div>
+              <div class="tag-region">${b.cat}</div>
+              <div style="font-weight:700;font-size:13.5px;margin-top:2px;">${b.title}</div>
+              <div class="small">${b.when}${b.place && b.place!=='—' ? ' · '+b.place : ''}</div>
+            </div>
+          </div>
+          ${b.level?`<span>${bookLevelDot(b.level)}</span>`:''}
+        </div>
+        ${b.note?`<p class="small" style="margin:8px 0 0;">${b.note}</p>`:''}
+        ${b.url?`<a class="btn ghost sm" style="margin-top:8px;" href="${b.url}" target="_blank" rel="noopener">🔗 Apri link ufficiale</a>`:''}
+      </div>`;
+    }).join('')}
+    <p class="small" style="margin-top:6px;">🔴 Prenotare subito · 🟠 Prenotare presto · 🟢 Non urgente</p>
+  </div>`;
+}
+async function toggleBooking(id){
+  STATE.bookingStatus[id] = STATE.bookingStatus[id]==='booked' ? 'todo' : 'booked';
+  await sSet("bookingStatus", STATE.bookingStatus);
+  render();
+}
+
+/* =========================================================
+   VIEW: FOOD
+   ========================================================= */
+function renderFood(){
+  return `
+  ${header("Mangiare qui","🍴")}
+  <div class="view">
+    <div class="section-eyebrow">🍽️ Food Must Try</div>
+    ${FOOD_MUST.map(g=>`
+      <div class="card">
+        <div class="tag-region">${g.r}</div>
+        ${g.items.map(i=>`<div class="kv"><div class="k" style="width:auto;font-weight:700;color:var(--ink);flex:0 0 42%;">${i.n}</div><div class="v">${i.d}</div></div>`).join('')}
+      </div>`).join('')}
+
+    <div class="section-eyebrow">📍 Dove mangiare, giorno per giorno</div>
+    ${RESTAURANTS.map(r=>`
+      <div class="card flat" style="border:1px solid var(--line);padding:12px;">
+        <div class="row between"><div class="tag-region">Giorno ${r.day} · ${r.zone}</div><span class="badge info">${r.price}</span></div>
+        <div style="font-weight:700;font-size:13.5px;margin-top:4px;">🍴 ${r.name}</div>
+        <p class="small" style="margin-top:6px;">🎯 ${r.tip}</p>
+      </div>`).join('')}
+    <p class="source-note">I nomi di ristoranti generici (senza indirizzo esatto) vanno confermati sul posto o via Google Maps/TheFork il giorno stesso: le "tascas" migliori cambiano stagione dopo stagione. Piriquita e Pastéis de Belém sono invece indirizzi fissi e verificati.</p>
+  </div>`;
+}
+
+/* =========================================================
+   VIEW: PHOTO GUIDE
+   ========================================================= */
+let photoFilter = "tutti";
+function renderPhoto(){
+  const spots = collectPhotoSpots();
+  const regions = ["tutti", ...new Set(spots.map(s=>s.region))];
+  const filtered = photoFilter==="tutti" ? spots : spots.filter(s=>s.region===photoFilter);
+  return `
+  ${header("Photo Guide","📸")}
+  <div class="view">
+    <p class="lede">Tutti i punti fotografici migliori del viaggio, con dettagli pratici per non perdere lo scatto giusto.</p>
+    <div class="chip-scroll">
+      ${regions.map(r=>`<button class="chip ${photoFilter===r?'active':''}" onclick="setPhotoFilter('${r}')">${r==='tutti'?'Tutti':r}</button>`).join('')}
+    </div>
+    ${filtered.map(s=>`
+      <div class="card">
+        <div class="row between"><div class="tag-region">${s.dayLabel} · ${s.region}</div></div>
+        ${renderPhotoBlock(s)}
+      </div>`).join('')}
+  </div>`;
+}
+function setPhotoFilter(r){ photoFilter=r; render(); }
+
+/* =========================================================
+   VIEW: CAR
+   ========================================================= */
+function renderCar(){
+  return `
+  ${header("Auto a noleggio","🚗")}
+  <div class="view">
+    <div class="alert">⚠️ L'auto NON è ancora prenotata. Ritiro: <b>${CAR_INFO.pickup}</b> · Riconsegna: <b>${CAR_INFO.dropoff}</b></div>
+    <div class="card">
+      <b>Veicolo consigliato</b>
+      <p class="small" style="margin-top:6px;">${CAR_INFO.vehicle}</p>
+    </div>
+    <div class="section-eyebrow">Priorità di scelta (in ordine)</div>
+    <div class="card"><ol style="margin:0;padding-left:18px;font-size:12.5px;line-height:1.9;">${CAR_INFO.priorities.map(p=>`<li>${p}</li>`).join('')}</ol></div>
+
+    <div class="section-eyebrow">Dove confrontare</div>
+    ${CAR_INFO.companies.map(c=>`<div class="card flat" style="border:1px solid var(--line);padding:12px;"><b style="font-size:13px;">${c.n}</b><p class="small" style="margin-top:6px;">${c.note}</p></div>`).join('')}
+
+    <div class="section-eyebrow">Assicurazione</div>
+    <div class="card">
+      <div class="kv"><div class="k">Base</div><div class="v">${CAR_INFO.insurance.base}</div></div>
+      <div class="kv"><div class="k">Upgrade</div><div class="v">${CAR_INFO.insurance.upgrade}</div></div>
+      <div class="kv"><div class="k">Età min.</div><div class="v">${CAR_INFO.insurance.age}</div></div>
+      <div class="kv"><div class="k">Pagamento</div><div class="v">${CAR_INFO.insurance.payment}</div></div>
+    </div>
+
+    <div class="section-eyebrow">Costo totale reale</div>
+    <div class="card"><ol style="margin:0;padding-left:18px;font-size:12.5px;line-height:1.9;">${CAR_INFO.costBreakdown.map(p=>`<li>${p}</li>`).join('')}</ol></div>
+
+    <div class="section-eyebrow">Pedaggi</div>
+    <div class="card"><p class="small">${CAR_INFO.tolls}</p></div>
+
+    <p class="source-note"><span class="verify">DA VERIFICARE</span> — ${CAR_INFO.verify}</p>
+  </div>`;
+}
+
+/* =========================================================
+   VIEW: TICKETS
+   ========================================================= */
+function renderTickets(){
+  return `
+  ${header("Biglietti & Prenotazioni","🎟️")}
+  <div class="view">
+    ${TICKETS.map(t=>`
+      <div class="card flat" style="border:1px solid var(--line);padding:12px;">
+        <div class="row between top">
+          <b style="font-size:13.5px;">${t.n}</b>
+          <span class="badge info">${t.price}</span>
+        </div>
+        <div class="kv"><div class="k">📅 Quando</div><div class="v">${t.when}</div></div>
+        <div class="kv"><div class="k">🎟️ Prenotazione</div><div class="v">${t.book}</div></div>
+        <div class="source-note">Fonte: ${t.source}</div>
+        ${t.url && t.url!=='#' ? `<a class="btn ghost sm" style="margin-top:8px;" href="${t.url}" target="_blank" rel="noopener">🔗 Sito ufficiale</a>`:''}
+      </div>`).join('')}
+  </div>`;
+}
+
+/* =========================================================
+   VIEW: WEATHER
+   ========================================================= */
+function renderWeather(){
+  return `
+  ${header("Meteo","🌡️")}
+  <div class="view">
+    <div class="alert">⚠️ Questi sono valori climatici storici medi, NON una previsione — controlla IPMA (ipma.pt) nei giorni prima della partenza.</div>
+    <div class="card"><div class="tag-region">ALGARVE · giorni 1–2</div><p class="small" style="margin-top:6px;">${WEATHER_NOTE.algarve}</p></div>
+    <div class="card"><div class="tag-region">COSTA VICENTINA · giorno 3</div><p class="small" style="margin-top:6px;">${WEATHER_NOTE.vicentina}</p></div>
+    <div class="card"><div class="tag-region">LISBONA / SINTRA · giorni 4–8</div><p class="small" style="margin-top:6px;">${WEATHER_NOTE.lisbona}</p></div>
+    <div class="section-eyebrow">Attenzione particolare</div>
+    <div class="card">
+      <div class="kv"><div class="k">🛶 Kayak Benagil</div><div class="v">Verificare condizioni mare/vento il giorno stesso: gli operatori possono modificare o annullare il tour per sicurezza.</div></div>
+      <div class="kv"><div class="k">🥾 Trekking Arrifana</div><div class="v">Vento forte = maggiore attenzione ai bordi delle scogliere.</div></div>
+      <div class="kv"><div class="k">🌅 Cabo de São Vicente</div><div class="v">Quasi sempre ventoso: portare una giacca leggera anche se fa caldo altrove.</div></div>
+    </div>
+  </div>`;
+}
+
+/* =========================================================
+   VIEW: PACKING
+   ========================================================= */
+async function renderPacking(){
+  return `
+  ${header("Cosa portare","🎒")}
+  <div class="view">
+    <p class="lede">Solo ciò che serve davvero per QUESTO viaggio — non una lista generica.</p>
+    ${PACKING.map((item,i)=>`
+      <div class="card flat" style="border:1px solid var(--line);padding:12px;">
+        <div class="row" style="gap:10px;">
+          <button class="checkbox ${STATE.packing[i]?'on':''}" onclick="togglePacking(${i})">${STATE.packing[i]?'✓':''}</button>
+          <div style="font-size:13px;">${item}</div>
+        </div>
+      </div>`).join('')}
+  </div>`;
+}
+async function togglePacking(i){
+  STATE.packing[i] = !STATE.packing[i];
+  await sSet("packing", STATE.packing);
+  render();
+}
+
+/* =========================================================
+   VIEW: SAFETY
+   ========================================================= */
+function renderSafety(){
+  return `
+  ${header("Sicurezza","⚠️")}
+  <div class="view">
+    <p class="lede">Consigli sintetici, senza allarmismi — solo ciò che è utile sapere per questo itinerario.</p>
+    ${SAFETY.map(s=>`<div class="card flat" style="border:1px solid var(--line);padding:12px;"><b style="font-size:13px;">${s.t}</b><p class="small" style="margin-top:6px;">${s.d}</p></div>`).join('')}
+  </div>`;
+}
+
+/* =========================================================
+   VIEW: BUDGET
+   ========================================================= */
+function renderBudget(){
+  return `
+  ${header("Budget","💶")}
+  <div class="view">
+    <p class="lede">Le voci "STIMATO" sono calcolate su prezzi tipici 2026 e vanno confermate; "DA PRENOTARE" non ha ancora un prezzo fissato; "PRENOTATO" è confermato.</p>
+    ${BUDGET.map(b=>`
+      <div class="card flat" style="border:1px solid var(--line);padding:12px;">
+        <div class="row between">
+          <b style="font-size:13px;">${b.cat}</b>
+          <span class="badge ${b.stato==='PRENOTATO'?'worth':b.stato==='DA PRENOTARE'?'must':'info'}">${b.stato}</span>
+        </div>
+        <p class="small" style="margin-top:6px;">${b.note}</p>
+        <div style="font-weight:700;font-size:13px;margin-top:4px;color:var(--navy);">${b.tot}</div>
+      </div>`).join('')}
+  </div>`;
+}
+
+/* =========================================================
+   VIEW: MORE MENU
+   ========================================================= */
+function renderMore(){
+  const items = [
+    ["food","🍴","Mangiare qui","Specialità e ristoranti selezionati"],
+    ["photo","📸","Photo Guide","Tutti i punti fotografici del viaggio"],
+    ["car","🚗","Auto & Assicurazione","Confronto compagnie e coperture"],
+    ["tickets","🎟️","Biglietti","Prezzi e link ufficiali"],
+    ["weather","🌡️","Meteo","Clima di riferimento per la stagione"],
+    ["packing","🎒","Valigia","Checklist essenziale per questo viaggio"],
+    ["safety","⚠️","Sicurezza","Consigli pratici senza allarmismi"],
+    ["budget","💶","Budget","Stima costi per categoria"],
+  ];
+  return `
+  ${header("Altro","☰")}
+  <div class="view">
+    ${items.map(([v,ic,t,s])=>`
+      <button class="card card-tap" style="width:100%;text-align:left;border:none;" onclick="goto('${v}')">
+        <div class="row between">
+          <div class="row" style="gap:10px;"><span style="font-size:20px;">${ic}</span><div><div style="font-weight:700;font-size:13.5px;">${t}</div><div class="small">${s}</div></div></div>
+          <span style="color:var(--ink-soft);">›</span>
+        </div>
+      </button>`).join('')}
+  </div>`;
+}
+
+/* =========================================================
+   ROUTER / RENDER
+   ========================================================= */
+async function goto(view, param){
+  STATE.view = view;
+  if(param !== undefined) STATE.currentDayId = param;
+  window.scrollTo({top:0, behavior:"instant"});
+  await render();
+}
+
+async function render(){
+  const root = document.getElementById("root");
+  let content = "";
+  switch(STATE.view){
+    case "home": content = await renderHome(); break;
+    case "day": content = await renderDay(STATE.currentDayId); break;
+    case "map": content = renderMap(); break;
+    case "bookings": content = await renderBookings(); break;
+    case "food": content = renderFood(); break;
+    case "photo": content = renderPhoto(); break;
+    case "car": content = renderCar(); break;
+    case "tickets": content = renderTickets(); break;
+    case "weather": content = renderWeather(); break;
+    case "packing": content = await renderPacking(); break;
+    case "safety": content = renderSafety(); break;
+    case "budget": content = renderBudget(); break;
+    case "more": content = renderMore(); break;
+    default: content = await renderHome();
+  }
+  const wrapped = STATE.view==="home" ? `<div class="view" style="padding-top:0;">${homeHero()}${content}</div>` : content;
+  root.innerHTML = `
+    <div style="flex:1;">${wrapped}</div>
+    ${tabbar()}
+  `;
+}
+
+function tabbar(){
+  const tabs = [
+    ["home","🏠","Home"], ["day","📅","Itinerario"], ["map","🗺️","Mappa"],
+    ["bookings","📋","Prenot."], ["more","☰","Altro"]
+  ];
+  return `
+  <div class="tabbar">
+    ${tabs.map(([v,ic,l])=>`
+      <button class="tab ${STATE.view===v?'on':''}" onclick="goto('${v}'${v==='day'?(', '+STATE.currentDayId):''})">
+        <span class="ic">${ic}</span>${l}
+      </button>`).join('')}
+  </div>`;
+}
+
+/* =========================================================
+   INIT
+   ========================================================= */
+(async function init(){
+  await loadState();
+  await render();
+})();
+</script>
+</body>
+</html>
